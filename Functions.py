@@ -13,15 +13,17 @@ def separate_bins_feature(feat_column):
 	if (avg_val - two_std < 0):
 		min_val = 0
 	else:
-		min_val = avg_val - two_std
-	max_val = avg_val + two_std
+		min_val = round((avg_val - two_std),0)
+	max_val = round((avg_val + two_std),0)
 
 	# -- Creating the Bins --
 	single_bin = (max_val - min_val) // no_bins
-	centre = round(min_val + (single_bin // 2),0)
+	if (single_bin == 0):
+		single_bin = 1
+	centre = min_val + (single_bin // 2)
 	
-	floor = round(min_val,0)
-	ceil = round((min_val + single_bin),0)
+	floor = min_val
+	ceil = min_val + single_bin
 
 	ranges = []
 	bins = np.zeros(10)
@@ -29,25 +31,29 @@ def separate_bins_feature(feat_column):
 
 	for i in range(no_bins):
 		range_str = ""
-		for val_i in range(feat_column.shape[0]):
+		if (centre <= max_val):
+			for val_i in range(feat_column.shape[0]):
+					if (i == 0):
+						range_str = "x < " + str(ceil)
+						if (feat_column[val_i] < ceil):
+							new_col[val_i] = i
 
-			if (i == 0):
-				range_str = "x < " + str(ceil)
-				if (feat_column[val_i] < ceil):
-					new_col[val_i] = centre 
+					elif (i == no_bins-1) or ((centre + single_bin) > max_val):
+						range_str = str(floor) + " < x"
+						if (feat_column[val_i] >= floor):
+							new_col[val_i] = i
 
-			elif (i == no_bins-1):
-				range_str = str(floor) + " < x"
-				if (feat_column[val_i] >= floor):
-					new_col[val_i] = centre 
+					else:
+						range_str = str(floor) +" < x < " + str(ceil)
+						if ((ceil > feat_column[val_i]) and (feat_column[val_i] >= floor)):
+							new_col[val_i] = i
+			bins[i] = centre
+			ranges.append(range_str)
+		
+		else:
+			bins[i] = -1
+			ranges.append("-1")
 
-			else:
-				range_str = str(floor) +" < x < " + str(ceil)
-				if ((ceil > feat_column[val_i]) and (feat_column[val_i] >= floor)):
-					new_col[val_i] = centre 
-
-		bins[i] = centre
-		ranges.append(range_str)
 
 		floor += single_bin
 		ceil += single_bin
@@ -55,3 +61,15 @@ def separate_bins_feature(feat_column):
 
 
 	return bins, new_col, ranges
+
+
+# data = pd.read_csv("working_data_full.csv").values
+# data = np.delete(data, 0, 1) # Deletes First Row
+
+# bins, new_col, ranges = separate_bins_feature(data[:,6])
+
+# print(bins)
+# print(new_col)
+# print(ranges)
+
+
