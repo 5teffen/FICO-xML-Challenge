@@ -63,13 +63,4 @@ def separate_bins_feature(feat_column):
 	return bins, new_col, ranges
 
 
-# data = pd.read_csv("working_data_full.csv").values
-# data = np.delete(data, 0, 1) # Deletes First Row
-
-# bins, new_col, ranges = separate_bins_feature(data[:,6])
-
-# print(bins)
-# print(new_col)
-# print(ranges)
-
 
