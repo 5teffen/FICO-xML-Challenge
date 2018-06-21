@@ -73,7 +73,20 @@ class SVM_model():
 		return result[0][1]
 
 
+data = pd.read_csv("working_data_full.csv").values
+data = np.delete(data, 0, 1) # Deletes First Column
+data = np.delete(data, 0, 1)
 
+
+testing = SVM_model(None,"working_data_full.csv")
+
+testing.train_model(0.01)
+
+testing.test_model()
+
+one_sample = data[10]
+
+print(testing.run_model(one_sample))
 
 
 
