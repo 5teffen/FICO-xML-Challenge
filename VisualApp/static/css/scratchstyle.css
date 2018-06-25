@@ -1,0 +1,214 @@
+/*-------*/
+/*General*/
+/*-------*/
+
+h1,
+h2,
+h3 {
+  text-align: center;
+  margin: 0;
+  color: white;
+  font-family: inherit;
+}
+
+h2 {
+  font-size: 1.6em;
+}
+
+h3 {
+  color: #7f7f7f;
+  font-size: 1.4em;
+}
+
+* {
+  font-family: 'Open Sans', sans-serif;
+}
+
+body {
+  background-color: Gainsboro;
+  height: 100vh;
+  margin: 0px;
+}
+
+/*--------*/
+/*Left Bar*/
+/*--------*/
+
+.left-sidebar {
+  width: 300px;
+  background-color: #1f2124;
+  height: 100vh;
+  text-align: center;
+}
+
+.left-nav {
+  padding-top: 20px;
+}
+
+.square {
+  width: 25px;
+  height: 25px;
+  border: 3px solid #13895F;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.site-header {
+  margin: auto;
+  padding-top: 5px;
+}
+
+.site-header h1 {
+  color: white;
+  display: inline-block;
+  font-size: 1.4em;
+  font-weight: 100;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  text-align: center;
+  padding-top: 10px;
+}
+
+/*-------------*/
+/* Search form */
+/*-------------*/
+
+.search-form {
+  font-size: 1.1em;
+  margin: 5px 20px;
+}
+
+.search-form .input-group {
+  width: 100%;
+  padding-top: 20px;
+}
+
+.search-form .input-group .form-control {
+  background-color: Gainsboro;
+  border: 1;
+  border-radius: 10px;
+  color: #DDD;
+  padding-left: 0px;
+  border-color: #13895F;
+  text-align: center;
+}
+
+.form-control:focus {
+  border-color: #13895F;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(19, 137, 95, .075), 0 0 8px rgba(19, 137, 95, .6);
+}
+
+.form-control.highlight {
+  background-color: #39ADB4;
+  color: white;
+}
+
+.form-control.highlight::-webkit-input-placeholder {
+  color: #ccc;
+}
+
+.form-control.highlight:-moz-placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+
+.form-control.highlight::-moz-placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+
+.search-form .input-group {
+  position: relative;
+}
+
+.left-nav ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.left-nav li {
+  font-weight: 200;
+}
+
+.left-nav a.active,
+.left-nav a:hover {
+  max-width: 300px;
+  background: #18191b;
+  border-left: 8px solid #13895F;
+}
+
+.left-nav a {
+  background: #18191b;
+  color: #e9e9ea;
+  display: block;
+  padding: 30px;
+  transition: all 0.3s ease;
+}
+
+.profile-img {
+  padding: 30px;
+}
+
+/*---------*/
+/* ID List */
+/*---------*/
+
+.id-list {
+  padding-top: 20px;
+  flex: 1 1 auto;
+}
+
+
+.id-list ul {
+  overflow: hidden;
+  max-height: 300px;
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: lightgray;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+  height: 50px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #13895F;
+}
+
+
+.id-list li {
+  font-weight: 300;
+  color: white;
+}
+
+/*------------*/
+/* Right side */
+/*------------*/
+
+.right-side {
+  margin-top: 0px;
+  min-height: 600px;
+  padding: 0px;
+  overflow-x: hidden;
+  background-color: #efefef;
+  width: 800px;
+}
