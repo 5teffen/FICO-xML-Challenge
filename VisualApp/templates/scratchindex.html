@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Visual Interface</title>
+    <meta name="author" content="NYU UGR Team">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="/static/css/scratchstyle.css" rel="stylesheet" type="text/css">
+
+  </head>
+
+  <body>
+    <div class="left-sidebar">
+      <header class="site-header">
+        <h1>FICO CHALLENGE</h1>
+      </header>
+      <nav class="left-nav">
+        <ul>
+          <li><a>GLOBAL EXPLANATION</a></li>
+          <li><a>LOCAL EXPLANATIONS</a></li>
+        </ul>
+      </nav>
+      <!-- Search box -->
+      <form class="search-form">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search by ID" name="srch-term" id="srch-term">
+        </div>
+      </form>
+      <nav class="id-list">
+        <ul>
+          <li>ID 1</li>
+        </ul>
+      </nav>
+    </div>
+
+
+
+    <script>
+      var samples = 10459;
+      for (i = 2; i < samples; i++) {
+        var para = document.createElement("li");
+        para.innerHTML = "ID " + i.toString();
+        document.getElementsByTagName("ul")[1].append(para);
+      }
+
+    </script>
+
+  </body>
+
+</html>
+      
+      
