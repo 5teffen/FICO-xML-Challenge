@@ -11,36 +11,50 @@
   </head>
 
   <body>
-    <div class="left-sidebar">
-      <header class="site-header">
-        <h1>FICO CHALLENGE</h1>
-      </header>
-      <nav class="left-nav">
-        <ul>
-          <li><a>GLOBAL EXPLANATION</a></li>
-          <li><a>LOCAL EXPLANATIONS</a></li>
-        </ul>
-      </nav>
-      <!-- Search box -->
-      <form class="search-form">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search by ID" name="srch-term" id="srch-term">
-        </div>
-      </form>
-      <nav class="id-list">
-        <ul>
-          <li>ID 1</li>
-        </ul>
-      </nav>
+    <div class="main">
+      <div class="left-sidebar">
+        <header class="site-header">
+          <h1>FICO CHALLENGE</h1>
+        </header>
+        <nav class="left-nav">
+          <ul>
+            <li><a>GLOBAL EXPLANATION</a></li>
+            <li><a>LOCAL EXPLANATIONS</a></li>
+          </ul>
+        </nav>
+        <!-- Search box -->
+        <form class="search-form">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search by ID" name="srch-term" id="srch-term">
+          </div>
+        </form>
+        <nav class="id-list">
+          <ul>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="right-side">
+        <p>
+        AAA
+        </p>
+
+      </div>
     </div>
 
-
-
     <script>
+    
+      function displayInstance(node) {
+        var idn = node.id;
+        document.getElementsByClassName("right-side")[0].innerHTML = "YOU CLICKED " + idn;
+      }
+    
       var samples = 10459;
-      for (i = 2; i < samples; i++) {
+      for (i = 1; i <= samples; i++) {
         var para = document.createElement("li");
         para.innerHTML = "ID " + i.toString();
+        para.id = "link-" + i.toString();
+        para.onclick = function () { displayInstance (this); };
         document.getElementsByTagName("ul")[1].append(para);
       }
 
@@ -49,5 +63,3 @@
   </body>
 
 </html>
-      
-      
