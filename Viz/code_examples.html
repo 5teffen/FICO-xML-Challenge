@@ -1,0 +1,153 @@
+<html>
+
+<head>
+	<title>D3 Tutorial</title>
+	<script src = "http://d3js.org/d3.v3.min.js"> </script>
+<body>
+
+	<script>
+		// d3.select("body").text("New Stuff!").style("color","red");
+
+		var canvas = d3.select("body")
+			.append("svg")
+			.attr("width",500)
+			.attr("height",500);
+
+		var circle = canvas.append("circle")
+			.attr("cx",100)
+			.attr("cy",100)
+			.attr("r",50)
+			.attr("fill","red");
+		
+		var rect = canvas.append("rect")
+			.attr("width",50)
+			.attr("height",50)
+			.attr("fill","blue");
+
+		var line = canvas.append("line")
+			.attr("x1",50)
+			.attr("x2",150)
+			.attr("y1",100)
+			.attr("y2",400)
+			.attr("stroke","green")
+			.attr("stroke-width",10);
+
+
+	</script>
+
+</body>
+
+
+</head>
+</html>
+
+
+
+
+<html>
+
+<head>
+	<title>D3 Tutorial</title>
+	<script src = "http://d3js.org/d3.v3.min.js"> </script>
+<body>
+
+	<script>
+
+		var width = 500;
+		var height = 500;
+
+		var heightScale = d3.scale.linear()
+							.domain([0,30])
+							.range([0,500]);
+
+		var axis = d3.svg.axis()
+						.scale(heightScale);
+						.
+
+		var canvas = d3.select("body")
+			.append("svg")
+			.attr("width",width)
+			.attr("height",height)
+			.append("g")
+			.attr("transform","translate(20,0)")
+			.call(axis);
+
+		var color = d3.scale.linear()
+							.domain([0,60])
+							.range(["red","blue"]);
+
+		var dataArray = [10,20,30];
+
+		var bars = canvas.selectAll("rect")
+						.data(dataArray)
+						.enter()
+							.append("rect")
+							.attr("height",function(d) {return d*20;})
+							.attr("width",30)
+							.attr("fill",function(d) {return color(d)})
+							.attr("x",function(d,i) {return i*40})
+							.attr("y",function(d,i) {return height - d*20});
+
+
+
+				var width = 600;
+		var height = 600;
+
+		var heightScale = d3.scale.linear()
+							.domain([0,30])
+							.range([0,500]);
+
+		var axis = d3.svg.axis()
+						.ticks(5)
+						.scale(heightScale);
+						
+
+		var canvas = d3.select("body")
+			.append("svg")
+			.attr("width",width)
+			.attr("height",height)
+			.append("g")
+			.attr("transform","translate(20,0)");
+
+		var color = d3.scale.linear()
+							.domain([0,60])
+							.range(["red","blue"]);
+
+		var dataArray = [10,20,30];
+
+		var bars = canvas.selectAll("rect")
+						.data(dataArray)
+						.enter()
+							.append("rect")
+							.attr("height",function(d) {return d*20;})
+							.attr("width",30)
+							.attr("fill",function(d) {return color(d)})
+							.attr("x",function(d,i) {return i*40})
+							.attr("y",function(d,i) {return 500 - d*20});
+
+		canvas.append('g')
+			.attr("transform","translate(0,500)")
+			.call(axis);
+
+
+	</script>
+
+			var svg = d3.select("svg"),
+			margin = {top: 20, right: 20, bottom: 30, left: 40},
+    		width = +svg.attr("width") - margin.left - margin.right,
+    		height = +svg.attr("height") - margin.top - margin.bottom;
+
+    	var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    		y = d3.scaleLinear().rangeRound([height, 0]);
+
+    	var g = svg.append("g")
+    			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    	dataArray = [1,2,3]
+
+		d3.data(dataArray, function(d) {
+			d.frequency = +d.frequency;
+			console.log(d)
+			return d;});
+
+</body>
