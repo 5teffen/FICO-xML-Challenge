@@ -1,27 +1,37 @@
 import numpy as np
 import pandas as pd
 
-def separate_bins_feature(feat_column):
+
+def separate_bins_feature(feat_column,special_case = False):
 
 	no_bins = 10
 
-	feat_column = feat_column.flatten()
-	two_std = 2*np.std(feat_column)
-	avg_val = np.mean(feat_column)
 
-	# -- Finding the Range --
-	if (avg_val - two_std < 0):
+	if special_case:
+		# -- Solves the two special cases --
+		max_val = 7
 		min_val = 0
-	else:
-		min_val = round((avg_val - two_std),0)
-	max_val = round((avg_val + two_std),0)
-
-	# -- Creating the Bins --
-	single_bin = (max_val - min_val) // no_bins
-	if (single_bin == 0):
 		single_bin = 1
-	centre = min_val + (single_bin // 2)
+
+	else:
+		# -- All other cases --
+		feat_column = feat_column.flatten()
+		two_std = 2*np.std(feat_column)
+		avg_val = np.mean(feat_column)
+
+		# -- Finding the Range --
+		if (avg_val - two_std < 0):
+			min_val = 0
+		else:
+			min_val = round((avg_val - two_std),0)
+		max_val = round((avg_val + two_std),0)
+
+		# -- Creating the Bins --
+		single_bin = (max_val - min_val) // no_bins
+		if (single_bin == 0):
+			single_bin = 1
 	
+	centre = min_val + (single_bin // 2)
 	floor = min_val
 	ceil = min_val + single_bin
 
@@ -59,8 +69,9 @@ def separate_bins_feature(feat_column):
 		ceil += single_bin
 		centre += single_bin
 
-
 	return bins, new_col, ranges
+
+
 
 
 
