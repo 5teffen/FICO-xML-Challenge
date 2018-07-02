@@ -9,8 +9,8 @@ class ModelError(Exception):
     pass
 
 class SVM_model():
-	def __init__ (self,data, file_name = None):
-		if (data == None):
+	def __init__ (self, data, file_name = None):
+		if (file_name != None):
 			data = pd.read_csv(file_name).values
 			data = np.delete(data, 0, 1) # Deletes First Column
 
@@ -72,22 +72,19 @@ class SVM_model():
 
 		return result[0][1]
 
+	def run_model_data(self,data_set):
+		if (not self.model):
+			raise ModelError("Train Model First")
 
-data = pd.read_csv("working_data_full.csv").values
-data = np.delete(data, 0, 1) # Deletes First Column
-data = np.delete(data, 0, 1)
+		for i in range(data_set.shape[0]):
+			data_set[i] = self.__scaled_row(data_set[i])
+
+		pred = self.model.predict(data_set)
+
+		return pred 
 
 
-testing = SVM_model(None,"working_data_full.csv")
-
-testing.train_model(0.01)
-
-testing.test_model()
-
-one_sample = data[10]
-
-print(testing.run_model(one_sample))
-
+ 
 
 
 
