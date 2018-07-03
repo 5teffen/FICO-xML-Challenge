@@ -1,28 +1,64 @@
 from flask import Flask
-from flask import request
+from flask import request, jsonify, json
 from flask import render_template
+import pandas as pd
+import numpy as np
+from SVM_model import SVM_model
 
 
-def check(text1, text2):
-	if text1 == text2:
-		return 100
-	else: return 0
+# ------ Initialize model ------- #
 
-app = Flask(__name__)
-# app = Flask(__name__, static_folder='C:/Users/Oscar/Documents/UGR 2018/Fico-Challenge-master/WebApp-Flask/static')
+df = pd.read_csv("working_data_full.csv")
+vals = df.values
+X = vals[:,2:]
+y = vals[:,1]
+
+no_samples, no_features = X.shape
+
+svm_model = SVM_model(None, "working_data_full.csv")
+svm_model.train_model(0.001)
+svm_model.test_model()
+
+
+# ------ Initialize WebApp ------- #
+
+app = Flask(__name__, static_folder="C:/Users/Oscar/Documents/UGR 2018/Fico-Challenge-master/VisualApp1/static")
+
 @app.route('/')
 def my_form():
-    return render_template("scratchindex.html") # this should be the name of your html file
+    return render_template("scratchindex.html")
 
-# @app.route('/', methods=['POST'])
-# def my_form_post():
-#     text1 = request.form['text1']
-#     text2 = request.form['text2']
-#     plagiarismPercent = check(text1,text2)
-#     if plagiarismPercent > 50 :
-#         return "<h1>Plagiarism Detected !</h1>"
-#     else :
-#         return "<h1>No Plagiarism Detected !</h1>"
+@app.route('/instance', methods=['GET'])
+def my_form_post():
+	if request.method == 'GET':
+		sample = 0
+		try:
+			sample = int(request.args.get('sample'))
+		except:
+			return "Please enter a sample number in the range (1, 10459)."
+		if sample:
+			print(sample)
+			if sample<1 or sample>10459:
+				return "Please enter a sample number in the range (1, 10459)."
+			else:
+				good_percent = svm_model.run_model(X[sample])
+				predicted = 0
+				if good_percent>.5:
+					predicted = 1
+				ground_truth = y[sample]
+				model_correct = 1
+				if predicted!=ground_truth:
+					model_correct=0
+				return jsonify({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct})
+
+				### Run MSC Algorithm 
+
+				### Parse values into python dictionary
+
+				###
+
+				
 
 if __name__ == '__main__':
-    app.run()
+	print(type(json.dumps({'sample': 'a', 'good_percent': 'b', 'model_correct': 'c'})))
+	app.run(port=5005, debug=True)
