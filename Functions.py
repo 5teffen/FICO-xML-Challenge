@@ -38,6 +38,7 @@ def separate_bins_feature(feat_column,special_case = False):
 	ranges = []
 	bins = np.zeros(10)
 	new_col = np.zeros(feat_column.shape[0])
+	new_col_vals = np.zeros(feat_column.shape[0])
 
 	for i in range(no_bins):
 		range_str = ""
@@ -47,16 +48,19 @@ def separate_bins_feature(feat_column,special_case = False):
 						range_str = "x < " + str(ceil)
 						if (feat_column[val_i] < ceil):
 							new_col[val_i] = i
+							new_col_vals[val_i] = centre
 
 					elif (i == no_bins-1) or ((centre + single_bin) > max_val):
 						range_str = str(floor) + " < x"
 						if (feat_column[val_i] >= floor):
 							new_col[val_i] = i
+							new_col_vals[val_i] = centre
 
 					else:
 						range_str = str(floor) +" < x < " + str(ceil)
 						if ((ceil > feat_column[val_i]) and (feat_column[val_i] >= floor)):
 							new_col[val_i] = i
+							new_col_vals[val_i] = centre
 			bins[i] = centre
 			ranges.append(range_str)
 		
@@ -69,7 +73,7 @@ def separate_bins_feature(feat_column,special_case = False):
 		ceil += single_bin
 		centre += single_bin
 
-	return bins, new_col, ranges
+	return bins, new_col, new_col_vals, ranges, 
 
 
 
