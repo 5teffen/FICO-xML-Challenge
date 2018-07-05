@@ -6,7 +6,12 @@
     <title>Visual Interface</title>
     <meta name="author" content="NYU UGR Team">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link href="/static/css/scratchstyle.css" rel="stylesheet" type="text/css">
+    <!-- D3.js source -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- SVG script -->
+    <script type="text/javascript" src="/static/js/better_scripts.js"></script>
   </head>
 
   <body>
@@ -35,11 +40,21 @@
       <div class="right-side" id="demo">
         <div class="right-header">
           <div class="id-display">
-            ID #100
+            ID: 100
           </div>
           <div class="model-display">
-            61%
+            Model Prediction: 61%
           </div>
+          <div class="category-display">
+            TP
+          </div>
+
+        </div>
+        <div class="d3-space">
+          D3 graphs
+        </div>
+        <div class="txt-space">
+          Text explanation
         </div>
         
       </div>
@@ -87,22 +102,27 @@
       function alertContents() {
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
+
             //Do stuff with the response
-            var resp = JSON.parse(httpRequest.responseText);
-            // var para = document.createElement("p");
-            // para.innerHTML = "You chose ID " + resp['sample'].toString();
+            // var resp = JSON.parse(httpRequest.responseText);
+            var resp_arr = httpRequest.responseText.split('~');
+            var testData = [];
+            for (i=0; i<22; i++){
+              testData.push(JSON.parse(resp_arr[i]));
+            }
+            var resp = JSON.parse(resp_arr[23]);
+            
             var index = resp['sample'].toString();
             var good_percent = resp['good_percent'];
             var correct = parseInt(resp['model_correct']);
+            var category = resp['category'];
             var disp_percent = Math.round((good_percent)*100);
-            document.getElementsByClassName("id-display")[0].innerHTML = "ID #" + index;
-            document.getElementsByClassName("model-display")[0].innerHTML = disp_percent.toString() + "%";
-            if (correct==1) {
-              document.getElementsByClassName("model-display")[0].style.borderColor = "green";
-            }
-            else {
-              document.getElementsByClassName("model-display")[0].style.borderColor = "red";
-            }
+            document.getElementsByClassName("id-display")[0].innerHTML = "ID: " + index;
+            // document.getElementsByClassName("model-display")[0].innerHTML = disp_percent.toString() + "%";
+            document.getElementsByClassName("model-display")[0].innerHTML = "Model prediction: " + disp_percent.toString() + "% ";
+            document.getElementsByClassName("category-display")[0].innerHTML = category;
+            document.getElementsByClassName("d3-space")[0].innerHTML = "";
+            draw_svg(testData);
             
           } else {
             alert('HttpRequest Error')
