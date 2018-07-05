@@ -241,7 +241,7 @@ def find_MSC (model, data, k_row, row_idx, X_bin_pos, mean_bins):
         change_vector[l] = current_bins[l] - original_bins[l]
         
     if not percent_cond(improve, percent):
-        return change_vector, current_bins
+        return change_vector, row
     else:
         print("Decision can't be moved within thresholds:")
         return None,None
@@ -274,13 +274,16 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
             result["dir"] = 1
         else:
             result["dir"] = 0
-            
-        if (anchors[i] == 1):
-            result["anch"] = 1
+        
+        if (anchors is None):
+            if (anchors[i] == 1):
+                result["anch"] = 1
+            else:
+                result["anch"] = 0
         else:
             result["anch"] = 0
         
-        val = sample[i]
+        val = sample[i].round(0)
         if (change_row is None):
             change = val
         else:
@@ -297,9 +300,15 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
         result["change"] = change
         result["scl_change"] = scl_change
         
+#         print("Val:",result["val"])
+#         print("Scl_Val:",result["scl_val"])
+#         print("Change:",result["change"])
+#         print("Scl_Change",result["scl_change"])
+        
         data.append(result)
         
     return data
+        
         
 
 
