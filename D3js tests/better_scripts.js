@@ -1,7 +1,8 @@
 
+var percent = 0.5;
 var testData = [
 {
-    name: "External\nRisk\nEstimate",
+    name: "External Risk Estimate",
     val: 50,
     scl_val: 0.5,      // Should be in range 0-1
     change: 20,
@@ -23,15 +24,15 @@ var testData = [
 },
 {
     name: "Title D",
-    val: 20,
-    scl_val: 0.2,
+    val: 0,
+    scl_val: 0,
     change: 20,
     scl_change: 0.2
 },
 {
     name: "Title E",
-    val: 40,
-    scl_val: 0.4,
+    val: 120,
+    scl_val: 1.2,
     change: 60,
     scl_change: 0.6
 },
@@ -46,13 +47,17 @@ var testData = [
 
 // -- Establishing margins and canvas bounds -- 
 var margin = {
-        top: 20, 
+        top: 40, 
         right: 20, 
         bottom: 80, 
         left: 20
     },
     width = 450 - margin.right - margin.left,
-    height = 300- margin.top - margin.bottom;
+    height = 400- margin.top - margin.bottom;
+
+var padding_top = 0.1,
+    padding_bottom = 0.06;
+
 
 // -- Adding scales based on canvas -- 
 var xScale = d3.scaleBand()
@@ -60,7 +65,7 @@ var xScale = d3.scaleBand()
         .rangeRound([0, width])
         .paddingInner(0.1),
     yScale = d3.scaleLinear()
-        .domain([0,1])
+        .domain([0-padding_bottom, 1+padding_top])
         .rangeRound([height, 0]);
 
 var svg = d3.select("body")
@@ -68,7 +73,9 @@ var svg = d3.select("body")
             .attr("width",width + margin.right + margin.left)
             .attr("height",height + margin.top + margin.bottom)
             .append("g")
-                 .attr("transform","translate(" + margin.left + ',' + margin.right +')'); 
+                 .attr("transform","translate(" + margin.left + ',' + margin.top +')');
+
+
 
 // -- Drawing background rectangles -- 
 svg.selectAll("rect")
@@ -78,9 +85,21 @@ svg.selectAll("rect")
     .attr("class","bg_bar")
     .attr('x',function(d) {return xScale(d.name);})
     .attr('y',0)
-    .attr("height",function(d){return yScale(0)})
+    .attr("height",function(d){return yScale(0-padding_bottom)})
     .attr("width",xScale.bandwidth())
     .style("fill","white");
+
+
+
+// svg.append("g").selectAll("circle")
+//     .data(testData)
+//     .enter().append("circle")
+//     .style("stroke", "gray")
+//     .style("fill", "black")
+//     .attr("r", 40)
+//     .attr("cx", 50)
+//     .attr("cy", 20);
+
 
 // -- Drawing current level --
 svg.append("g")
@@ -91,8 +110,18 @@ svg.append("g")
     .attr("class","line_lvl")
     .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.25})
     .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.75})
-    .attr("y1",function(d){return yScale(d.scl_val)})
-    .attr("y2",function(d){return yScale(d.scl_val)})
+    .attr("y1",function(d){
+        if (d.scl_val >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_val)
+        }})
+    .attr("y2",function(d){
+        if (d.scl_val >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_val)
+        }})
     .attr("stroke", "rgb(30,61,122)")
     .attr("stroke-width", 2)
     .attr("stroke-linecap","round")
@@ -105,11 +134,18 @@ var draw_text = svg.selectAll('text')
     .text(function(d){return d.val;})
     .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
     .attr("y", function(d){
+        if (d.scl_val >= 1){
+            return yScale(1)-3;
+        }
+
         if (d.change >= d.val){
-            return yScale(d.scl_val)+12;}
-        else{
+            return yScale(d.scl_val)+12;
+        }
+
+        else {
             return yScale(d.scl_val)-3;
-        }})
+        }
+    })
     .attr("font-family", 'sans-serif')
     .attr("font-size", '12px')
     .attr("font-weight", 'bold')
@@ -127,7 +163,12 @@ svg.append("g")
     .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
     .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.65})
     .attr("y1",function(d){return yScale(d.scl_change)})
-    .attr("y2",function(d){return yScale(d.scl_change)})
+    .attr("y2",function(d){
+        if (d.scl_change >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_change)
+        }})
     .attr("stroke", "red")
     .attr("stroke-width", function(d) {
         if(d.change != d.val) {return 2;}
@@ -143,8 +184,18 @@ svg.append("g")
     .attr("class","box")
     .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.65})
     .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.65})
-    .attr("y1",function(d){return yScale(d.scl_val)-1})
-    .attr("y2",function(d){return yScale(d.scl_change)})
+    .attr("y1",function(d){
+        if (d.scl_val >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_val)-1
+        }})
+    .attr("y2",function(d){
+        if (d.scl_change >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_change)
+        }})
     .attr("stroke", "red")
     .attr("stroke-width", function(d) {
         if(d.change != d.val) {return 2;}
@@ -159,8 +210,18 @@ svg.append("g")
     .attr("class","box")
     .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
     .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
-    .attr("y1",function(d){return yScale(d.scl_val)-1})
-    .attr("y2",function(d){return yScale(d.scl_change)})
+    .attr("y1",function(d){
+        if (d.scl_val >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_val)-1
+        }})
+    .attr("y2",function(d){
+        if (d.scl_change >= 1){
+            return yScale(1)}
+        else{
+            return yScale(d.scl_change)
+        }})
     .attr("stroke", "red")
     .attr("stroke-width", function(d) {
         if(d.change != d.val) {return 2;}
@@ -176,16 +237,23 @@ svg.append("g")
     .text(function(d){return d.change;})
     .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
     .attr("y", function(d){
+        if (d.scl_val >= 1){
+            return yScale(1)+12;
+        }
+
         if (d.change >= d.val){
-            return yScale(d.scl_change)-3;}
-        else{
+            return yScale(d.scl_change)-3;
+        }
+
+        else {
             return yScale(d.scl_change)+12;
-        }})
+        }
+    })
     .attr("font-family", 'sans-serif')
     .attr("font-size", '12px')
     .attr("font-weight", 'bold')
     .attr("fill", function(d) {
-        if(d.change != d.val) {return "red";}
+        if ((d.change != d.val) && (d.scl_val <= 1)) {return "red";}
         else {return "None"}})
     .attr("text-anchor",'middle');
 
@@ -249,14 +317,14 @@ svg.append("g")
     .attr("stroke-linecap","round")
     .attr("fill", "none");
 
-var xAxis = d3.axisBottom().scale(xScale);
+// var xAxis = d3.axisBottom().scale(xScale);
 
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
-    .selectAll(".tick text") 
-      .call(wrap, xScale.bandwidth());
+// svg.append("g")
+//     .attr("class", "axis")
+//     .attr("transform", "translate(0," + height + ")")
+//     .call(xAxis);
+    // .selectAll(".tick text") 
+    //   .call(wrap, xScale.bandwidth());
 
 function wrap(text, width) {
   text.each(function() {
