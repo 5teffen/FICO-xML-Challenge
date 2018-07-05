@@ -275,7 +275,7 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
         else:
             result["dir"] = 0
         
-        if (anchors is None):
+        if (anchors is not None):
             if (anchors[i] == 1):
                 result["anch"] = 1
             else:
@@ -292,8 +292,8 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
         max_bin = np.max(bins_centred[i])
         min_bin = np.min(bins_centred[i])
         
-        scl_val = val/(max_bin-min_bin)
-        scl_change = change/(max_bin-min_bin)
+        scl_val = (val-min_bin)/(max_bin-min_bin)
+        scl_change = (change-min_bin)/(max_bin-min_bin)
         
         result["val"] = val
         result["scl_val"] = scl_val
