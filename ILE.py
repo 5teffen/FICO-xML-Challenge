@@ -15,7 +15,7 @@ def divide_data_bins(data, special=[]):
     
     for i in range(no_feat):
         # Handles special case
-        bins, new_col, val = separate_bins_feature(X[:,i].flatten(),(i in special))[:3]
+        bins, new_col, val = separate_bins_feature(data[:,i].flatten(),(i in special))[:3]
         
         in_vals.append(val)
         bins_centred.append(bins)
