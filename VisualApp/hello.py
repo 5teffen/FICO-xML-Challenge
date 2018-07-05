@@ -8,6 +8,8 @@ from SVM_model import SVM_model
 
 # ------ Initialize model ------- #
 
+from ILE import instance_explanation, prepare_for_D3, divide_data_bins
+
 df = pd.read_csv("working_data_full.csv")
 vals = df.values
 X = vals[:,2:]
@@ -15,14 +17,20 @@ y = vals[:,1]
 
 no_samples, no_features = X.shape
 
-svm_model = SVM_model(None, "working_data_full.csv")
+svm_model = SVM_model(None,"working_data_full.csv")
 svm_model.train_model(0.001)
 svm_model.test_model()
 
+bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
 
-# ------ Initialize WebApp ------- #
+
+#------ Initialize WebApp ------- #
 
 app = Flask(__name__, static_folder="C:/Users/Oscar/Documents/UGR 2018/Fico-Challenge-master/VisualApp1/static")
+
+@app.route('/intro')
+def loading_site():
+	return render_template("index_intro.html")
 
 @app.route('/')
 def my_form():
@@ -47,18 +55,33 @@ def my_form_post():
 					predicted = 1
 				ground_truth = y[sample]
 				model_correct = 1
-				if predicted!=ground_truth:
-					model_correct=0
-				return jsonify({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct})
+				if predicted != ground_truth:
+					model_correct = 0
+				category = "NN";
+				if (predicted, model_correct) == (0,0):
+					category = "FN"
+				elif (predicted, model_correct) == (0,1):
+					category = "TN"
+				elif (predicted, model_correct) == (1,0):
+					category = "FP"
+				elif (predicted, model_correct) == (1,1):
+					category = "TP"
+
+				# return jsonify({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct})
 
 				### Run MSC Algorithm 
+				change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
 
 				### Parse values into python dictionary
+				ret_string = ""
+				data_array = prepare_for_D3(X[sample], bins_centred, change_row, anchors, percent)
+				for dct in data_array:
+					ret_string += json.dumps(dct)
+					ret_string += "~"
+				ret_string += json.dumps({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category})
 
-				###
-
-				
+				return ret_string
 
 if __name__ == '__main__':
-	print(type(json.dumps({'sample': 'a', 'good_percent': 'b', 'model_correct': 'c'})))
+
 	app.run(port=5005, debug=True)
