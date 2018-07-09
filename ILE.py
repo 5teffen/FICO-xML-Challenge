@@ -41,6 +41,7 @@ def evaluate_data_set(data):
 
 
 def perturb_special(min_val,max_val,avg,std,no_val):
+    np.random.seed(0)
     new_col = np.random.normal(avg, std, no_val)
     # Note: these functions have poor time complexity
     np.place(new_col,new_col < min_val, min_val)
@@ -284,6 +285,7 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
             result["anch"] = 0
         
         val = sample[i].round(0)
+    
         if (change_row is None):
             change = val
         else:
@@ -292,8 +294,18 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
         max_bin = np.max(bins_centred[i])
         min_bin = np.min(bins_centred[i])
         
+        if (min_bin == -1):
+            min_bin = 0
+        
         scl_val = (val-min_bin)/(max_bin-min_bin)
         scl_change = (change-min_bin)/(max_bin-min_bin)
+
+        if (scl_val < 0 ):
+            scl_val = 0
+        if (scl_change < 0):
+            scl_change = 0
+
+
         
         result["val"] = val
         result["scl_val"] = scl_val
