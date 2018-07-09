@@ -4,7 +4,7 @@ from flask import render_template
 import pandas as pd
 import numpy as np
 from SVM_model import SVM_model
-
+ 
 
 # ------ Initialize model ------- #
 
@@ -33,11 +33,11 @@ def loading_site():
 	return render_template("index_intro.html")
 
 @app.route('/')
-def my_form():
+def main_site():
     return render_template("scratchindex.html")
 
 @app.route('/instance', methods=['GET'])
-def my_form_post():
+def handle_request():
 	if request.method == 'GET':
 		sample = 0
 		try:
@@ -67,8 +67,6 @@ def my_form_post():
 				elif (predicted, model_correct) == (1,1):
 					category = "TP"
 
-				# return jsonify({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct})
-
 				### Run MSC Algorithm 
 				change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
 
@@ -78,7 +76,7 @@ def my_form_post():
 				for dct in data_array:
 					ret_string += json.dumps(dct)
 					ret_string += "~"
-				ret_string += json.dumps({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category})
+				ret_string += json.dumps({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted})
 
 				return ret_string
 
