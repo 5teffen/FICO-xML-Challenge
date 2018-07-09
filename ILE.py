@@ -89,6 +89,7 @@ def find_anchors(model, data_set, sample, no_val):
                     if (ind in special_cols):
                         new_data[ind] = perturb_special(0,7,avg_list[ind],std_list[ind],no_val)
                     else:
+                        np.random.seed(0)
                         new_data[ind] = np.random.normal(avg_list[ind], std_list[ind], no_val)
             
             new_data = new_data.transpose()
