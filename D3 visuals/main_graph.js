@@ -58,507 +58,334 @@ var testData = [
 }];
 
 
-// -- Establishing margins and canvas bounds -- 
-var margin = {
-        top: 40, 
-        right: 60, 
-        bottom: 140, 
-        left: 60
-    },
-    width = 400 - margin.right - margin.left,
-    height = 500 - margin.top - margin.bottom;
+function draw_graph(testData, result){
+    var good_col = "#1b9e77",
+        bad_col = "#d95f02";
 
-var padding_top = 0.2,
-    padding_bottom = 0.06;
+    var the_colour = "";
 
-var good_col = "red",
-    bad_col = "blue";
-
-var outlier = 1 + padding_top/2;
-
-
-// -- Adding scales based on canvas -- 
-var xScale = d3.scaleBand()
-        .domain(testData.map(function(d){return d.name;}))
-        .rangeRound([0, width])
-        .paddingInner(0.015),
-    yScale = d3.scaleLinear()
-        .domain([0-padding_bottom, 1+padding_top])
-        .rangeRound([height, 0]);
-
-var svg = d3.select("body")
-            .append("svg")
-            .attr("width",width + margin.right + margin.left)
-            .attr("height",height + margin.top + margin.bottom)
-            .append("g")
-                 .attr("transform","translate(" + margin.left + ',' + margin.top +')');
-
-// -- Drawing background rectangles -- 
-svg.selectAll("rect")
-    .data(testData)
-    .enter()
-    .append("rect")
-    .attr("class","bg_bar")
-    .attr('x',function(d) {return xScale(d.name);})
-    .attr('y',0)
-    .attr("height",function(d){return yScale(0-padding_bottom)})
-    .attr("width",xScale.bandwidth())
-    .style("fill","white");
-
-
-
-// -- Handling the special case --
-svg.append("g")
-    .selectAll("rect")
-    .data(testData.filter(function(d){return d.scl_val > 1;}))
-    .enter()
-    .append("rect")
-    .attr("class","special")
-    .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35;})
-    .attr('y',function(d) {return yScale(outlier);})
-    .attr("height",function(d){return yScale(1)-yScale(outlier);})
-    .attr("width",xScale.bandwidth()*0.3);
-
-svg.append("g")
-    .selectAll("rect")
-    .data(testData.filter(function(d){return d.scl_val > 1;}))
-    .enter()
-    .append("rect")
-    .attr("class","whitebox")
-    .attr('x',function(d) {return xScale(d.name);})
-    .attr('y',function(d) {return yScale(outlier-padding_top/8);})
-    .attr("height",function(d){return (yScale(1)-yScale(outlier))/2;})
-    .attr("width",xScale.bandwidth())
-    .attr("fill","white");
-
-svg.append("g")
-    .selectAll("circle")
-    .data(testData.filter(function(d){return d.scl_val > 1;}))
-    .enter()
-    .append("circle")
-    .attr("r",2)
-    .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
-    .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-    .attr("fill","red");
-
-svg.append("g")
-    .selectAll("circle")
-    .data(testData.filter(function(d){return d.scl_val > 1;}))
-    .enter()
-    .append("circle")
-    .attr("r",2)
-    .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
-    .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-    .attr("fill","red");
-
-svg.append("g")
-    .selectAll("circle")
-    .data(testData.filter(function(d){return d.scl_val > 1;}))
-    .enter()
-    .append("circle")
-    .attr("r",2)
-    .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
-    .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-    .attr("fill","red");
-
-
-// -- Drawing the background red square == 
-
-//svg.append("g")
-//    .selectAll("rect")
-//    .data(testData)
-//    .enter()
-//    .append("rect")
-//    .attr("class","box")
-//    .attr("x",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
-//    .attr("width",function(d){return xScale.bandwidth()*0.3})
-//    .attr("y",function(d){
-//        if (d.scl_val >= 1){
-//            return yScale(1);}
-//        else{
-//            return yScale(d.scl_val)-1;
-//        }})
-//    .attr("height",function(d){
-//                if (d.scl_val >= 1){
-//            return yScale(1)-yScale(d.scl_val);}
-//        else{
-//            return yScale(d.scl_change)-yScale(d.scl_val);
-//        }})
-//    .attr("fill", "red");
-
-
-
-
-//function draw_polygons(d) {
-//    var line_data = [];
-//    for(i=0 ; i < d.incr; i++){
-//        if (i == 0) {
-//            var line_1 = 
-//                {"x": (xScale(d.name) + xScale.bandwidth()*0.35),
-//                "y": yScale(d.scl_val)},
-//                {"x": (xScale(d.name) + xScale.bandwidth()*0.65),
-//                "y": yScale(d.scl_val)},
-//                {"x": (xScale(d.name) + xScale.bandwidth()),
-//                "y": 10};
-//            
-//        }
-//        else if (i+1 == d.incr){
-//            
-//        }
-//        
-//        else {
-//            
-//        }
-//        
-//    
-//}
-
-
-function draw_polygons(data) {
-    var full_string = "";
+    if (result) {the_colour = bad_col;}
+    else {the_colour = good_col;}
     
-    for(n=0 ; n < data.length; n++){
-        var d = data[n];
         
-        if (d.scl_val > d.scl_change){
-            console.log(xScale(d.name) );
-            var start_x = (xScale(d.name) + xScale.bandwidth()*0.35).toString();
-            var mid_x = (xScale(d.name) + xScale.bandwidth()*0.5).toString();
-            var end_x = (xScale(d.name) + xScale.bandwidth()*0.65).toString();
-
-            var start_y = (yScale(d.scl_val)+2).toString();
-            var bottom_mid = (yScale(d.scl_val)+7).toString();
-            var end_mid = (yScale(d.scl_val-0.1)+3).toString();
-            var end_y = (yScale(d.scl_val-0.1)-2).toString();
-
-            full_string += "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
-            +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
-
-            var shift = 0.11;
-
-    //        for(i=1 ; i < d.incr; i++){
-    //
-    //                    start_y = yScale(shift);
-    //                    bottom_mid -= yScale(shift);
-    //                    end_mid -= yScale(shift);
-    //                    end_y -= yScale(shift);
-    //
-    //                var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
-    //                    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y; 
-    //
-    //
-    //                full_string += next_pol;
-    //                shift += 0.11;
-    //
-    //                }
-
-                 console.log(full_string);
-            }
-        }
     
-        return full_string;
-}
-    
-    
+    // -- Establishing margins and canvas bounds -- 
+    var margin = {
+            top: 40, 
+            right: 60, 
+            bottom: 140, 
+            left: 60
+        },
+        width = 400 - margin.right - margin.left,
+        height = 500 - margin.top - margin.bottom;
 
-//
-//var start_x = (xScale.bandwidth()*0.35).toString();
-//var mid_x = (xScale.bandwidth()*0.5).toString();
-//var end_x = (xScale.bandwidth()*0.65).toString();
-//
-//var start_y = (yScale(1)+2).toString();
-//var bottom_mid = (yScale(1)+7).toString();
-//var end_mid = (yScale(0.9)+3).toString();
-//var end_y = (yScale(0.9)-2).toString();
-//
-//
-//var polygon = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
-//    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
-//
-//var polygon_start = "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
-//    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
-    
+    var padding_top = 0.2,
+        padding_bottom = 0.06;
 
-svg.append("path")
-    .attr('d',draw_polygons(testData))
-    .attr("fill","None")
-    .attr("stroke","red")
-    .attr("stroke-linecap","round")
-    .attr("stroke-width",2);
-
-//    .attr('d',function(d){
-//            console.log("here");
-//          for(i=0 ; i <= d.incr; i++){
-//            console.log(i);
-//            ;
-//        return "M1,5L20,20L40,10L60,40L80,5L100,60";
-//          })
-
-// -- Drawing desired level -- 
-svg.append("g")
-    .selectAll("line")
-    .data(testData)
-    .enter()
-    .append("line")
-    .attr("class","line_goal","box")
-    .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
-    .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.65})
-    .attr("y1",function(d){return yScale(d.scl_change)})
-    .attr("y2",function(d){
-        if (d.scl_change >= 1){
-            return yScale(1)}
-        else{
-            return yScale(d.scl_change)
-        }})
-    .attr("stroke", "red")
-    .attr("stroke-width", function(d) {
-        if(d.change != d.val) {return 2;}
-        else {return 0}})
-    .attr("stroke-linecap","round")
-//    .attr("fill", "none");
-
-svg.append("g")
-    .selectAll("line")
-    .data(testData)
-    .enter()
-    .append("line")
-    .attr("class","box")
-    .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.65})
-    .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.65})
-    .attr("y1",function(d){
-        if (d.scl_val >= 1){
-            return yScale(1)}
-        else{
-            return yScale(d.scl_val)-1
-        }})
-    .attr("y2",function(d){
-        if (d.scl_change >= 1){
-            return yScale(1)}
-        else{
-            return yScale(d.scl_change)
-        }})
-    .attr("stroke", "red")
-    .attr("stroke-width", function(d) {
-        if(d.change != d.val) {return 2;}
-        else {return 0}})
-    .attr("fill", "none");
-
-svg.append("g")
-    .selectAll("line")
-    .data(testData)
-    .enter()
-    .append("line")
-    .attr("class","box")
-    .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
-    .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.35})
-    .attr("y1",function(d){
-        if (d.scl_val >= 1){
-            return yScale(1)}
-        else{
-            return yScale(d.scl_val)-1
-        }})
-    .attr("y2",function(d){
-        if (d.scl_change >= 1){
-            return yScale(1)}
-        else{
-            return yScale(d.scl_change)
-        }})
-    .attr("stroke", "red")
-    .attr("stroke-width", function(d) {
-        if(d.change != d.val) {return 2;}
-        else {return 0}})
-    .attr("fill", "none");
+    var outlier = 1 + padding_top/2;
 
 
-svg.append("g")
-    .selectAll('text')
-    .data(testData)
-    .enter()
-    .append('text')
-    .text(function(d){return d.change;})
-    .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
-    .attr("y", function(d){
-        if (d.change >= d.val){
-            return yScale(d.scl_change)-3;
-        }
+    // -- Adding scales based on canvas -- 
+    var xScale = d3.scaleBand()
+            .domain(testData.map(function(d){return d.name;}))
+            .rangeRound([0, width])
+            .paddingInner(0.015),
+        yScale = d3.scaleLinear()
+            .domain([0-padding_bottom, 1+padding_top])
+            .rangeRound([height, 0]);
 
-        else {
-            return yScale(d.scl_change)+12;
-        }
-    })
-    .attr("font-family", 'sans-serif')
-    .attr("font-size", '12px')
-    .attr("font-weight", 'bold')
-    .attr("fill", function(d) {
-        if ((d.change != d.val) && (d.scl_val <= 1)) {return "red";}
-        else {return "None"}})
-    .attr("text-anchor",'middle');
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width",width + margin.right + margin.left)
+                .attr("height",height + margin.top + margin.bottom)
+                .append("g")
+                     .attr("transform","translate(" + margin.left + ',' + margin.top +')');
+
+    // -- Drawing background rectangles -- 
+    svg.selectAll("rect")
+        .data(testData)
+        .enter()
+        .append("rect")
+        .attr("class","bg_bar")
+        .attr('x',function(d) {return xScale(d.name);})
+        .attr('y',0)
+        .attr("height",function(d){return yScale(0-padding_bottom)})
+        .attr("width",xScale.bandwidth())
+        .style("fill","white");
 
 
-// -- Drawing Arrows -- 
-svg.append("g")
-    .selectAll("line")
-    .data(testData.filter(function(d){return d.scl_val <= 1;}))
-    .enter()
-    .append("line")
-    .attr("class","arrow")
-    .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()/2})
-    .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.42})
-    .attr("y1",function(d){
-        if (d.change >= d.val){
-            return yScale((d.scl_val+d.scl_change)/2) - 3
-        }
-        else {
-            return yScale((d.scl_val+d.scl_change)/2) + 3
-        }})
-    .attr("y2",function(d){
-        if (d.change >= d.val){
-            return yScale((d.scl_val+d.scl_change)/2) + 3
-        }
-        else {
-            return yScale((d.scl_val+d.scl_change)/2) - 3
-        }})
-    .attr("stroke", "red")
-    .attr("stroke-width", function(d) {
-        if(d.change != d.val) {return 2;}
-        else {return 0}})
-    .attr("stroke-linecap","round")
-    .attr("fill", "none");
 
-svg.append("g")
-    .selectAll("line")
-    .data(testData.filter(function(d){return d.scl_val <= 1;}))
-    .enter()
-    .append("line")
-    .attr("class","arrow")
-    .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()/2})
-    .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.58})
-    .attr("y1",function(d){
-        if (d.change >= d.val){
-            return yScale((d.scl_val+d.scl_change)/2) - 3
-        }
-        else {
-            return yScale((d.scl_val+d.scl_change)/2) + 3
-        }})
-    .attr("y2",function(d){
-        if (d.change >= d.val){
-            return yScale((d.scl_val+d.scl_change)/2) + 3
-        }
-        else {
-            return yScale((d.scl_val+d.scl_change)/2) - 3
-        }})
-    .attr("stroke", "red")
-    .attr("stroke-width", function(d) {
-        if(d.change != d.val) {return 2;}
-        else {return 0}})
-    .attr("stroke-linecap","round")
-    .attr("fill", "none");
+    // -- Handling the special case --
+    svg.append("g")
+        .selectAll("rect")
+        .data(testData.filter(function(d){return d.scl_val > 1;}))
+        .enter()
+        .append("rect")
+        .attr("class","special")
+        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35;})
+        .attr('y',function(d) {return yScale(outlier);})
+        .attr("height",function(d){return yScale(1)-yScale(outlier);})
+        .attr("width",xScale.bandwidth()*0.3)
+        .attr("stroke",the_colour);
 
-// var xAxis = d3.axisBottom().scale(xScale);
-//
-// svg.append("g")
-//     .attr("class", "axis")
-//     .attr("transform", "translate(0," + height + ")")
-//     .call(xAxis)
-//     .selectAll(".tick text") 
-//       .call(wrap, xScale.bandwidth());
+    svg.append("g")
+        .selectAll("rect")
+        .data(testData.filter(function(d){return d.scl_val > 1;}))
+        .enter()
+        .append("rect")
+        .attr("class","whitebox")
+        .attr('x',function(d) {return xScale(d.name);})
+        .attr('y',function(d) {return yScale(outlier-padding_top/8);})
+        .attr("height",function(d){return (yScale(1)-yScale(outlier))/2;})
+        .attr("width",xScale.bandwidth())
+        .attr("fill","white");
 
-var xAxis = d3.axisBottom().scale(xScale);
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return d.scl_val > 1;}))
+        .enter()
+        .append("circle")
+        .attr("r",2)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill",the_colour);
 
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
-    .selectAll("text")  
-        .style("text-anchor", "end")
-        .attr("fill",function(d) {
-            if (d.anch == 1) {
-                return "red"
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return d.scl_val > 1;}))
+        .enter()
+        .append("circle")
+        .attr("r",2)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill",the_colour);
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return d.scl_val > 1;}))
+        .enter()
+        .append("circle")
+        .attr("r",2)
+        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill",the_colour);
+
+
+
+    function draw_polygons(data) {
+        var full_string = "";
+        var mod = 2 // To fix the sizes for some cases
+
+        for(n=0 ; n < data.length; n++){
+            var d = data[n];
+            if (d.scl_val > 1) {new_val = 1;}
+            else {new_val = d.scl_val;}
+
+            if (d.scl_val > d.scl_change){
+
+                var start_x = (xScale(d.name) + xScale.bandwidth()*0.35).toString();
+                var mid_x = (xScale(d.name) + xScale.bandwidth()*0.5).toString();
+                var end_x = (xScale(d.name) + xScale.bandwidth()*0.65).toString();
+
+                var start_y = (yScale(new_val)).toString();
+                var bottom_mid = (yScale(new_val)+5).toString();
+                var end_mid = (yScale(new_val-0.09)+5).toString();
+                var end_y = (yScale(new_val-0.09)).toString();
+
+                full_string += "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+                +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
+                console.log(end_y);
+//                var shift = 0.09+0.017;
+                var shift = 0.09;
+
+                for(i=1 ; i < d.incr; i++){
+                            start_y = (yScale(new_val-shift)).toString(); 
+                            bottom_mid = (yScale(new_val-shift)+5).toString();
+                            end_mid = (yScale(new_val-0.09-shift)+5).toString();
+                            end_y = (yScale(new_val-0.09-shift)).toString();
+                            console.log(start_y);
+
+                        var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+                            +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y; 
+
+
+                        full_string += next_pol;
+                        shift += 0.09;
+                    }
                 }
-            else {
-                return "white"
-            }})
-        .attr("dy", "0.5em")
-        .attr("dx", "-0.5em")
-        .attr("transform","rotate(-40)");
 
-// -- Drawing the initial level (blue) --
-svg.append("g")
-    .selectAll("line")
-    .data(testData)
-    .enter()
-    .append("line")
-    .attr("class","line_lvl")
-    .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.25})
-    .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.75})
-    .attr("y1",function(d){
-        if (d.scl_val > 1){
-            return yScale(outlier)-1}
-        else{
-            return yScale(d.scl_val)
-        }})
-    .attr("y2",function(d){
-        if (d.scl_val > 1){
-            return yScale(outlier)-1}
-        else{
-            return yScale(d.scl_val)
-        }})
-    .attr("stroke", "rgb(30,61,122)")
-    .attr("stroke-width", 4)
-    .attr("stroke-linecap","round")
-    .attr("fill", "none");
+            else if (d.scl_val < d.scl_change){
+
+                var start_x = (xScale(d.name) + xScale.bandwidth()*0.35).toString();
+                var mid_x = (xScale(d.name) + xScale.bandwidth()*0.5).toString();
+                var end_x = (xScale(d.name) + xScale.bandwidth()*0.65).toString();
+
+                var start_y = (yScale(new_val)).toString();
+                var bottom_mid = (yScale(new_val)-5).toString();
+                var end_mid = (yScale(new_val+0.09)-5).toString();
+                var end_y = (yScale(new_val+0.09)).toString();
+        
+
+                full_string += "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+                +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
+
+                var shift = 0.09;
+
+                for(i=1 ; i < d.incr; i++){
+                            start_y = (yScale(new_val+shift)).toString();
+                            bottom_mid = (yScale(new_val+shift)-5).toString();
+                            end_mid = (yScale(new_val+0.09+shift)-5).toString();
+                            end_y = (yScale(new_val+0.09+shift)).toString();
+
+                        var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+                            +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y; 
 
 
+                        full_string += next_pol;
+                        shift += 0.09;
 
-// -- The text for initial level (blue) --
-svg.append("g")
-    .selectAll('text')
-    .data(testData)
-    .enter()
-    .append('text')
-    .text(function(d){return d.val;})
-    .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
-    .attr("y", function(d){
-        if (d.scl_val > 1){
-            return yScale(outlier)-4;
-        }
-
-        if (d.change >= d.val){
-            return yScale(d.scl_val)+12;
-        }
-
-        else {
-            return yScale(d.scl_val)-3;
-        }
-    })
-    .attr("font-family", 'sans-serif')
-    .attr("font-size", '12px')
-    .attr("font-weight", 'bold')
-    .attr("fill",'rgb(30,61,122)')
-    .attr("text-anchor",'middle');
+                    }
+                }
+            }
 
 
-function wrap(text, width) {
-  text.each(function() {
-    var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.1, // ems
-        y = text.attr("y"),
-        dy = parseFloat(text.attr("dy")),
-        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-    while (word = words.pop()) {
-      line.push(word);
-      tspan.text(line.join(" "));
-      if (tspan.node().getComputedTextLength() > width) {
-        line.pop();
-        tspan.text(line.join(" "));
-        line = [word];
-        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-      }
+
+
+            return full_string;
     }
-  });
+
+    svg.append("path")
+        .attr('d',draw_polygons(testData))
+        .attr("fill","None")
+        .attr("stroke",the_colour)
+        .attr("stroke-linecap","round")
+        .attr("stroke-width",2);
+
+
+    svg.append("g")
+        .selectAll('text')
+        .data(testData)
+        .enter()
+        .append('text')
+        .text(function(d){return d.change;})
+        .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
+        .attr("y", function(d){
+            if (d.change >= d.val){
+                return yScale(d.scl_change)-3;
+            }
+
+            else {
+                return yScale(d.scl_change)+12;
+            }
+        })
+        .attr("font-family", 'sans-serif')
+        .attr("font-size", '12px')
+        .attr("font-weight", 'bold')
+        .attr("fill", function(d) {
+            if ((d.change != d.val)) {return the_colour;}
+            else {return "None"}})
+        .attr("text-anchor",'middle');
+
+    var xAxis = d3.axisBottom().scale(xScale);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")  
+            .style("text-anchor", "end")
+            .attr("fill",function(d) {
+                if (d.anch == 1) {
+                    return "red"
+                    }
+                else {
+                    return "white"
+                }})
+            .attr("dy", "0.5em")
+            .attr("dx", "-0.5em")
+            .attr("transform","rotate(-40)");
+
+    // -- Drawing the initial level (blue) --
+    svg.append("g")
+        .selectAll("line")
+        .data(testData)
+        .enter()
+        .append("line")
+        .attr("class","line_lvl")
+        .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.25})
+        .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.75})
+        .attr("y1",function(d){
+            if (d.scl_val > 1){
+                return yScale(outlier)-1}
+            else{
+                return yScale(d.scl_val)
+            }})
+        .attr("y2",function(d){
+            if (d.scl_val > 1){
+                return yScale(outlier)-1}
+            else{
+                return yScale(d.scl_val)
+            }})
+        .attr("stroke", "rgb(30,61,122)")
+        .attr("stroke-width", 4)
+        .attr("stroke-linecap","round")
+        .attr("fill", "none");
+
+
+
+    // -- The text for initial level (blue) --
+    svg.append("g")
+        .selectAll('text')
+        .data(testData)
+        .enter()
+        .append('text')
+        .text(function(d){return d.val;})
+        .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
+        .attr("y", function(d){
+            if (d.scl_val > 1){
+                return yScale(outlier)-4;
+            }
+
+            if (d.change >= d.val){
+                return yScale(d.scl_val)+12;
+            }
+
+            else {
+                return yScale(d.scl_val)-3;
+            }
+        })
+        .attr("font-family", 'sans-serif')
+        .attr("font-size", '12px')
+        .attr("font-weight", 'bold')
+        .attr("fill",'rgb(30,61,122)')
+        .attr("text-anchor",'middle');
+
+
+    function wrap(text, width) {
+      text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy")),
+            tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+        while (word = words.pop()) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+          }
+        }
+      });
+    }
 }
 
+
+
+draw_graph(testData,0);

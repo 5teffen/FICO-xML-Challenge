@@ -25,7 +25,6 @@ svg {
 
 rect.special {
     fill: none;
-    stroke: red;
     stroke-width: 2;
 }
 
