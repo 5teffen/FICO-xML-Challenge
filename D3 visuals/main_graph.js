@@ -214,28 +214,73 @@ svg.append("g")
 //}
 
 
-function 
+function draw_polygons(data) {
+    var full_string = "";
+    
+    for(n=0 ; n < data.length; n++){
+        var d = data[n];
+        
+        if (d.scl_val > d.scl_change){
+            console.log(xScale(d.name) );
+            var start_x = (xScale(d.name) + xScale.bandwidth()*0.35).toString();
+            var mid_x = (xScale(d.name) + xScale.bandwidth()*0.5).toString();
+            var end_x = (xScale(d.name) + xScale.bandwidth()*0.65).toString();
 
-var start_x = (xScale.bandwidth()*0.35).toString();
-var mid_x = (xScale.bandwidth()*0.5).toString();
-var end_x = (xScale.bandwidth()*0.65).toString();
+            var start_y = (yScale(d.scl_val)+2).toString();
+            var bottom_mid = (yScale(d.scl_val)+7).toString();
+            var end_mid = (yScale(d.scl_val-0.1)+3).toString();
+            var end_y = (yScale(d.scl_val-0.1)-2).toString();
 
-var start_y = (yScale(1)+2).toString();
-var bottom_mid = (yScale(1)+7).toString();
-var end_mid = (yScale(0.9)+3).toString();
-var end_y = (yScale(0.9)-2).toString();
+            full_string += "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+            +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
 
+            var shift = 0.11;
 
-var polygon = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
-    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
+    //        for(i=1 ; i < d.incr; i++){
+    //
+    //                    start_y = yScale(shift);
+    //                    bottom_mid -= yScale(shift);
+    //                    end_mid -= yScale(shift);
+    //                    end_y -= yScale(shift);
+    //
+    //                var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+    //                    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y; 
+    //
+    //
+    //                full_string += next_pol;
+    //                shift += 0.11;
+    //
+    //                }
 
-var polygon_start = "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
-    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
+                 console.log(full_string);
+            }
+        }
+    
+        return full_string;
+}
+    
+    
+
+//
+//var start_x = (xScale.bandwidth()*0.35).toString();
+//var mid_x = (xScale.bandwidth()*0.5).toString();
+//var end_x = (xScale.bandwidth()*0.65).toString();
+//
+//var start_y = (yScale(1)+2).toString();
+//var bottom_mid = (yScale(1)+7).toString();
+//var end_mid = (yScale(0.9)+3).toString();
+//var end_y = (yScale(0.9)-2).toString();
+//
+//
+//var polygon = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+//    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
+//
+//var polygon_start = "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
+//    +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
     
 
 svg.append("path")
-    .data(testData)
-    .attr('d',polygon)
+    .attr('d',draw_polygons(testData))
     .attr("fill","None")
     .attr("stroke","red")
     .attr("stroke-linecap","round")

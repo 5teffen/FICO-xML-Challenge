@@ -41,7 +41,6 @@ def evaluate_data_set(data):
 
 
 def perturb_special(min_val,max_val,avg,std,no_val):
-    np.random.seed(0)
     new_col = np.random.normal(avg, std, no_val)
     # Note: these functions have poor time complexity
     np.place(new_col,new_col < min_val, min_val)
@@ -72,6 +71,9 @@ def find_anchors(model, data_set, sample, no_val):
     
     # Iterations allowed
     iterations = 4
+
+    # Setting random seed
+    np.random.seed(0)
     
     while (iterations > 0):
         # Retains best result and the corresponding index
@@ -89,7 +91,6 @@ def find_anchors(model, data_set, sample, no_val):
                     if (ind in special_cols):
                         new_data[ind] = perturb_special(0,7,avg_list[ind],std_list[ind],no_val)
                     else:
-                        np.random.seed(0)
                         new_data[ind] = np.random.normal(avg_list[ind], std_list[ind], no_val)
             
             new_data = new_data.transpose()
