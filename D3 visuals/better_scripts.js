@@ -636,3 +636,69 @@ function wrap(text, width) {
 
             return full_string;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     // -- Handling the special case --
+    svg.append("g")
+        .selectAll("rect")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("rect")
+        .attr("class","special")
+        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35;})
+        .attr('y',function(d) {return yScale(outlier);})
+        .attr("height",function(d){return yScale(1)-yScale(outlier);})
+        .attr("width",xScale.bandwidth()*0.3)
+        .attr("stroke",the_colour);
+
+    svg.append("g")
+        .selectAll("rect")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("rect")
+        .attr("class","whitebox")
+        .attr('x',function(d) {return xScale(d.name);})
+        .attr('y',function(d) {return yScale(outlier-padding_top/8);})
+        .attr("height",function(d){return (yScale(1)-yScale(outlier))/2;})
+        .attr("width",xScale.bandwidth())
+        .attr("fill","white");
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",2)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill",the_colour);
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",2)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill",the_colour);
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",2)
+        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill",the_colour);
