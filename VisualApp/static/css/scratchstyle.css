@@ -20,15 +20,17 @@ h3 {
   font-size: 1.4em;
 }
 
-* {
+/** {
   font-family: 'Open Sans', sans-serif;
+}*/
+
+html, body {
+	margin: 0;
+	background-color: Gainsboro;
+	height: 100vh;
+	overflow: hidden;
 }
 
-body {
-  background-color: Gainsboro;
-  height: 100vh;
-  margin: 0px;
-}
 
 main {
   position: absolute;
@@ -39,14 +41,23 @@ main {
 /*--------*/
 
 .left-sidebar {
+  font-family: 'Open Sans', sans-serif;
   float: left;
-  width: 300px;
-  background-color: #1f2124;
+  width: 250px;
+  /* background-color: #1f2124; */
+  background-color: #20262e;
   height: 100vh;
   text-align: center;
+  border-color:  rgba(207,208,210,.2);
+  border-style:  dotted;
+  border-right-width: 1px;
+  border-bottom: 0px;
+  border-top: 0px;
+  border-left: 0px;
 }
 
 .left-nav {
+  height: 163.2px;
   padding-top: 20px;
 }
 
@@ -54,15 +65,8 @@ main {
   cursor: pointer;
 }
 
-.square {
-  width: 25px;
-  height: 25px;
-  border: 3px solid #13895F;
-  display: inline-block;
-  vertical-align: middle;
-}
-
 .site-header {
+  height: 40.4px;
   margin: auto;
   padding-top: 5px;
 }
@@ -83,53 +87,23 @@ main {
 /* Search form */
 /*-------------*/
 
-.search-form {
-  font-size: 1.1em;
-  margin: 5px 20px;
-}
-
-.search-form .input-group {
-  width: 100%;
+.input-group {
+  width: 50%;
   padding-top: 20px;
-}
-
-.search-form .input-group .form-control {
-  background-color: Gainsboro;
-  border: 1;
-  border-radius: 10px;
-  color: #DDD;
-  padding-left: 0px;
-  border-color: #13895F;
   text-align: center;
+  margin: 0 auto;
 }
 
-.form-control:focus {
+.form-control {
+  font-size: 0.9em;
+  margin: 0;
+  width: 90%;
+  text-align: center;
+  background-color: white;
+  border: 1;
+  border-radius: 8px;
+  color: black;
   border-color: #13895F;
-  outline: 0;
-  box-shadow: inset 0 1px 1px rgba(19, 137, 95, .075), 0 0 8px rgba(19, 137, 95, .6);
-}
-
-.form-control.highlight {
-  background-color: #39ADB4;
-  color: white;
-}
-
-.form-control.highlight::-webkit-input-placeholder {
-  color: #ccc;
-}
-
-.form-control.highlight:-moz-placeholder {
-  color: #ccc;
-  opacity: 1;
-}
-
-.form-control.highlight::-moz-placeholder {
-  color: #ccc;
-  opacity: 1;
-}
-
-.search-form .input-group {
-  position: relative;
 }
 
 .left-nav ul {
@@ -144,13 +118,14 @@ main {
 
 .left-nav a.active,
 .left-nav a:hover {
-  max-width: 300px;
-  background: #18191b;
+  max-width: 250px;
+  background: #0A0F19;
   border-left: 8px solid #13895F;
 }
 
 .left-nav a {
-  background: #18191b;
+  /* background: #18191b; */
+  background: rgba(0,0,0,.15);
   color: #e9e9ea;
   display: block;
   padding: 30px;
@@ -167,13 +142,14 @@ main {
 
 .id-list {
   padding-top: 20px;
-  max-height: 400px;
+  height: calc(100% - 153px);
+  /* height:  100%; */
 }
-
 
 .id-list ul {
   overflow: hidden;
-  max-height: 400px;
+  height: calc(100% - 153px);
+  /* height: 100%; */
   list-style-type: none;
   padding: 0px;
   margin: 0px;
@@ -220,8 +196,113 @@ main {
 
 .right-side {
   height: 100vh;
-  width: 40%;
-  padding-right: 100px;
-  float: left;
+  width: auto;
+  margin-left: 250px;
+  /* background-color: #252728; */
+  background-color: #20262e;
+  text-align: center;
+}
+
+/*--------------*/
+/* Right header */
+/*--------------*/
+
+.right-header {
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
+  /*background-color: #081623;*/
+  background-color: #0A0F19;
+  height: 65.4px;
+  width: auto;
+  
+}
+
+.id-display {
+  height: 100%;
+  line-height: 65.4px;
+  margin: auto;
+  display: inline-block;
+  text-align: left;
+  width: 45%; 
+  color: white;
+  font-size: 2em;
+
+}
+
+.model-display {
+  height: 42%;
+  margin: auto;
+  display: inline-block;
+  text-align: center;
+  width: 40%; 
+  color: white;
+  font-size: 2em;
+}
+
+.category-display {
+  height: 42%;
+  margin: auto;
+  padding-bottom: 13px;
+  display: inline-block;
+  text-align: center;
+  width: 10%; 
+  color: white;
+  font-size: 2em;
+  border-style: solid;
+  border-width: 3px;
+  border-color: #5f8fc6;
+}
+
+/*----------*/
+/* D3 space */
+/*----------*/
+
+.d3-space {
+  background-color: #20262e;
+  width: 100%;
+  height: calc(100% - 294px);
+  text-align:  center;
+}
+
+/*-----------*/
+/* SVG space */
+/*-----------*/
+
+svg {
+	background-color: #20262e;
+	margin: auto;
+	display: block;
+}
+
+.axis path,
+.axis line {
+    stroke-opacity: 0.1;
+    fill: none;
+    stroke: none;
+}
+
+g.tick text {
+    fill: white;
+}
+
+.axis text{
+    font-family: sans-serif
+    fill: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.bg_bar {
+    fill: white;
+}
+
+/*------------*/
+/* Text space */
+/*------------*/
+
+.txt-space {
+  width: 100%;
+  height: 65.4px;
   background-color: lightblue;
 }
+
+
