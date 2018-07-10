@@ -636,18 +636,7 @@ function wrap(text, width) {
 
             return full_string;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
      // -- Handling the special case --
     svg.append("g")
         .selectAll("rect")

@@ -3,7 +3,7 @@ var percent = 0.5;
 var testData = [
 {
     name: "External Risk Estimate",
-    anch: 1,
+    anch: 0,
     incr: 3,
     val: 50,
     scl_val: 0.5,      // Should be in range 0-1
@@ -31,7 +31,7 @@ var testData = [
 },
 {
     name: "Average Months in File",
-    anch: 1,
+    anch: 0,
     incr: 10,
     val: 0,
     scl_val: 0,
@@ -49,7 +49,7 @@ var testData = [
 },
 {
     name: "Trades 60+ Ever",
-    anch: 0,
+    anch: 1,
     incr: 0,
     val: 10,
     scl_val: 0.1,
@@ -111,7 +111,20 @@ function draw_graph(testData, result){
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
-        .style("fill","white");
+        .style("stroke","#C8C8C8")
+        .style("stroke-width",0.5)
+        .style("opacity",function(d){
+            if(d.anch == 1){
+                return 0.2;
+            }
+            else {return 1;}
+        })
+        .style("fill",function(d){
+            if(d.anch == 1){
+                return the_colour;
+            }
+            else {return "white";}
+        });
 
     // -- Handling the special case --
     svg.append("g")
@@ -282,14 +295,8 @@ function draw_graph(testData, result){
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
         .selectAll("text")  
+            .style("fill","rgb(30,61,122)")
             .style("text-anchor", "end")
-            .attr("fill",function(d) {
-                if (d.anch == 1) {
-                    return "red"
-                    }
-                else {
-                    return "white"
-                }})
             .attr("dy", "0.5em")
             .attr("dx", "-0.5em")
             .attr("transform","rotate(-40)");
