@@ -1,7 +1,8 @@
 
 function draw_percent_bar(result) {
     
-    var bar_width = 250;
+    var bar_width = 250,
+        bar_height = 20;
     
     var x_buffer = 10,
         y_buffer = 10;
@@ -14,8 +15,8 @@ function draw_percent_bar(result) {
         bad_col = "#d95f02";
 
     var svg = d3.select("body").append("svg")
-                .attr("width",300)
-                .attr("height",100)
+                .attr("width",270)
+                .attr("height",55)
                 .append("g")
                      .attr("transform","translate(" + x_buffer + ',' + y_buffer +')');
     
@@ -41,7 +42,7 @@ function draw_percent_bar(result) {
     // Drawing the rectangle with curved edges
     svg.append("rect")
         .attr("class","bg_bar")
-        .attr("height",25)
+        .attr("height",bar_height)
         .attr("width",bar_width)
         .attr("rx",15)
         .attr("ry",15)
@@ -52,9 +53,9 @@ function draw_percent_bar(result) {
     svg.append('g').append("line")
         .attr("class","mid_marker")
         .attr("x1",bar_width/2)
-        .attr("y1",-5)
+        .attr("y1",-3)
         .attr("x2",bar_width/2)
-        .attr("y2",25+5)
+        .attr("y2",bar_height+3)
         .style("stroke","rgb(30,61,122)")
         .style("stroke-linecap","round")
         .style("stroke-width",2);
@@ -64,9 +65,9 @@ function draw_percent_bar(result) {
     svg.append('g').append("line")
         .attr("class","per_marker")
         .attr("x1",function(){return xScale(result);})
-        .attr("y1",25)
+        .attr("y1",bar_height)
         .attr("x2",function(){return xScale(result);})
-        .attr("y2",25+5)
+        .attr("y2",bar_height+5)
         .attr("stroke", function(d) {
             if (result > 0.5) {return good_col;}
             else {return bad_col}})
@@ -78,9 +79,9 @@ function draw_percent_bar(result) {
         .attr("class","per_marker")
         .text(function(){return Math.round(result*100).toString() + "%"})
         .attr("x",function(){return xScale(result)+5;})
-        .attr("y",25+20)
+        .attr("y",bar_height+20)
         .attr("font-family", 'sans-serif')
-        .attr("font-size", '12px')
+        .attr("font-size", '16px')
         .attr("font-weight", 'bold')
         .attr("fill", function(d) {
             if (result > 0.5) {return good_col;}

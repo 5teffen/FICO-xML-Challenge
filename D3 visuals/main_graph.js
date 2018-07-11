@@ -76,16 +76,16 @@ function draw_graph(testData, result){
     
     // -- Establishing margins and canvas bounds -- 
     var margin = {
-            top: 40, 
+            top: 10, 
             right: 60, 
             bottom: 140, 
-            left: 60
+            left: 70
         },
-        width = 400 - margin.right - margin.left,
-        height = 450 - margin.top - margin.bottom;
+        width = 1000 - margin.right - margin.left,
+        height = 400 - margin.top - margin.bottom;
 
     var padding_top = 0.2,
-        padding_bottom = 0.06;
+        padding_bottom = 0.1;
 
     var outlier = 1 + padding_top/2;
 
@@ -131,50 +131,6 @@ function draw_graph(testData, result){
             else {return "white";}
         });
 
-    // -- Handling the special case --
-    svg.append("g")
-        .selectAll("rect")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("rect")
-        .attr("class","special")
-        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35;})
-        .attr('y',function(d) {return yScale(outlier);})
-        .attr("height",function(d){return yScale(1)-yScale(outlier);})
-        .attr("width",xScale.bandwidth()*0.3)
-        .attr("stroke-width",0)
-        .attr("stroke","white")
-        .attr("fill",the_colour);
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("circle")
-        .attr("r",2)
-        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill","white");
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("circle")
-        .attr("r",2)
-        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill","white");
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("circle")
-        .attr("r",2)
-        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill","white");
 
 
 
@@ -293,6 +249,59 @@ function draw_graph(testData, result){
             else {return "None"}})
         .attr("text-anchor",'middle');
 
+    
+    // -- Handling the special case --
+    svg.append("g")
+        .selectAll("rect")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("rect")
+        .attr("class","special")
+        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35-1;})
+        .attr('y',function(d) {return yScale(outlier);})
+        .attr("height",function(d){return yScale(1)-yScale(outlier)+1;})
+        .attr("width",xScale.bandwidth()*0.3+2)
+        .attr("stroke-width",2)
+        .attr("stroke","white")
+        .attr("fill",the_colour);
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",1.5)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill","white");
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",1.5)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill","white");
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",1.5)
+        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill","white");
+    
+    
+    
+    
+    
+    
+    // -- Drawing and styling the AXIS
+    
     var xAxis = d3.axisBottom().scale(xScale);
 
     svg.append("g")
