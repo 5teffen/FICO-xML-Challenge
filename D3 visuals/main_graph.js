@@ -63,9 +63,14 @@ function draw_graph(testData, result){
         bad_col = "#d95f02";
 
     var the_colour = "";
-
-    if (result) {the_colour = bad_col;}
-    else {the_colour = good_col;}
+    var opp_colour = "";
+    
+    if (result) {
+        opp_colour = good_col;
+        the_colour = bad_col;}
+    else {
+        opp_colour = bad_col
+        the_colour = good_col;}
     
         
     
@@ -121,7 +126,7 @@ function draw_graph(testData, result){
         })
         .style("fill",function(d){
             if(d.anch == 1){
-                return the_colour;
+                return opp_colour;
             }
             else {return "white";}
         });

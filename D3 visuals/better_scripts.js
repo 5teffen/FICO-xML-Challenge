@@ -691,3 +691,85 @@ function wrap(text, width) {
         .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
         .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
         .attr("fill",the_colour);
+
+
+
+var gradient_right = defs.append("linearGradient")
+   .attr("id", "lin_right")
+   .attr("x1", "0%")
+   .attr("x2", "100%")
+   .attr("y1", "0%")
+   .attr("y2", "0%");
+
+gradient_right.append("stop")
+   .attr('class', 'start')
+   .attr("offset", "0%")
+   .attr("stop-color", "white")
+   .attr("stop-opacity", 1);
+
+gradient_right.append("stop")
+   .attr('class', 'end')
+   .attr("offset", "100%")
+   .attr("stop-color", good_col)
+   .attr("stop-opacity", 1);
+
+
+var gradient_left = defs.append("linearGradient")
+   .attr("id", "lin_left")
+   .attr("x1", "30%")
+   .attr("x2", "100%")
+   .attr("y1", "0%")
+   .attr("y2", "0%");
+
+gradient_left.append("stop")
+   .attr('class', 'start')
+   .attr("offset", "0%")
+   .attr("stop-color", bad_col)
+   .attr("stop-opacity", 1);
+
+gradient_left.append("stop")
+   .attr('class', 'end')
+   .attr("offset", "100%")
+   .attr("stop-color", "white")
+   .attr("stop-opacity", 1);
+
+svg.append("rect")
+    .attr("class","bg_bar")
+    .attr('x',10)
+    .attr('y',10)
+    .attr("height",25)
+    .attr("width",250)
+    .attr("rx",15)
+    .attr("ry",15)
+    .style("fill","white");
+
+
+function rounded_rect(x, y, w, h, r, tl, tr, bl, br) {
+    var retval;
+    retval  = "M" + (x + r) + "," + y;
+    retval += "h" + (w - 2*r);
+    if (tr) { retval += "a" + r + "," + r + " 0 0 1 " + r + "," + r; }
+    else { retval += "h" + r; retval += "v" + r; }
+    retval += "v" + (h - 2*r);
+    if (br) { retval += "a" + r + "," + r + " 0 0 1 " + -r + "," + r; }
+    else { retval += "v" + r; retval += "h" + -r; }
+    retval += "h" + (2*r - w);
+    if (bl) { retval += "a" + r + "," + r + " 0 0 1 " + -r + "," + -r; }
+    else { retval += "h" + -r; retval += "v" + -r; }
+    retval += "v" + (2*r - h);
+    if (tl) { retval += "a" + r + "," + r + " 0 0 1 " + r + "," + -r; }
+    else { retval += "v" + -r; retval += "h" + r; }
+    retval += "z";
+    return retval;
+}
+
+//
+//
+//
+//svg.append('g').append("path")
+//    .attr("d", rounded_rect(10, 10, 125, 25, 15,true,false,true,false))
+//    .attr("fill","url(#lin_left)");
+//
+//svg.append('g').append("path")
+//    .attr("d", rounded_rect(10+125, 10, 125, 25, 15,false,true,false,true))
+//    .attr("fill","url(#lin_right)");

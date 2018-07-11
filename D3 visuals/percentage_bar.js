@@ -1,30 +1,91 @@
 
+function draw_percent_bar(result) {
+    
+    var bar_width = 250;
+    
+    var x_buffer = 10,
+        y_buffer = 10;
+    
+    var xScale = d3.scaleLinear()
+            .domain([0, 1])
+            .rangeRound([0, bar_width]);
 
-/* 
+    var good_col = "#1b9e77",
+        bad_col = "#d95f02";
 
-Preparing the background and 
+    var svg = d3.select("body").append("svg")
+                .attr("width",300)
+                .attr("height",100)
+                .append("g")
+                     .attr("transform","translate(" + x_buffer + ',' + y_buffer +')');
+    
+    var defs = svg.append("defs");
 
-*/
+    // Setting the colour gradient
+    var linearGradient = defs.append("linearGradient")
+       .attr("id", "lin_gradient")
+       .attr("x1", "15%")
+       .attr("x2", "85%")
+       .attr("y1", "0%")
+       .attr("y2", "0%");
+    
+    var colorScale = d3.scaleLinear()
+        .range([bad_col, "white", good_col]);
 
-var result = 0.75;
+    linearGradient.selectAll("stop")
+        .data(colorScale.range() )
+        .enter().append("stop")
+        .attr("offset", function(d,i) { return i/(colorScale.range().length-1); })
+        .attr("stop-color", function(d) { return d; });
 
-var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 20
-    },
-    width = 450 - margin.right - margin.left,
-    height = 400- margin.top - margin.bottom;
+    // Drawing the rectangle with curved edges
+    svg.append("rect")
+        .attr("class","bg_bar")
+        .attr("height",25)
+        .attr("width",bar_width)
+        .attr("rx",15)
+        .attr("ry",15)
+        .style("fill","url(#lin_gradient)");
+    
+    // Drawing middle marker 
+    
+    svg.append('g').append("line")
+        .attr("class","mid_marker")
+        .attr("x1",bar_width/2)
+        .attr("y1",-5)
+        .attr("x2",bar_width/2)
+        .attr("y2",25+5)
+        .style("stroke","rgb(30,61,122)")
+        .style("stroke-linecap","round")
+        .style("stroke-width",2);
+    
+    // Drawing the percentage marker
+    
+    svg.append('g').append("line")
+        .attr("class","per_marker")
+        .attr("x1",function(){return xScale(result);})
+        .attr("y1",25)
+        .attr("x2",function(){return xScale(result);})
+        .attr("y2",25+5)
+        .attr("stroke", function(d) {
+            if (result > 0.5) {return good_col;}
+            else {return bad_col}})
+        .style("stroke-linecap","round")
+        .style("stroke-width",2);
+    
+    
+    svg.append('g').append("text")
+        .attr("class","per_marker")
+        .text(function(){return Math.round(result*100).toString() + "%"})
+        .attr("x",function(){return xScale(result)+5;})
+        .attr("y",25+20)
+        .attr("font-family", 'sans-serif')
+        .attr("font-size", '12px')
+        .attr("font-weight", 'bold')
+        .attr("fill", function(d) {
+            if (result > 0.5) {return good_col;}
+            else {return bad_col}})
+        .attr("text-anchor",'middle');
+}
 
-var xScale = d3.scaleBand()
-        .domain([0, 1])
-        .rangeRound([0,width]);
-
-
-var svg = d3.select("body")
-            .append("svg")
-            .attr("width",width + margin.right + margin.left)
-            .attr("height",height + margin.top + margin.bottom)
-            .append("g")
-                 .attr("transform","translate(" + margin.left + ',' + margin.top +')');
+draw_percent_bar(0.29);
