@@ -1,6 +1,69 @@
 
 var percent = 0.5;
-var testData = [
+var testData1 = [
+{
+    name: "External Risk Estimate",
+    density: [0,0,0,1,2,5,4,3,0,0],
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open",
+    density: [0,0,0,1,2,5,4,3,0,0],
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open",
+    density: [0,1,2,5,4,3,0,0,0,0],
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File",
+    density: [0,0,5,4,2,1,3,0,0,0],
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades",
+    density: [1,2,3,4,5,0,0,0,0,0],
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "Trades 60+ Ever",
+    density: [0,0,0,1,2,5,4,3,0,0],
+    anch: 1,
+    incr: 0,
+    val: 10,
+    scl_val: 0.1,
+    change: 10,
+    scl_change: 0.1
+}];
+
+var testData2 = [
 {
     name: "External Risk Estimate",
     anch: 0,
@@ -48,7 +111,154 @@ var testData = [
     scl_change: 0.6
 },
 {
-    name: "Trades 60+ Ever",
+    name: "External Risk Estimate1",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open1",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open1",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File1",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades1",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "External Risk Estimate2",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open2",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open2",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File2",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades2",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "External Risk Estimate3",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open3",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open3",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File3",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades3",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "Satisfactory Trades4",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "Trades 60+ Ever3",
     anch: 1,
     incr: 0,
     val: 10,
@@ -56,7 +266,6 @@ var testData = [
     change: 10,
     scl_change: 0.1
 }];
-
 
 function draw_graph(testData, result){
     var good_col = "#1b9e77",
@@ -81,7 +290,7 @@ function draw_graph(testData, result){
             bottom: 140, 
             left: 70
         },
-        width = 1000 - margin.right - margin.left,
+        width = 400 - margin.right - margin.left,
         height = 400 - margin.top - margin.bottom;
 
     var padding_top = 0.2,
@@ -116,8 +325,8 @@ function draw_graph(testData, result){
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
-        .style("stroke","#C8C8C8")
-        .style("stroke-width",0.5)
+        .style("stroke","black")
+        .style("stroke-width",0.15)
         .style("opacity",function(d){
             if(d.anch == 1){
                 return 0.2;
@@ -131,7 +340,56 @@ function draw_graph(testData, result){
             else {return "white";}
         });
 
-
+    
+    
+    function draw_density(data) {
+        var no_bins = 10;
+        var one_incr = yScale(0.1)-yScale(0.2);
+        var difference = 2*one_incr;
+        for (n=0 ; n < no_bins; n++) {
+            svg.append("g")
+                .selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr('x',function(d) {return xScale(d.name)+xScale.bandwidth()*0;})
+                .attr('y',difference)
+                .attr("height",yScale(0.1)-yScale(0.2))
+                .attr("width",xScale.bandwidth())
+                .style("stroke","black")
+                .style("stroke-width",0.15)
+                .style("opacity",function(d){
+                    console.log(d.density[n])
+                return d.density[n]*0.07;})
+                .style("fill","black");
+            
+            
+//            
+//            svg.append("g")
+//                .selectAll("rect")
+//                .data(data)
+//                .enter()
+//                .append("rect")
+//                .attr('x',function(d) {return xScale(d.name)+xScale.bandwidth()*2/3;})
+//                .attr('y',difference)
+//                .attr("height",yScale(0.1)-yScale(0.2))
+//                .attr("width",xScale.bandwidth()/3)
+//                .style("stroke","black")
+//                .style("stroke-width",0.15)
+//                .style("opacity",function(d){
+//                    console.log(d.density[n])
+//                return d.density[n]*0.07;})
+//                .style("fill","black");
+            
+            
+            difference += one_incr;
+        }
+    }
+    
+    
+    
+    
+    draw_density(testData1);
 
 
     function draw_polygons(data) {
@@ -261,9 +519,15 @@ function draw_graph(testData, result){
         .attr('y',function(d) {return yScale(outlier);})
         .attr("height",function(d){return yScale(1)-yScale(outlier)+1;})
         .attr("width",xScale.bandwidth()*0.3+2)
+        .attr("fill",the_colour)
         .attr("stroke-width",2)
-        .attr("stroke","white")
-        .attr("fill",the_colour);
+        .style("stroke",function(d){
+            if(d.anch == 1){
+                if (result == 0){return "#f5e0d4";}
+                else {return "#daebe4";}
+            }
+            else {return "white";}
+        });
 
     svg.append("g")
         .selectAll("circle")
@@ -295,11 +559,7 @@ function draw_graph(testData, result){
         .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
         .attr("fill","white");
     
-    
-    
-    
-    
-    
+
     // -- Drawing and styling the AXIS
     
     var xAxis = d3.axisBottom().scale(xScale);
@@ -398,4 +658,4 @@ function draw_graph(testData, result){
 
 
 
-draw_graph(testData,0);
+draw_graph(testData1,0);
