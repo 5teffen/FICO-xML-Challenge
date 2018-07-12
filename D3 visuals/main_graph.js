@@ -62,7 +62,6 @@ var testData1 = [
     change: 10,
     scl_change: 0.1
 }];
-
 var testData2 = [
 {
     name: "External Risk Estimate",
@@ -274,6 +273,8 @@ function draw_graph(testData, result){
     var the_colour = "";
     var opp_colour = "";
     
+    var separator = 0.7;
+    
     if (result) {
         opp_colour = good_col;
         the_colour = bad_col;}
@@ -325,8 +326,6 @@ function draw_graph(testData, result){
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
-        .style("stroke","black")
-        .style("stroke-width",0.15)
         .style("opacity",function(d){
             if(d.anch == 1){
                 return 0.2;
@@ -339,6 +338,33 @@ function draw_graph(testData, result){
             }
             else {return "white";}
         });
+    
+    
+    // -- Drawing dividing lines -- 
+    svg.selectAll("line")
+        .data(testData)
+        .enter()
+        .append("line")
+        .attr("class","split_lines")
+        .attr("x1",function(d) {return xScale(d.name)+xScale.bandwidth();})
+        .attr('y',0)
+        .attr("y2",function(d){return yScale(0-padding_bottom)})
+        .attr("x2",function(d) {return xScale(d.name)+xScale.bandwidth();})
+        .style("stroke",function(d,i){
+            if (i == testData.length-1) {return "None";}
+            else {return "#A9A9A9";}})
+        .style("stroke-width",separator);
+    
+    // -- Drawing surrounding box -- 
+        svg.append("rect")
+        .attr("class","border")
+        .attr('x',0)
+        .attr('y',0)
+        .attr("height",function(d){return yScale(0-padding_bottom)})
+        .attr("width",(xScale.bandwidth()+0.7)*testData.length)
+        .attr("fill","None")
+        .attr("stroke","#A9A9A9")
+        .attr("stroke-width",1);
 
     
     
@@ -359,7 +385,6 @@ function draw_graph(testData, result){
                 .style("stroke","black")
                 .style("stroke-width",0.15)
                 .style("opacity",function(d){
-                    console.log(d.density[n])
                 return d.density[n]*0.07;})
                 .style("fill","black");
             
@@ -389,7 +414,7 @@ function draw_graph(testData, result){
     
     
     
-    draw_density(testData1);
+//    draw_density(testData);
 
 
     function draw_polygons(data) {
@@ -569,7 +594,7 @@ function draw_graph(testData, result){
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
         .selectAll("text")  
-            .style("fill","rgb(30,61,122)")
+            .style("fill","black")
             .style("text-anchor", "end")
             .attr("dy", "0.5em")
             .attr("dx", "-0.5em")
@@ -596,7 +621,7 @@ function draw_graph(testData, result){
             else{
                 return yScale(d.scl_val)
             }})
-        .attr("stroke", "rgb(30,61,122)")
+        .attr("stroke", "black")
         .attr("stroke-width", 4)
         .attr("stroke-linecap","round")
         .attr("fill", "none");
@@ -627,7 +652,7 @@ function draw_graph(testData, result){
         .attr("font-family", 'sans-serif')
         .attr("font-size", '12px')
         .attr("font-weight", 'bold')
-        .attr("fill",'rgb(30,61,122)')
+        .attr("fill",'black')
         .attr("text-anchor",'middle');
 
 
