@@ -49,6 +49,7 @@ def handle_request():
 			if sample<1 or sample>10459:
 				return "Please enter a sample number in the range (1, 10459)."
 			else:
+				sample-=1
 				good_percent = svm_model.run_model(X[sample])
 				predicted = 0
 				if good_percent>.5:
@@ -72,11 +73,11 @@ def handle_request():
 
 				### Parse values into python dictionary
 				ret_string = ""
-				data_array = prepare_for_D3(X[sample], bins_centred, change_row, anchors, percent)
+				data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent)
 				for dct in data_array:
 					ret_string += json.dumps(dct)
 					ret_string += "~"
-				ret_string += json.dumps({'sample': sample, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted})
+				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted})
 
 				return ret_string
 
