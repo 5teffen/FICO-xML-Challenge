@@ -3,7 +3,7 @@ var percent = 0.5;
 var testData = [
 {
     name: "External Risk Estimate",
-    anch: 1,
+    anch: 0,
     incr: 3,
     val: 50,
     scl_val: 0.5,      // Should be in range 0-1
@@ -15,10 +15,10 @@ var testData = [
     name: "Months Since Oldest Trade Open",
     anch: 1,
     incr: 0,
-    val: 100,
-    scl_val: 1,
-    change: 100,
-    scl_change: 1
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
 },
 {
     name: "Months Since Last Trade Open",
@@ -31,12 +31,12 @@ var testData = [
 },
 {
     name: "Average Months in File",
-    anch: 1,
-    incr: 2,
+    anch: 0,
+    incr: 10,
     val: 0,
     scl_val: 0,
-    change: 20,
-    scl_change: 0.2
+    change: 100,
+    scl_change: 1
 },
 {
     name: "Satisfactory Trades",
@@ -49,7 +49,7 @@ var testData = [
 },
 {
     name: "Trades 60+ Ever",
-    anch: 0,
+    anch: 1,
     incr: 0,
     val: 10,
     scl_val: 0.1,
@@ -63,24 +63,29 @@ function draw_graph(testData, result){
         bad_col = "#d95f02";
 
     var the_colour = "";
-
-    if (result) {the_colour = bad_col;}
-    else {the_colour = good_col;}
+    var opp_colour = "";
+    
+    if (result) {
+        opp_colour = good_col;
+        the_colour = bad_col;}
+    else {
+        opp_colour = bad_col
+        the_colour = good_col;}
     
         
     
     // -- Establishing margins and canvas bounds -- 
     var margin = {
-            top: 40, 
+            top: 10, 
             right: 60, 
             bottom: 140, 
-            left: 60
+            left: 70
         },
-        width = 400 - margin.right - margin.left,
-        height = 500 - margin.top - margin.bottom;
+        width = 1000 - margin.right - margin.left,
+        height = 400 - margin.top - margin.bottom;
 
     var padding_top = 0.2,
-        padding_bottom = 0.06;
+        padding_bottom = 0.1;
 
     var outlier = 1 + padding_top/2;
 
@@ -111,70 +116,30 @@ function draw_graph(testData, result){
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
-        .style("fill","white");
+        .style("stroke","#C8C8C8")
+        .style("stroke-width",0.5)
+        .style("opacity",function(d){
+            if(d.anch == 1){
+                return 0.2;
+            }
+            else {return 1;}
+        })
+        .style("fill",function(d){
+            if(d.anch == 1){
+                return opp_colour;
+            }
+            else {return "white";}
+        });
 
-
-
-    // -- Handling the special case --
-    svg.append("g")
-        .selectAll("rect")
-        .data(testData.filter(function(d){return d.scl_val > 1;}))
-        .enter()
-        .append("rect")
-        .attr("class","special")
-        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35;})
-        .attr('y',function(d) {return yScale(outlier);})
-        .attr("height",function(d){return yScale(1)-yScale(outlier);})
-        .attr("width",xScale.bandwidth()*0.3)
-        .attr("stroke",the_colour);
-
-    svg.append("g")
-        .selectAll("rect")
-        .data(testData.filter(function(d){return d.scl_val > 1;}))
-        .enter()
-        .append("rect")
-        .attr("class","whitebox")
-        .attr('x',function(d) {return xScale(d.name);})
-        .attr('y',function(d) {return yScale(outlier-padding_top/8);})
-        .attr("height",function(d){return (yScale(1)-yScale(outlier))/2;})
-        .attr("width",xScale.bandwidth())
-        .attr("fill","white");
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return d.scl_val > 1;}))
-        .enter()
-        .append("circle")
-        .attr("r",2)
-        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill",the_colour);
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return d.scl_val > 1;}))
-        .enter()
-        .append("circle")
-        .attr("r",2)
-        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill",the_colour);
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return d.scl_val > 1;}))
-        .enter()
-        .append("circle")
-        .attr("r",2)
-        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill",the_colour);
 
 
 
     function draw_polygons(data) {
         var full_string = "";
         var mod = 2 // To fix the sizes for some cases
+        
+        var bar_len = 0.085
+        var separation = 0.015
 
         for(n=0 ; n < data.length; n++){
             var d = data[n];
@@ -189,20 +154,18 @@ function draw_graph(testData, result){
 
                 var start_y = (yScale(new_val)).toString();
                 var bottom_mid = (yScale(new_val)+5).toString();
-                var end_mid = (yScale(new_val-0.09)+5).toString();
-                var end_y = (yScale(new_val-0.09)).toString();
+                var end_mid = (yScale(new_val-bar_len)+5).toString();
+                var end_y = (yScale(new_val-bar_len)).toString();
 
                 full_string += "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
                 +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
-                console.log(end_y);
-//                var shift = 0.09+0.017;
-                var shift = 0.09;
+                var shift = bar_len+separation;
 
                 for(i=1 ; i < d.incr; i++){
                             start_y = (yScale(new_val-shift)).toString(); 
                             bottom_mid = (yScale(new_val-shift)+5).toString();
-                            end_mid = (yScale(new_val-0.09-shift)+5).toString();
-                            end_y = (yScale(new_val-0.09-shift)).toString();
+                            end_mid = (yScale(new_val-bar_len-shift)+5).toString();
+                            end_y = (yScale(new_val-bar_len-shift)).toString();
                             console.log(start_y);
 
                         var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
@@ -210,7 +173,7 @@ function draw_graph(testData, result){
 
 
                         full_string += next_pol;
-                        shift += 0.09;
+                        shift += bar_len+separation;
                     }
                 }
 
@@ -222,27 +185,27 @@ function draw_graph(testData, result){
 
                 var start_y = (yScale(new_val)).toString();
                 var bottom_mid = (yScale(new_val)-5).toString();
-                var end_mid = (yScale(new_val+0.09)-5).toString();
-                var end_y = (yScale(new_val+0.09)).toString();
+                var end_mid = (yScale(new_val+bar_len)-5).toString();
+                var end_y = (yScale(new_val+bar_len)).toString();
         
 
                 full_string += "M"+start_x+","+start_y+"L"+end_x+","+start_y+"L"+end_x+","+end_y
                 +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y;
 
-                var shift = 0.09;
+                var shift = bar_len+separation;
 
                 for(i=1 ; i < d.incr; i++){
                             start_y = (yScale(new_val+shift)).toString();
                             bottom_mid = (yScale(new_val+shift)-5).toString();
-                            end_mid = (yScale(new_val+0.09+shift)-5).toString();
-                            end_y = (yScale(new_val+0.09+shift)).toString();
+                            end_mid = (yScale(new_val+bar_len+shift)-5).toString();
+                            end_y = (yScale(new_val+bar_len+shift)).toString();
 
                         var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
                             +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y; 
 
 
                         full_string += next_pol;
-                        shift += 0.09;
+                        shift += bar_len+separation;
 
                     }
                 }
@@ -256,10 +219,10 @@ function draw_graph(testData, result){
 
     svg.append("path")
         .attr('d',draw_polygons(testData))
-        .attr("fill","None")
+        .attr("fill",the_colour)
         .attr("stroke",the_colour)
         .attr("stroke-linecap","round")
-        .attr("stroke-width",2);
+        .attr("stroke-width",0);
 
 
     svg.append("g")
@@ -271,11 +234,11 @@ function draw_graph(testData, result){
         .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
         .attr("y", function(d){
             if (d.change >= d.val){
-                return yScale(d.scl_change)-3;
+                return yScale(d.scl_val+d.incr*0.10)-5;
             }
-
             else {
-                return yScale(d.scl_change)+12;
+                if (d.scl_val > 1){return yScale(1-d.incr*0.10)+12;}
+                else {return yScale(d.scl_val-d.incr*0.10)+12;}
             }
         })
         .attr("font-family", 'sans-serif')
@@ -286,6 +249,59 @@ function draw_graph(testData, result){
             else {return "None"}})
         .attr("text-anchor",'middle');
 
+    
+    // -- Handling the special case --
+    svg.append("g")
+        .selectAll("rect")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("rect")
+        .attr("class","special")
+        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35-1;})
+        .attr('y',function(d) {return yScale(outlier);})
+        .attr("height",function(d){return yScale(1)-yScale(outlier)+1;})
+        .attr("width",xScale.bandwidth()*0.3+2)
+        .attr("stroke-width",2)
+        .attr("stroke","white")
+        .attr("fill",the_colour);
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",1.5)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill","white");
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",1.5)
+        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill","white");
+
+    svg.append("g")
+        .selectAll("circle")
+        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
+        .enter()
+        .append("circle")
+        .attr("r",1.5)
+        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
+        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
+        .attr("fill","white");
+    
+    
+    
+    
+    
+    
+    // -- Drawing and styling the AXIS
+    
     var xAxis = d3.axisBottom().scale(xScale);
 
     svg.append("g")
@@ -293,14 +309,8 @@ function draw_graph(testData, result){
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
         .selectAll("text")  
+            .style("fill","rgb(30,61,122)")
             .style("text-anchor", "end")
-            .attr("fill",function(d) {
-                if (d.anch == 1) {
-                    return "red"
-                    }
-                else {
-                    return "white"
-                }})
             .attr("dy", "0.5em")
             .attr("dx", "-0.5em")
             .attr("transform","rotate(-40)");

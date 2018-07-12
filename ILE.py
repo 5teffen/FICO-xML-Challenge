@@ -260,7 +260,7 @@ def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
     return change_vector, change_row, anchors, initial_percentage
 
 
-def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
+def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, percent):
     data = []
     
     names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
@@ -273,6 +273,17 @@ def prepare_for_D3(sample, bins_centred, change_row, anchors, percent):
     for i in range(bins_centred.shape[0]):
         result = {}
         result["name"] = names[i]
+        
+        if len(names[i]) > 20:
+            result["short_name"] = names[i][:20] + "..."
+        else:
+            result["short_name"] = names[i]
+        
+        if (change_vector is not None):
+            result["incr"] = abs(change_vector[i])
+        else:
+            result["incr"] = 0 
+        
         if (percent > 0.5):
             result["dir"] = 1
         else:
@@ -345,6 +356,6 @@ sample = 1 # NOTE THIS VALUE
 
 bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
 change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
-data_array = prepare_for_D3(X[sample], bins_centred, change_row, anchors, percent)
+data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent)
 
 """
