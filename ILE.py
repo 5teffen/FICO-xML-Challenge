@@ -342,6 +342,8 @@ def scaling_data_density(data, bins_centred):
     new_data = np.empty(data.shape)
     output_array = []
     
+    sum_tot = 0
+    
     names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
              ,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
             ,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
@@ -350,10 +352,10 @@ def scaling_data_density(data, bins_centred):
             ,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
     
     for col in range(bins_centred.shape[0]):
-        new_array = []
+        values_dict = {}
         single_dict = {}
         
-        single_dict["name"] = names[i]
+        single_dict["name"] = names[col]
         max_bin = np.max(bins_centred[col])
         min_bin = np.min(bins_centred[col])
 
@@ -364,14 +366,25 @@ def scaling_data_density(data, bins_centred):
             max_bin = 10
     
         for row in range(data.shape[0]):
-            new_val = (data[row][col]-min_bin)/(max_bin-min_bin)
+            new_val = ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
+            if (new_val <= 0):
+                new_val = 0
+            if (new_val > 1):
+                new_val = 1
+                
             new_data[row][col] = new_val
-            new_array.append(new_val)
-            
-        single_dict["values"] = new_array
+                
+            if (str(new_val) in values_dict):
+                values_dict[str(new_val)] += 1
+            else:
+                values_dict[str(new_val)] = 1
+
+        single_dict["values"] = values_dict
+        single_dict["total"] = len(values_dict)
+        print(len(values_dict))
         
         output_array.append(single_dict)
-            
+
     return output_array
 
 
