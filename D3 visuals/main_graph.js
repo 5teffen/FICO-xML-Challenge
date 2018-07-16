@@ -159,10 +159,10 @@ function draw_graph(testData, densityData, result){
     // -- Drawing surrounding box -- 
         svg.append("rect")
         .attr("class","border")
-        .attr('x',0)
+        .attr('x',xScale(testData[0].name))
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
-        .attr("width",(xScale.bandwidth()+0.7)*testData.length)
+        .attr("width",(xScale.bandwidth()+1)*testData.length)
         .attr("fill","None")
         .attr("stroke","#A9A9A9")
         .attr("stroke-width",1);
@@ -189,13 +189,13 @@ function draw_graph(testData, densityData, result){
                 .style("stroke","black")
                 .style("stroke-width",0.15)
                 .style("opacity",function(){return value/1000})
-                .style("fill","black");
+                .style("fill","#7570b3");
             }
                 
         }
     }
     
-    draw_density_advanced(testData, densityData);
+    if (densityData != "no"){ draw_density_advanced(testData, densityData);}
     
     
     
