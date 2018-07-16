@@ -341,10 +341,11 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
 
 def scaling_data_density(data, bins_centred):
     new_data = np.empty(data.shape)
-    output_dict = {}
+    output_array = []
     
     for col in range(bins_centred.shape[0]):
         new_array = []
+        single_dict = {}
     
         max_bin = np.max(bins_centred[col])
         min_bin = np.min(bins_centred[col])
@@ -360,12 +361,11 @@ def scaling_data_density(data, bins_centred):
             new_data[row][col] = new_val
             new_array.append(new_val)
             
-        key = "col" + str(col)
+        single_dict["values"] = new_array
         
-        output_dict[key] = new_array
-
+        output_array.append(single_dict)
             
-    return output_dict
+    return output_array
 
 
 
@@ -388,5 +388,5 @@ sample = 1 # NOTE THIS VALUE
 bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
 change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
 data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent)
-scl_dict = scaling_data_density(X, bins_centred)
+dict_array = scaling_data_density(X, bins_centred)
 """
