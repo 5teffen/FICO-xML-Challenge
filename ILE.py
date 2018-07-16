@@ -338,15 +338,22 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
     return data
         
 
-
 def scaling_data_density(data, bins_centred):
     new_data = np.empty(data.shape)
     output_array = []
     
+    names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
+             ,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
+            ,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
+             ,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
+             ,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
+            ,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
+    
     for col in range(bins_centred.shape[0]):
         new_array = []
         single_dict = {}
-    
+        
+        single_dict["name"] = names[i]
         max_bin = np.max(bins_centred[col])
         min_bin = np.min(bins_centred[col])
 
