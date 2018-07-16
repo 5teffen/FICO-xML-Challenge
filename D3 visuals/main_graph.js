@@ -265,15 +265,29 @@ var testData2 = [
     change: 10,
     scl_change: 0.1
 }];
+var densityData1 = [
+{   name: "External Risk Estimate",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Months Since Oldest Trade Open",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Months Since Last Trade Open",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Average Months in File",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Satisfactory Trades",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Trades 60+ Ever",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] }
+];
 
-function draw_graph(testData, result){
+function draw_graph(testData, densityData, result){
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 
     var the_colour = "";
     var opp_colour = "";
     
-    var separator = 0.7;
+    var separator = 0.015;
     
     if (result) {
         opp_colour = good_col;
@@ -281,8 +295,6 @@ function draw_graph(testData, result){
     else {
         opp_colour = bad_col
         the_colour = good_col;}
-    
-        
     
     // -- Establishing margins and canvas bounds -- 
     var margin = {
@@ -298,13 +310,12 @@ function draw_graph(testData, result){
         padding_bottom = 0.1;
 
     var outlier = 1 + padding_top/2;
-
-
+    
     // -- Adding scales based on canvas -- 
     var xScale = d3.scaleBand()
             .domain(testData.map(function(d){return d.name;}))
             .rangeRound([0, width])
-            .paddingInner(0.015),
+            .paddingInner(separator),
         yScale = d3.scaleLinear()
             .domain([0-padding_bottom, 1+padding_top])
             .rangeRound([height, 0]);
@@ -353,7 +364,7 @@ function draw_graph(testData, result){
         .style("stroke",function(d,i){
             if (i == testData.length-1) {return "None";}
             else {return "#A9A9A9";}})
-        .style("stroke-width",separator);
+        .style("stroke-width",0.7);
     
     // -- Drawing surrounding box -- 
         svg.append("rect")
@@ -366,9 +377,35 @@ function draw_graph(testData, result){
         .attr("stroke","#A9A9A9")
         .attr("stroke-width",1);
 
+    function draw_density_advanced(data) {
+        var samples = data[0].values.length
+        console.log(samples);
+        var overlap = yScale(0.1)-yScale(0.2);
+        console.log(overlap);
+        
+        for (n=0 ; n < samples; n++) {
+            svg.append("g")
+                .selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr('x',function(d) {return xScale(d.name)+xScale.bandwidth()*0;})
+                .attr('y',function(d){
+                        return yScale(d.values[n])-overlap;})
+                .attr("height",2*overlap)
+                .attr("width",xScale.bandwidth())
+                .style("stroke","black")
+                .style("stroke-width",0.15)
+                .style("opacity",0.1)
+                .style("fill","black");
+        }
     
+    }
     
-    function draw_density(data) {
+    draw_density_advanced(densityData);
+    
+
+    function draw_density_basic(data) {
         var no_bins = 10;
         var one_incr = yScale(0.1)-yScale(0.2);
         var difference = 2*one_incr;
@@ -411,11 +448,7 @@ function draw_graph(testData, result){
         }
     }
     
-    
-    
-    
-//    draw_density(testData);
-
+//    draw_density_basic(testData);
 
     function draw_polygons(data) {
         var full_string = "";
@@ -681,6 +714,4 @@ function draw_graph(testData, result){
     }
 }
 
-
-
-draw_graph(testData1,0);
+draw_graph(testData1,densityData1,1);
