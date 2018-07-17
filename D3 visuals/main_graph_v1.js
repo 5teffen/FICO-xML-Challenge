@@ -1,5 +1,6 @@
 
-var testData = [
+var percent = 0.5;
+var testData1 = [
 {
     name: "External Risk Estimate",
     density: [0,0,0,1,2,5,4,3,0,0],
@@ -61,14 +62,223 @@ var testData = [
     change: 10,
     scl_change: 0.1
 }];
-
+var testData2 = [
+{
+    name: "External Risk Estimate",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "External Risk Estimate1",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open1",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open1",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File1",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades1",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "External Risk Estimate2",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open2",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open2",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File2",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades2",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "External Risk Estimate3",
+    anch: 0,
+    incr: 3,
+    val: 50,
+    scl_val: 0.5,      // Should be in range 0-1
+    change: 20,
+    scl_change: 0.2
+    
+},
+{
+    name: "Months Since Oldest Trade Open3",
+    anch: 1,
+    incr: 0,
+    val: 120,
+    scl_val: 1.2,
+    change: 120,
+    scl_change: 1.2
+},
+{
+    name: "Months Since Last Trade Open3",
+    anch: 0,
+    incr: 1,
+    val: 70,
+    scl_val: 0.7,
+    change: 80,
+    scl_change: 0.8
+},
+{
+    name: "Average Months in File3",
+    anch: 0,
+    incr: 10,
+    val: 0,
+    scl_val: 0,
+    change: 100,
+    scl_change: 1
+},
+{
+    name: "Satisfactory Trades3",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "Satisfactory Trades4",
+    anch: 0,
+    incr: 4,
+    val: 150,
+    scl_val: 1.5,
+    change: 60,
+    scl_change: 0.6
+},
+{
+    name: "Trades 60+ Ever3",
+    anch: 1,
+    incr: 0,
+    val: 10,
+    scl_val: 0.1,
+    change: 10,
+    scl_change: 0.1
+}];
 var densityData1 = [
-    {'0.2': 90, '0.71': 60, '0.75': 94, '0.5': 140, '0.39': 191, '0.32': 149, '0.41': 171, '0.46': 208, '0.11': 54},
-    {'0.2': 90, '0.71': 60, '0.75': 94, '0.5': 140, '0.39': 191, '0.32': 149, '0.41': 171, '0.46': 208, '0.11': 54},
-    {'0.2': 90, '0.71': 60, '0.75': 94, '0.5': 140, '0.39': 191, '0.32': 149, '0.41': 171, '0.46': 208, '0.11': 54},
-    {'0.2': 90, '0.71': 60, '0.75': 94, '0.5': 140, '0.39': 191, '0.32': 149, '0.41': 171, '0.46': 208, '0.11': 54},
-    {'0.2': 90, '0.71': 60, '0.75': 94, '0.5': 140, '0.39': 191, '0.32': 149, '0.41': 171, '0.46': 208, '0.11': 54},
-    {'0.2': 90, '0.71': 60, '0.75': 94, '0.5': 140, '0.39': 191, '0.32': 149, '0.41': 171, '0.46': 208, '0.11': 54}];
+{   name: "External Risk Estimate",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Months Since Oldest Trade Open",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Months Since Last Trade Open",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Average Months in File",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Satisfactory Trades",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] },
+{   name: "Trades 60+ Ever",
+    values: [0.1,0.2,0.4,0.1,0.2,0.5,0.4,0.3,0.15,0.25] }
+];
 
 function draw_graph(testData, densityData, result){
     var good_col = "#1b9e77",
@@ -159,46 +369,87 @@ function draw_graph(testData, densityData, result){
     // -- Drawing surrounding box -- 
         svg.append("rect")
         .attr("class","border")
-        .attr('x',xScale(testData[0].name))
+        .attr('x',0)
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
-        .attr("width",(xScale.bandwidth()+1)*testData.length)
+        .attr("width",(xScale.bandwidth()+0.7)*testData.length)
         .attr("fill","None")
         .attr("stroke","#A9A9A9")
         .attr("stroke-width",1);
 
-    function draw_density_advanced(testData,data) {
-        console.log("Getting Called");
+    function draw_density_advanced(data) {
+        var samples = data[0].values.length
+        console.log(samples);
         var overlap = yScale(0.1)-yScale(0.2);
-
-        for (ind=0 ; ind < data.length; ind++) {
-            var cur_obj = data[ind];
-            var array_len = Object.keys(cur_obj).length;
-
-            for (n=0 ; n < array_len; ++n){
-                var key = Object.keys(cur_obj)[n];
-                var value = cur_obj[key];
-                
-                svg.append("g")
+        console.log(overlap);
+        
+        for (n=0 ; n < samples; n++) {
+            svg.append("g")
+                .selectAll("rect")
+                .data(data)
+                .enter()
                 .append("rect")
-                .attr('x',function() {return xScale(testData[ind].name)})
-                .attr('y',function() {
-                        return yScale(+key)-overlap;})
+                .attr('x',function(d) {return xScale(d.name)+xScale.bandwidth()*0;})
+                .attr('y',function(d){
+                        return yScale(d.values[n])-overlap;})
                 .attr("height",2*overlap)
                 .attr("width",xScale.bandwidth())
                 .style("stroke","black")
                 .style("stroke-width",0.15)
-                .style("opacity",function(){return value/1000})
-                .style("fill","#7570b3");
-            }
-                
+                .style("opacity",0.1)
+                .style("fill","black");
+        }
+    
+    }
+    
+    draw_density_advanced(densityData);
+    
+
+    function draw_density_basic(data) {
+        var no_bins = 10;
+        var one_incr = yScale(0.1)-yScale(0.2);
+        var difference = 2*one_incr;
+        for (n=0 ; n < no_bins; n++) {
+            svg.append("g")
+                .selectAll("rect")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr('x',function(d) {return xScale(d.name)+xScale.bandwidth()*0;})
+                .attr('y',difference)
+                .attr("height",yScale(0.1)-yScale(0.2))
+                .attr("width",xScale.bandwidth())
+                .style("stroke","black")
+                .style("stroke-width",0.15)
+                .style("opacity",function(d){
+                return d.density[n]*0.07;})
+                .style("fill","black");
+            
+            
+//            
+//            svg.append("g")
+//                .selectAll("rect")
+//                .data(data)
+//                .enter()
+//                .append("rect")
+//                .attr('x',function(d) {return xScale(d.name)+xScale.bandwidth()*2/3;})
+//                .attr('y',difference)
+//                .attr("height",yScale(0.1)-yScale(0.2))
+//                .attr("width",xScale.bandwidth()/3)
+//                .style("stroke","black")
+//                .style("stroke-width",0.15)
+//                .style("opacity",function(d){
+//                    console.log(d.density[n])
+//                return d.density[n]*0.07;})
+//                .style("fill","black");
+            
+            
+            difference += one_incr;
         }
     }
     
-    if (densityData != "no"){ draw_density_advanced(testData, densityData);}
-    
-    
-    
+//    draw_density_basic(testData);
+
     function draw_polygons(data) {
         var full_string = "";
         var mod = 2 // To fix the sizes for some cases
@@ -231,6 +482,7 @@ function draw_graph(testData, densityData, result){
                             bottom_mid = (yScale(new_val-shift)+5).toString();
                             end_mid = (yScale(new_val-bar_len-shift)+5).toString();
                             end_y = (yScale(new_val-bar_len-shift)).toString();
+                            console.log(start_y);
 
                         var next_pol = "M"+start_x+","+start_y+"L"+mid_x+","+bottom_mid+"L"+end_x+","+start_y+"L"+end_x+","+end_y
                             +"L"+mid_x+","+end_mid+"L"+start_x+","+end_y+"L"+start_x+","+start_y; 
@@ -462,4 +714,4 @@ function draw_graph(testData, densityData, result){
     }
 }
 
-draw_graph(testData,densityData1,1);
+draw_graph(testData1,densityData1,1);

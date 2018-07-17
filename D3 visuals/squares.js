@@ -42,5 +42,4 @@ function square(col,strike,size) {
         });
 }
 
-
 square(0,0,25);

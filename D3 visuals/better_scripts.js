@@ -773,3 +773,29 @@ function rounded_rect(x, y, w, h, r, tl, tr, bl, br) {
 //svg.append('g').append("path")
 //    .attr("d", rounded_rect(10+125, 10, 125, 25, 15,false,true,false,true))
 //    .attr("fill","url(#lin_right)");
+
+
+    // -- Drawing background rectangles -- 
+    svg.selectAll("rect")
+        .data(testData)
+        .enter()
+        .append("rect")
+        .attr("class","bg_bar")
+        .attr('x',function(d) {return xScale(d.name);})
+        .attr('y',0)
+        .attr("height",function(d){return yScale(0-padding_bottom)})
+        .attr("width",xScale.bandwidth())
+        .style("stroke","black")
+        .style("stroke-width",0.15)
+        .style("opacity",function(d){
+            if(d.anch == 1){
+                return 0.2;
+            }
+            else {return 1;}
+        })
+        .style("fill","function(d){
+            if(d.anch == 1){
+                return opp_colour;
+            }
+            else {return "white";}"
+        });
