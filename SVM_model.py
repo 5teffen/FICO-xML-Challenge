@@ -3,6 +3,8 @@ import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
 from sklearn import svm
+from Functions import prepare_for_analysis
+
 
 
 class ModelError(Exception):
@@ -11,8 +13,7 @@ class ModelError(Exception):
 class SVM_model():
 	def __init__ (self, data, file_name = None):
 		if (file_name != None):
-			data = pd.read_csv(file_name).values
-			data = np.delete(data, 0, 1) # Deletes First Column
+			data = prepare_for_analysis(file_name)
 
 		self.model = None
 
