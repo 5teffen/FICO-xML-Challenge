@@ -168,6 +168,24 @@ function draw_graph(testData, densityData, result){
         .attr("stroke-width",1);
 
     function draw_density_advanced(testData,data) {
+        var defs = svg.append("defs");
+        var linearGradient = defs.append("linearGradient")
+           .attr("id", "lin_gradient")
+           .attr("x1", "0%")
+           .attr("x2", "0%")
+           .attr("y1", "10%")
+           .attr("y2", "90%");
+    
+        var colorScale = d3.scaleLinear()
+            .range(["white", "#7570b3", "white"]);
+
+        linearGradient.selectAll("stop")
+            .data(colorScale.range() )
+            .enter().append("stop")
+            .attr("offset", function(d,i) { return i/(colorScale.range().length-1); })
+            .attr("stop-color", function(d) { return d; });
+
+        
         console.log("Getting Called");
         var overlap = yScale(0.1)-yScale(0.2);
 
@@ -186,10 +204,8 @@ function draw_graph(testData, densityData, result){
                         return yScale(+key)-overlap;})
                 .attr("height",2*overlap)
                 .attr("width",xScale.bandwidth())
-                .style("stroke","black")
-                .style("stroke-width",0.15)
-                .style("opacity",function(){return value/1000})
-                .style("fill","#7570b3");
+                .style("opacity",function(){return value/600})
+                .style("fill","url(#lin_gradient)");
             }
                 
         }
