@@ -1,4 +1,0 @@
-feature,val,val_scaled,next,next_scaled,min,max
-ExternalRiskEstimate,70,75,80,85,30,100
-NumTotalTrades,20,80,22,90,0,30
-MaxDelqEver,3,30,4,40,0,9
