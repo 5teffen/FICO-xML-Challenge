@@ -1,0 +1,14 @@
+// -- Establishing margins and canvas bounds -- 
+    var margin = {
+            top: 50, 
+            right: 60, 
+            bottom: 140, 
+            left: 70
+        },
+        width = 1000 - margin.right - margin.left,
+        height = 400 - margin.top - margin.bottom;
+
+    var padding_top = 0.2,
+        padding_bottom = 0.1;
+
+    var outlier = 1 + padding_top/2;
