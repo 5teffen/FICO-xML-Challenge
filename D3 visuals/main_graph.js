@@ -167,7 +167,7 @@ function draw_graph(testData, densityData, result){
         .attr("stroke","#A9A9A9")
         .attr("stroke-width",1);
 
-    function draw_density_advanced(testData,data) {
+    function draw_density_boxed(testData,data) {
         console.log("Getting Called");
         var overlap = yScale(0.1)-yScale(0.2);
 
@@ -195,7 +195,53 @@ function draw_graph(testData, densityData, result){
         }
     }
     
-    if (densityData != "no"){ draw_density_advanced(testData, densityData);}
+    function draw_density_gradient(testData,data) {
+        var defs = svg.append("defs");
+        var linearGradient = defs.append("linearGradient")
+           .attr("id", "lin_fill")
+           .attr("x1", "0%")
+           .attr("x2", "0%")
+           .attr("y1", "10%")
+           .attr("y2", "90%");
+    
+        var colorScale = d3.scaleLinear()
+            .range(["white", "#7570b3", "white"]);
+
+        linearGradient.selectAll("stop")
+            .data(colorScale.range() )
+            .enter().append("stop")
+            .attr("offset", function(d,i) { return i/(colorScale.range().length-1); })
+            .attr("stop-color", function(d) { return d; });
+
+        
+        console.log("Getting Called");
+        var overlap = yScale(0.1)-yScale(0.2);
+
+        for (ind=0 ; ind < data.length; ind++) {
+            var cur_obj = data[ind];
+            var array_len = Object.keys(cur_obj).length;
+
+            for (n=0 ; n < array_len; ++n){
+                var key = Object.keys(cur_obj)[n];
+                var value = cur_obj[key];
+                
+                svg.append("g")
+                .append("rect")
+                .attr('x',function() {return xScale(testData[ind].name)})
+                .attr('y',function() {
+                        return yScale(+key)-overlap;})
+                .attr("height",2*overlap)
+                .attr("width",xScale.bandwidth())
+                .style("opacity",function(){return value/600})
+                .style("fill","url(#lin_fill)");
+            }
+                
+        }
+    }
+    
+    
+    if (densityData != "no"){ draw_density_boxed(testData, densityData);}
+//    if (densityData != "no"){ draw_density_gradient(testData, densityData);}
     
     
     

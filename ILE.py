@@ -4,8 +4,7 @@
 import pandas as pd
 import numpy as np
 from SVM_model import SVM_model
-from Functions import separate_bins_feature
-
+from Functions import separate_bins_feature, prepare_for_analysis
 
 def divide_data_bins(data, special=[]):
     no_feat = data.shape[1]
@@ -374,20 +373,18 @@ def scaling_data_density(data, bins_centred):
 
 
 
+
+
+# vals = prepare_for_analysis("final_data_file.csv")
+# X = vals[:,1:]
+# y = vals[:,0]
+
+# no_samples, no_features = X.shape
+
+# svm_model = SVM_model(None,"final_data_file.csv")
+# svm_model.train_model(0.001)
+# svm_model.test_model()
 """
-from IVE import instance_explanation, prepare_for_D3
-
-df = pd.read_csv("working_data_full.csv")
-vals = df.values
-X = vals[:,2:]
-y = vals[:,1]
-
-no_samples, no_features = X.shape
-
-svm_model = SVM_model(None,"working_data_full.csv")
-svm_model.train_model(0.001)
-svm_model.test_model()
-
 sample = 1 # NOTE THIS VALUE
 
 bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
