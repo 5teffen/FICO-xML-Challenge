@@ -99,5 +99,34 @@ def prepare_for_analysis(filename):
 	return data_array
 
 
+def get_samples(pre_proc_file,all_data_file,anchs,cols,height):
+	# 0-4 General Data
+	# 5-8 Anchor Cols
+	# 9-12 Change Cols
+	# 13-16 Col Heights
+
+	pre_data = pd.read_csv(pre_proc_file).values
+	all_data = pd.read_csv(all_data_file,header=None).values
+	anch_samples = []
+	change_samples = []
+
+	# Identify Anchors
+	for test in range(5,9):
+		for s in range(pre_data.shape[0]):
+			if (pre_data[s][test] == anchs):
+				anch_samples.append(pre_data[s][0])
+
+	# Identify Changes
+	for test in range(8,12):
+		for s in range(pre_data.shape[0]):
+			if (pre_data[s][test] == cols):
+				if (pre_data[s][test+4] == height):
+					change_samples.append(pre_data[s][0])
+
+	return anch_samples,change_samples
+
+
+
+anchs,changes = get_samples("pre_data1.csv","final_data_file.csv",6,3,1)
 
 
