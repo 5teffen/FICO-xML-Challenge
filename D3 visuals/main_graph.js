@@ -79,7 +79,7 @@ function draw_graph(testData, densityData, result){
     
     var separator = 0.015;
     
-    if (result) {
+    if (result>0.5) {
         opp_colour = good_col;
         the_colour = bad_col;}
     else {
