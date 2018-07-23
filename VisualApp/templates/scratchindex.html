@@ -85,6 +85,9 @@
           }
           else if (category == "TP"){
             sqr.src="/static/images/square3-min.jpg";
+          }
+          else if (category == "NA"){
+            sqr.src="/static/images/square5-min.jpg";
           } 
           sqr.height=size;
           sqr.width=size;
@@ -109,7 +112,7 @@
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/flask_pre_data_nums.csv");
+        txtFile.open("GET", "/static/data/flask_pre_data_nums_new_debug_tryseed3.csv");
         txtFile.send()
       }
       
@@ -176,6 +179,7 @@
             var resp = JSON.parse(resp_arr[46]);
             
             var index = resp['sample'].toString();
+            var trans_sample = resp['trans_sample'].toString();
             var good_percent = resp['good_percent'];
             var correct = parseInt(resp['model_correct']);
             var category = resp['category'];
@@ -190,15 +194,20 @@
             draw_percent_bar(disp_percent);
             document.getElementsByClassName("cat-text")[0].innerHTML = category;
             document.getElementsByClassName("d3-space")[0].innerHTML = "";
-            document.getElementById("check-density").style.display = "inline";
-            document.getElementById("check-text").innerHTML = "Density distribution";
-            if (document.getElementById("check-density").checked == true){
-              draw_graph(testData, densityData, result);
+
+            if (trans_sample == '-9') {
+              document.getElementsByClassName("d3-space")[0].innerHTML = "SPECIAL CASE";
             }
             else {
-              draw_graph(testData, "no", result);
+              document.getElementById("check-density").style.display = "inline";
+              document.getElementById("check-text").innerHTML = "Density distribution";
+              if (document.getElementById("check-density").checked == true){
+                draw_graph(testData, densityData, result);
+              }
+              else {
+                draw_graph(testData, "no", result);
+              }
             }
-            
           } else {
             alert('HttpRequest Error')
           }
@@ -252,17 +261,20 @@
         for (var i = 1; i < pre_array.length-1; i++) {
 
           var sqr = document.createElement("img");
-          if (pre_array[i][3].trim() == "FN"){
+          if (pre_array[i][2].trim() == "FN"){
             sqr.src="/static/images/square2-min.jpg";
           }
-          else if (pre_array[i][3].trim() == "TN"){
+          else if (pre_array[i][2].trim() == "TN"){
             sqr.src="/static/images/square4-min.jpg";
           }
-          else if (pre_array[i][3].trim() == "FP"){
+          else if (pre_array[i][2].trim() == "FP"){
             sqr.src="/static/images/square1-min.jpg";
           }
-          else if (pre_array[i][3].trim() == "TP"){
+          else if (pre_array[i][2].trim() == "TP"){
             sqr.src="/static/images/square3-min.jpg";
+          } 
+          else if (pre_array[i][2].trim() == "NA"){
+            sqr.src="/static/images/square5-min.jpg";
           } 
           sqr.height="15";
           sqr.width="15";
@@ -270,7 +282,7 @@
           sqr.style.verticalAlign = "middle";
           sqr.style.margin = "4px 0px 0px 0px";
           sqr.style.float = "left";
-          var link_string = pre_array[i][0] + "\xa0 \xa0"  + pre_array[i][1];
+          var link_string = pre_array[i][3] + "\xa0 \xa0"  + pre_array[i][4];
           document.getElementById("link-div-"+i.toString()).innerHTML = link_string;
           document.getElementById("link-div-"+i.toString()).append(sqr);
           

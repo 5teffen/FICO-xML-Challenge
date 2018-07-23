@@ -6,6 +6,8 @@ import numpy as np
 from SVM_model import SVM_model
 from Functions import separate_bins_feature, prepare_for_analysis
 
+
+
 def divide_data_bins(data, special=[]):
     no_feat = data.shape[1]
     bins_centred = []
@@ -26,6 +28,7 @@ def divide_data_bins(data, special=[]):
     X_pos_array = (np.array(X_pos_array)).transpose() 
 
     return bins_centred, X_pos_array, in_vals
+
 
 def evaluate_data_set(data):
     no_features = data.shape[1]
@@ -72,12 +75,14 @@ def find_anchors(model, data_set, sample, no_val):
     iterations = 4
 
     # Setting random seed
-    np.random.seed(0)
+    np.random.seed(150)
+
+    # print(avg_list, std_list, no_val)
     
     while (iterations > 0):
         # Retains best result and the corresponding index
         max_ind = (0,0)
-    
+        # print("iteration")
         # Assign column that is being tested
         for test_col in range(features):
             new_data = np.empty([features, no_val])
@@ -91,12 +96,19 @@ def find_anchors(model, data_set, sample, no_val):
                         new_data[ind] = perturb_special(0,7,avg_list[ind],std_list[ind],no_val)
                     else:
                         new_data[ind] = np.random.normal(avg_list[ind], std_list[ind], no_val)
+                        # print(new_data[ind])
+                        # print((avg_list[ind], std_list[ind], no_val))
             
             new_data = new_data.transpose()
+            # print(np.random.normal(),'a')
+            # print(new_data)
 
             # Run Model 
             pred = model.run_model_data(new_data)
             acc = (np.mean(pred == decision))
+
+            # print(pred)
+            # print(acc)
             
             if (acc > max_ind[0]):
                 max_ind = (acc,test_col)
@@ -250,6 +262,8 @@ def find_MSC (model, data, k_row, row_idx, X_bin_pos, mean_bins):
 
 
 def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
+
+    # print('getting called')
     
     initial_percentage = model.run_model(k_row)
 
@@ -279,7 +293,7 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
             result["short_name"] = names[i]
         
         if (change_vector is not None):
-            result["incr"] = abs(change_vector[i])
+            result["incr"] = int(abs(change_vector[i]))
         else:
             result["incr"] = 0 
         
@@ -322,9 +336,9 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
 
 
         
-        result["val"] = val
+        result["val"] = int(val)
         result["scl_val"] = scl_val
-        result["change"] = change
+        result["change"] = int(change)
         result["scl_change"] = scl_change
         
 #         print("Val:",result["val"])
