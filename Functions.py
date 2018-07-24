@@ -183,9 +183,9 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
 
 	final_data = []
-	single_dict_list = []
 	
 	for s in samples:
+		single_dict_list = []
 		for i in range(all_data.shape[1]):
 			result = {}
 			result["name"] = names[i]
@@ -243,6 +243,38 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 	return final_data
 
 
+def occurance_counter(pre_proc_file):
+	pre_data = pd.read_csv(pre_proc_file).values
+
+	count_array = np.zeros((23,4))
+	ratio_array = np.zeros((23,4))
+	total = 0
+
+
+	for sam in range(pre_data.shape[0]):
+		total += 1
+		for anc in range(5,9):
+			col = pre_data[sam][anc]
+			if col != -99:
+				if pre_data[sam][1] > 0.5:
+					count_array[col][0] += 1
+				else: 
+					count_array[col][1] += 1
+
+			for chn in range(9,14):
+				col = pre_data[sam][chn]
+				if col != -99:
+					if pre_data[sam][chn+5] > 0:
+						count_array[col][2] += 1
+					else:
+						count_array[col][3] += 1
+	ratio_array = count_array/total				
+	# for i in range(ratio_array.shape[1]):
+	# 	ratio_array
+	return ratio_array
+
+
+
 
 
 changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
@@ -255,9 +287,13 @@ X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
 
-trans_dict = sample_transf(X)
+count_total = occurance_counter("pre_data1.csv")
 
-bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
+print(count_total)
 
-testing = prep_for_D3_global("pre_data1.csv","final_data_file.csv",changes, bins_centred, X_pos_array,trans_dict)
-testing = testing[:10]
+# trans_dict = sample_transf(X)
+
+# bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
+
+# testing = prep_for_D3_global("pre_data1.csv","final_data_file.csv",changes, bins_centred, X_pos_array,trans_dict)
+# print(len(testing[0]))
