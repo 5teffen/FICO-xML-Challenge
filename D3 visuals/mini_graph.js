@@ -175,7 +175,7 @@ var totalData = [dataPoint1, dataPoint2, dataPoint3]
 var allResults = [0.6, 0.3, 0.7]
 
 
-function draw_mini_graph(testData, result, svg, width, height, shift){
+function draw_mini_graph(testData, svg, width, height, shift){
     
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
@@ -185,7 +185,7 @@ function draw_mini_graph(testData, result, svg, width, height, shift){
 
     var separator = 0.015
 
-    if (result>0.5) {
+    if (testData[0].per < 0.5) {
         opp_colour = good_col;
         the_colour = bad_col;}
     else {
@@ -322,14 +322,13 @@ function draw_all_graphs(totalData,allResults){
     
     for (i = 0; i < totalData.length; ++i){
         dataPoint = totalData[i];
-        result = allResults[i];
-        console.log(result)
-        draw_mini_graph(dataPoint, result, svg, width, height, shift);
+        draw_mini_graph(dataPoint, svg, width, height, shift);
         
         shift += (height + separation);
     }
 }
-draw_all_graphs(totalData,allResults);
+
+draw_all_graphs(totalData);
 
 //draw_mini_graph(dataPoint1, 0.7,0)
 

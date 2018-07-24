@@ -1,4 +1,4 @@
-function draw_percent_bar(result) {
+function draw_percent_bar(good,bad) {
     
     var bar_width = 100,
         bar_height = 20;
@@ -21,7 +21,7 @@ function draw_percent_bar(result) {
     
     // Drawing the frame
     
-    var sep = 5
+    var sep = 2.5
     var border = 3
     
      svg.append('g').append("rect")
@@ -50,16 +50,16 @@ function draw_percent_bar(result) {
     // Drawing the good recangle
     svg.append('g').append("rect")
         .attr("height",bar_height)
-        .attr("width",bar_width)
+        .attr("width",xScale(good))
         .style("fill",good_col);
     
     // Drawing the bad rectangle
      svg.append('g').append("rect")
-        .attr('x',100)
+        .attr('x',xScale(good))
         .attr("height",bar_height)
-        .attr("width",bar_width)
+        .attr("width",xScale(bad))
         .style("fill",bad_col);
 
 }
 
-draw_percent_bar(0.29);
+draw_percent_bar(0.29,0.15);
