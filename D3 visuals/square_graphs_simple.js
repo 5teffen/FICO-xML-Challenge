@@ -4,7 +4,7 @@ var squareOne = [
     name: "External Risk Estimate",
     label: "Ft.1",
     per: 0.7,
-    occ: 50,
+    occ: 0.5,
     inc_change: 3
     
 },
@@ -12,7 +12,7 @@ var squareOne = [
     name: "Months Since Oldest Trade Open",
     label: "Ft.2",
     per: 0.7,
-    occ: 10,
+    occ: 0.5,
     inc_change: -4,
 
 }];
@@ -22,7 +22,7 @@ var squareTwo = [
     name: "External Risk Estimate23",
     label: "Ft.1",
     per: 0.3,
-    occ: 30,
+    occ: 0.2,
     inc_change: 3
     
 },
@@ -30,7 +30,7 @@ var squareTwo = [
     name: "Months Since Oldest Trade Open1",
     label: "Ft.2",
     per: 0.3,
-    occ: 5,
+    occ: 0.2,
     inc_change: 2
 }];
 
@@ -66,11 +66,10 @@ var squareThree = [
     inc_change: 3
 }];
 
-var totalData1 = [squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo];
-var totalData2 = [squareThree,squareThree,squareThree,squareThree,squareThree];
+var totalData1 = [squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo];
+var totalData2 = [squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree];
 
 function draw_single_graph(testData, svg, width, height){
-    console.log("function called")
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 
@@ -105,7 +104,8 @@ function draw_single_graph(testData, svg, width, height){
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
-        .style("fill","white");
+        .attr("opacity",function(d){return d.occ;})
+        .style("fill","#A9A9A9");
 
 
     // -- Drawing surrounding box -- 
@@ -203,7 +203,6 @@ function draw_all_graphs(totalData,limit) {
             .text(name_string)
             .attr("x",text_feat)
             .attr("y",function(){
-                    console.log(name_string.length);
                     if (name_string.length < 20){return 10+text_shift;}
                     else {return 10+text_shift;}
             })  
@@ -226,7 +225,6 @@ function draw_all_graphs(totalData,limit) {
             .text((totalData[0][i].label).toString())
             .attr("x",0)
             .attr("y",function(){
-                    console.log(name_string.length);
                     if (name_string.length < 20){return 10+text_shift;}
                     else {return 10+text_shift;}
             })  

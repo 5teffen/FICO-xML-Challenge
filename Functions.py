@@ -329,7 +329,7 @@ def big_scraper(pre_proc_file,desired_cols):
 		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
 		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
 
-
+	total_count = np.sum(all_counts)
 	all_dicts = []
 	for i in range(all_counts.shape[0]):
 		single_dicts = []
@@ -340,7 +340,7 @@ def big_scraper(pre_proc_file,desired_cols):
 			result["name"] = names[desired_cols[n]]
 			result["label"] = "Ft." + str(n)
 			result["inc_change"] = single_change[n]
-			result["occ"] = all_counts[i]
+			result["occ"] = np.round((all_counts[i]/total_count),2)
 			result["per"] = all_per[i]
 
 			single_dicts.append(result)
@@ -361,7 +361,8 @@ X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 no_samples, no_features = X.shape
 
 all_results = big_scraper("pre_data1.csv",[4])
-print(len(all_results))
+
+# print(all_results)
 # print(all_results)
 
 # count_total = occurance_counter("pre_data1.csv")
