@@ -364,7 +364,7 @@ def my_combinations(target,data,limit):
 		result += my_combinations(new_target,new_data,limit)
 	return result
 
-def combination_finder(pre_proc_file,cols_lst):
+def combination_finder(pre_proc_file,cols_lst,individual):
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_combinations = {}
 
@@ -397,38 +397,54 @@ def combination_finder(pre_proc_file,cols_lst):
 					all_combinations[new_key] += 1
 				else:
 					all_combinations[new_key] = 1
+	if (individual):
+		ones = []
+		twos = []
+		threes = []
+		fours = []
+		fives = []
 
-	ones = []
-	twos = []
-	threes = []
-	fours = []
-	fives = []
+		for one_case in all_combinations:
+			lst_case = one_case.split(',')
+			if len(lst_case) == 1:
+				ones.append((lst_case,all_combinations[one_case]))
+				ones = sorted(ones, key=itemgetter(1), reverse=True)
+			elif len(lst_case) == 2:
+				twos.append((lst_case,all_combinations[one_case]))
+				twos = sorted(twos, key=itemgetter(1), reverse=True)
+			elif len(lst_case) == 3:
+				threes.append((lst_case,all_combinations[one_case]))
+				threes = sorted(threes, key=itemgetter(1), reverse=True)
+			elif len(lst_case) == 4:
+				fours.append((lst_case,all_combinations[one_case]))
+				fours = sorted(fours, key=itemgetter(1), reverse=True)
+			else:
+				fives.append((lst_case,all_combinations[one_case]))
+				fives = sorted(fives, key=itemgetter(1), reverse=True)
 
-	for one_case in all_combinations:
-		lst_case = one_case.split(',')
-		if len(lst_case) == 1:
-			ones.append((lst_case,all_combinations[one_case]))
-			ones = sorted(ones, key=itemgetter(1), reverse=True)
-		elif len(lst_case) == 2:
-			twos.append((lst_case,all_combinations[one_case]))
-			twos = sorted(twos, key=itemgetter(1), reverse=True)
-		elif len(lst_case) == 3:
-			threes.append((lst_case,all_combinations[one_case]))
-			threes = sorted(threes, key=itemgetter(1), reverse=True)
-		elif len(lst_case) == 4:
-			fours.append((lst_case,all_combinations[one_case]))
-			fours = sorted(fours, key=itemgetter(1), reverse=True)
-		else:
-			fives.append((lst_case,all_combinations[one_case]))
-			fives = sorted(fives, key=itemgetter(1), reverse=True)
+		big_list = ones+twos+threes+fours+fives
 
-	big_list = ones+twos+threes+fours+fives
+		final_result = []
+		for item_pair in big_list:
+			string_result = [int(x) for x in item_pair[0]]
+			final_result.append(string_result)
 
-	final_result = []
-	for item_pair in big_list:
-		final_result.append(item_pair[0])
+		return final_result
 
-	return final_result
+	else:
+		tuple_result = []
+		for one_case in all_combinations:
+			lst_case = one_case.split(',')
+			tuple_result.append((lst_case,all_combinations[one_case]))
+			tuple_result = sorted(tuple_result, key=itemgetter(1), reverse=True)
+
+		final_result = []
+		for item_pair in tuple_result:
+			string_result = [int(x) for x in item_pair[0]]
+			final_result.append(string_result)
+
+		return final_result
+
 
 
 
@@ -442,7 +458,8 @@ y = vals[:,0]
 X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
-combinations = combination_finder("pre_data1.csv",[3])
+combinations = combination_finder("pre_data1.csv",[3],False)
+print(combinations)
 # all_results = big_scraper("pre_data1.csv",[4])
 
 # print(all_results)
