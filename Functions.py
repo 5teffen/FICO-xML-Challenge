@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from operator import itemgetter
+import copy
 
 
 def separate_bins_feature(feat_column,special_case = False):
@@ -338,10 +340,10 @@ def big_scraper(pre_proc_file,desired_cols):
 		for n in range(single_change.shape[0]):
 			result = {}
 			result["name"] = names[desired_cols[n]]
-			result["label"] = "Ft." + str(n)
-			result["inc_change"] = single_change[n]
-			result["occ"] = np.round((all_counts[i]/total_count),2)
-			result["per"] = all_per[i]
+			result["label"] = "Ft." + str(n+1)
+			result["inc_change"] = int(single_change[n])
+			result["occ"] = float(np.round((all_counts[i]/total_count),2))
+			result["per"] = float(all_per[i])
 
 			single_dicts.append(result)
 
@@ -349,6 +351,87 @@ def big_scraper(pre_proc_file,desired_cols):
 
 
 	return all_dicts
+
+def my_combinations(target,data,limit):
+	result = []
+	for i in range(len(data)):
+		new_target = copy.copy(target)
+		new_data = copy.copy(data)
+		new_target.append(data[i])
+		new_data = data[i+1:]
+		if (4 >= len(new_target) >= limit):
+			result.append(new_target)
+		result += my_combinations(new_target,new_data,limit)
+	return result
+
+def combination_finder(pre_proc_file,cols_lst):
+	pre_data = pd.read_csv(pre_proc_file).values
+	all_combinations = {}
+
+	for sample in range(pre_data.shape[0]):
+
+		cur_lst = []
+		for c in range(9,14):
+			val = pre_data[sample][c]
+			if (val < 0 or len(cur_lst) > 5):
+				break
+			cur_lst.append(val)
+
+		if (set(cols_lst).issubset(cur_lst)):
+			new_key = ','.join(str(x) for x in cols_lst)
+			if new_key in all_combinations:
+				all_combinations[new_key] += 1
+			else:
+				all_combinations[new_key] = 1
+
+			left_over = [x for x in cur_lst if (x not in cols_lst)]
+
+			if len(left_over) > 0:
+				possible_combs = my_combinations([],left_over,0)
+
+			# -- Add the leftovers -- 
+			for ending in possible_combs:
+				sorted_cols = sorted(cols_lst+ending)
+				new_key = ','.join(str(x) for x in sorted_cols)
+				if new_key in all_combinations:
+					all_combinations[new_key] += 1
+				else:
+					all_combinations[new_key] = 1
+
+	ones = []
+	twos = []
+	threes = []
+	fours = []
+	fives = []
+
+	for one_case in all_combinations:
+		lst_case = one_case.split(',')
+		if len(lst_case) == 1:
+			ones.append((lst_case,all_combinations[one_case]))
+			ones = sorted(ones, key=itemgetter(1), reverse=True)
+		elif len(lst_case) == 2:
+			twos.append((lst_case,all_combinations[one_case]))
+			twos = sorted(twos, key=itemgetter(1), reverse=True)
+		elif len(lst_case) == 3:
+			threes.append((lst_case,all_combinations[one_case]))
+			threes = sorted(threes, key=itemgetter(1), reverse=True)
+		elif len(lst_case) == 4:
+			fours.append((lst_case,all_combinations[one_case]))
+			fours = sorted(fours, key=itemgetter(1), reverse=True)
+		else:
+			fives.append((lst_case,all_combinations[one_case]))
+			fives = sorted(fives, key=itemgetter(1), reverse=True)
+
+	big_list = ones+twos+threes+fours+fives
+
+	final_result = []
+	for item_pair in big_list:
+		final_result.append(item_pair[0])
+
+	return final_result
+
+
+
 
 changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
 
@@ -359,8 +442,8 @@ y = vals[:,0]
 X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
-
-all_results = big_scraper("pre_data1.csv",[4])
+combinations = combination_finder("pre_data1.csv",[3])
+# all_results = big_scraper("pre_data1.csv",[4])
 
 # print(all_results)
 # print(all_results)
