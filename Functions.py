@@ -94,7 +94,6 @@ def divide_data_bins(data, special=[]):
 
     return bins_centred, X_pos_array, in_vals
 
-
 def prepare_for_analysis(filename):
 	data_array = pd.read_csv(filename,header=None).values
 
@@ -115,7 +114,6 @@ def prepare_for_analysis(filename):
 			row_no += 1
 
 	return data_array
-
 
 def get_change_samples(pre_proc_file,all_data_file,cols,height):
 	# 0-4 General Data
@@ -155,8 +153,6 @@ def get_anch_samples(pre_proc_file,all_data_file,anchs):
 
 	return anch_samples
 
-
-
 def sample_transf(X):
 	trans_dict = {}
 	my_count = 0
@@ -168,8 +164,6 @@ def sample_transf(X):
 			trans_dict[str(sample)] = -9
 
 	return trans_dict
-
-
 
 def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,positions,transform):
 
@@ -242,7 +236,6 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 
 	return final_data
 
-
 def occurance_counter(pre_proc_file):
 	pre_data = pd.read_csv(pre_proc_file).values
 
@@ -255,27 +248,107 @@ def occurance_counter(pre_proc_file):
 		total += 1
 		for anc in range(5,9):
 			col = pre_data[sam][anc]
-			if col != -99:
+			if col >= 0:
 				if pre_data[sam][1] > 0.5:
 					count_array[col][0] += 1
 				else: 
 					count_array[col][1] += 1
 
-			for chn in range(9,14):
-				col = pre_data[sam][chn]
-				if col != -99:
-					if pre_data[sam][chn+5] > 0:
-						count_array[col][2] += 1
-					else:
-						count_array[col][3] += 1
+		for chn in range(9,14):
+			col = pre_data[sam][chn]
+			if col >= 0:
+
+				if pre_data[sam][chn+5] >= 0:
+					count_array[col][2] += 1
+				else:
+					count_array[col][3] += 1
 	ratio_array = count_array/total				
 	# for i in range(ratio_array.shape[1]):
 	# 	ratio_array
 	return ratio_array
 
+def big_scraper(pre_proc_file,desired_cols):
+	# Note: desired_cols is a list
+
+	pre_data = pd.read_csv(pre_proc_file).values
+
+	all_changes = []
+	all_counts = []
+	all_per = []
+
+	no_of_cols = len(desired_cols)
+	changes_lst = [0]*(no_of_cols) #Last column is count
+
+	matches = 0
+
+	# -- Finding all the change combinations --
+	for sam in range(pre_data.shape[0]):
+		for test in range(9,14):
+			if (pre_data[sam][test] in desired_cols):
+				changes_lst[matches] = pre_data[sam][test+5]
+				matches += 1
+
+				if (matches == no_of_cols):
+					if (changes_lst in all_changes):
+						idx = all_changes.index(changes_lst)
+						all_counts[idx] += 1
+					else:
+						all_changes.append(changes_lst)
+						all_counts.append(1)
+						all_per.append(int(np.round(pre_data[sam][1],0)))
+
+		# - Resets changes list -
+		changes_lst = [0]*no_of_cols
+		matches = 0
 
 
+	if (all_changes == []):
+		return None
+	# -- Sorting Changes by Count-- 
+	all_changes = np.array(all_changes)
 
+	all_counts = np.array(all_counts)
+	all_counts = all_counts.reshape((all_counts.shape[0],1))
+
+	all_per = np.array(all_per)
+	all_per = all_per.reshape((all_per.shape[0],1))
+	
+	sort_array = np.append(all_counts,all_per,axis=1)
+	sort_array = np.append(sort_array,all_changes,axis=1)
+
+	sort_array = sort_array[(-sort_array[:,0]).argsort()]
+
+	all_counts = sort_array[:,0].flatten()
+	all_per = sort_array[:,1]
+	all_changes = sort_array[:,2:]
+
+	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
+		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
+		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
+		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
+		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
+		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
+
+
+	all_dicts = []
+	for i in range(all_counts.shape[0]):
+		single_dicts = []
+		single_change = all_changes[i]
+
+		for n in range(single_change.shape[0]):
+			result = {}
+			result["name"] = names[desired_cols[n]]
+			result["label"] = "Ft." + str(n)
+			result["inc_change"] = single_change[n]
+			result["occ"] = all_counts[i]
+			result["per"] = all_per[i]
+
+			single_dicts.append(result)
+
+		all_dicts.append(single_dicts)
+
+
+	return all_dicts
 
 changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
 
@@ -287,9 +360,12 @@ X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
 
-count_total = occurance_counter("pre_data1.csv")
+all_results = big_scraper("pre_data1.csv",[4])
+print(len(all_results))
+# print(all_results)
 
-print(count_total)
+# count_total = occurance_counter("pre_data1.csv")
+
 
 # trans_dict = sample_transf(X)
 
