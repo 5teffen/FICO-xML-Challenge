@@ -159,7 +159,8 @@ function draw_single_graph(testData, svg, width, height){
         .attr("fill", "none");
 }
 
-function draw_all_graphs(totalData) {
+function draw_all_graphs(totalData,limit) {
+    
     var x_shift = 0,
         y_shift = 0,
         
@@ -236,13 +237,15 @@ function draw_all_graphs(totalData) {
         text_shift += 25
     }
     
-    
     svg = svg.append("g")
             .attr("transform","translate(" + (text_space+text_feat+5) + ",0)");
     
     
+    
     var count = 0
-    for (indx = 0; indx < totalData.length; ++indx){
+    if (totalData.length <= limit) {limit = totalData.length;}
+
+    for (indx = 0; indx < limit; ++indx){
         var single_square = totalData[indx];
         var shifted_svg = svg.append('g')
                         .attr("transform","translate(" + x_shift + ',' + y_shift +')');
@@ -296,5 +299,5 @@ function wrap(text, width) {
 }
 
 
-draw_all_graphs(totalData1);
+draw_all_graphs(totalData1,100);
 
