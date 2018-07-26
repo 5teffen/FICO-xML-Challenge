@@ -160,6 +160,8 @@ function draw_single_graph(testData, svg, width, height){
 }
 
 function draw_all_graphs(totalData,limit) {
+    const horizontal_limit = 5;
+    
     
     var x_shift = 0,
         y_shift = 0,
@@ -178,8 +180,6 @@ function draw_all_graphs(totalData,limit) {
             left: 5
         };
           
-    const horizontal_limit = 3;
-    
     var width = 500 - margin.right - margin.left,
         height = 500 - margin.top - margin.bottom;
 
