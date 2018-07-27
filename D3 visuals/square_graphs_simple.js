@@ -66,7 +66,7 @@ var squareThree = [
     inc_change: 3
 }];
 
-var totalData1 = [squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo];
+var totalData1 = [squareOne,squareTwo,squareTwo,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo];
 var totalData2 = [squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree];
 
 function draw_single_graph(testData, svg, width, height){
@@ -253,11 +253,9 @@ function draw_all_squares(totalData, limit, elemn) {
     
     if (totalData.length <= limit) {limit = totalData.length;}
 
-    for (indx = 0; ((row1_count == horizontal_limit) || (row2_count == horizontal_limit) || indx < limit); ++indx){
+    for (indx = 0; indx < limit; ++indx){
         var single_square = totalData[indx];
-
-        console.log(single_square[0]);
-        if ((single_square[0].per) > 0.5){
+        if (((single_square[0].per) >= 0.5)&&(row1_count != horizontal_limit)){
             var shifted_svg = svg.append('g')
                     .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
             draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
@@ -265,7 +263,7 @@ function draw_all_squares(totalData, limit, elemn) {
             row1_count += 1;
         }
         
-        else {
+        else if (((single_square[0].per) < 0.5)&&(row2_count != horizontal_limit)){
             var shifted_svg = svg.append('g')
                     .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
             draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
@@ -309,5 +307,5 @@ function wrap(text, width) {
         }
     });
 }
-//draw_all_squares(totalData1,8,"body");
+//draw_all_squares(totalData1,12,"body");
 
