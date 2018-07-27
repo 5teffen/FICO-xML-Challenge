@@ -4,30 +4,7 @@
 import pandas as pd
 import numpy as np
 from SVM_model import SVM_model
-from Functions import separate_bins_feature, prepare_for_analysis
-
-
-
-def divide_data_bins(data, special=[]):
-    no_feat = data.shape[1]
-    bins_centred = []
-    X_pos_array = []
-    in_vals = []
-    
-    for i in range(no_feat):
-        # Handles special case
-        bins, new_col, val = separate_bins_feature(data[:,i].flatten(),(i in special))[:3]
-        
-        in_vals.append(val)
-        bins_centred.append(bins)
-        X_pos_array.append(new_col)
-        
-    # Convert to numpy array
-    in_vals = np.array(in_vals).transpose()
-    bins_centred = np.array(bins_centred)
-    X_pos_array = (np.array(X_pos_array)).transpose() 
-
-    return bins_centred, X_pos_array, in_vals
+from Functions import *
 
 
 def evaluate_data_set(data):
@@ -273,7 +250,7 @@ def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
     return change_vector, change_row, anchors, initial_percentage
 
 
-def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, percent):
+def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, percent,monot):
     data = []
     
     names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
@@ -333,13 +310,22 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
             scl_val = 0
         if (scl_change < 0):
             scl_change = 0
+        if (scl_val > 1 ):
+            scl_val = 1
+        if (scl_change > 1):
+            scl_change = 1
 
+        if (monot):
+            result["val"] = 100-int(val)
+            result["scl_val"] = float(scl_val)
+            result["change"] = int(change)
+            result["scl_change"] = float(scl_change)
 
-        
-        result["val"] = int(val)
-        result["scl_val"] = scl_val
-        result["change"] = int(change)
-        result["scl_change"] = scl_change
+        else:
+            result["val"] = 100-int(val)
+            result["scl_val"] = 1-float(scl_val)
+            result["change"] = 100-int(change)
+            result["scl_change"] = 1-float(scl_change)
         
 #         print("Val:",result["val"])
 #         print("Scl_Val:",result["scl_val"])
@@ -389,20 +375,20 @@ def scaling_data_density(data, bins_centred):
 
 
 
-# vals = prepare_for_analysis("final_data_file.csv")
-# X = vals[:,1:]
-# y = vals[:,0]
+vals = prepare_for_analysis("final_data_file.csv")
+X = vals[:,1:]
+y = vals[:,0]
 
-# no_samples, no_features = X.shape
+no_samples, no_features = X.shape
 
-# svm_model = SVM_model(None,"final_data_file.csv")
-# svm_model.train_model(0.001)
-# svm_model.test_model()
-"""
+svm_model = SVM_model(None,"final_data_file.csv")
+svm_model.train_model(0.001)
+svm_model.test_model()
+
 sample = 1 # NOTE THIS VALUE
 
 bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
 change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
-data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent)
+data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)
 dict_array = scaling_data_density(X, bins_centred)
-"""
+
