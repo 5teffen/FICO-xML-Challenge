@@ -105,7 +105,7 @@ function draw_single_graph(testData, svg, width, height){
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
         .attr("opacity",function(d){return d.occ;})
-        .style("fill","#A9A9A9");
+        .style("fill","white");
 
 
     // -- Drawing surrounding box -- 
@@ -159,7 +159,7 @@ function draw_single_graph(testData, svg, width, height){
         .attr("fill", "none");
 }
 
-function draw_all_graphs(totalData,limit) {
+function draw_all_squares(totalData,limit) {
     const horizontal_limit = 5;
     
     
@@ -297,5 +297,5 @@ function wrap(text, width) {
 }
 
 
-draw_all_graphs(totalData1,100);
+draw_all_squares(totalData2,100);
 
