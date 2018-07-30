@@ -351,12 +351,13 @@
             var resp_arr = httpRequest.responseText;
             var barData = [];
             barData = JSON.parse(resp_arr);
+            var monot_arr = [1,1,1,1,1,-1,-1,1,1,1,1,0,-1,0,1,-1,-1,-1,-1,0,0,-1,0];
 
             draw_occurance_text();
 
             for (i=0; i<23; i++){
               draw_occurance_bar(barData[i][0],barData[i][1],barData[i][2],barData[i][3],i);
-              draw_dir(1, i);
+              draw_dir(monot_arr[i], i);
             }
           }
           else {

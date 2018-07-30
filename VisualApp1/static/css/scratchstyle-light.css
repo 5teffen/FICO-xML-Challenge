@@ -469,6 +469,7 @@ svg {
   font-weight: bold;
   font-size: 14px;
   margin-left: 0px;
+  text-align: center;
 }
 
 #bar-div-header {
@@ -484,6 +485,8 @@ svg {
   width: 125px;
   height: 30px;
   display: inline-block;
+  margin-top: 5px;
+
   /*width: 125px;
   height: 100%;
   display: inline-block;
@@ -493,15 +496,17 @@ svg {
 
 .ft-div a {
   min-height: 30px;
-  margin-bottom: 20px;
 }
 
 .monot-div {
   display: inline-block;
-  width: 45px;
+  width: 55px;
   height: 30px;
   float: left;
-  margin-left: 8px;
+  margin-left: 0px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
 }
 
 

@@ -1,7 +1,7 @@
 function draw_dir(dir, ft_index) {
     
-    var width = 30,
-        height = 30;
+    var width = 25,
+        height = 28;
     
     var xScale = d3.scaleLinear()
             .domain([0, 1])
