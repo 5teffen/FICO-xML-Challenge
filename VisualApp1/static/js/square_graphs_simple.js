@@ -1,16 +1,22 @@
+
+
 function draw_single_graph(testData, svg, width, height){
 
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 
-    var the_colour = "";
+    var the_colour = "",
+        opp_colour = "";
 
     var separator = 0.015
 
     if (testData[0].per > 0.5) {
-        the_colour = bad_col;}
+        the_colour = bad_col;
+        opp_colour = good_col;}
     else {
-        the_colour = good_col;}
+        the_colour = good_col;
+        opp_colour = bad_col;
+    }
 
     var padding_top = 0.1,
         padding_bottom = 0.1;
@@ -19,22 +25,23 @@ function draw_single_graph(testData, svg, width, height){
     var xScale = d3.scaleBand()
             .domain(testData.map(function(d){return d.name;}))
             .rangeRound([0, width])
-            .paddingInner(separator),
+            .paddingInner(0),
         yScale = d3.scaleLinear()
             .domain([0-padding_bottom, 1+padding_top])
             .rangeRound([height, 0]);
 
     // -- Drawing background rectangles -- 
-    svg.append("g").selectAll("rect")
-        .data(testData)
-        .enter()
-        .append("rect")
-        .attr('x',function(d) {return xScale(d.name);})
+    // svg.append("g").selectAll("rect")
+        // .data(testData)
+        // .enter()
+        svg.append("g").append("rect")
+        .attr('x',0.8)
         .attr('y',0)
-        .attr("height",function(d){return yScale(0-padding_bottom)})
-        .attr("width",xScale.bandwidth())
-        .attr("opacity",function(d){return d.occ*3})
-        .style("fill","#A9A9A9");
+        .attr("height",yScale(0-padding_bottom))
+        .attr("width",xScale.bandwidth()*testData.length)
+        .attr("opacity",testData[0].occ*3)
+        .style("fill",opp_colour);
+        // .style("fill","#A9A9A9");
 
 
     // -- Drawing surrounding box -- 
@@ -90,11 +97,13 @@ function draw_single_graph(testData, svg, width, height){
 
 function draw_all_squares(totalData, limit, elemn) {
 
+    // const horizontal_limit = limit/2;
     const horizontal_limit = 7;
     
-    
-    var x_shift = 0,
-        y_shift = 0,
+    var x1_shift = 0,
+        x2_shift = 0,
+        y1_shift = 0,
+        y2_shift = 0,
         
         x_sep = 6,
         y_sep = 6;
@@ -169,26 +178,32 @@ function draw_all_squares(totalData, limit, elemn) {
     
     
     
-    var count = 0
+    var row1_count = 0,
+        row2_count = 0;
+    
+    y2_shift = sq_height + y_sep;
+    
     if (totalData.length <= limit) {limit = totalData.length;}
 
     for (indx = 0; indx < limit; ++indx){
         var single_square = totalData[indx];
-        var shifted_svg = svg.append('g')
-                        .attr("transform","translate(" + x_shift + ',' + y_shift +')');
-        
-        draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
-        
-        if (count == horizontal_limit-1){
-            x_shift = 0;
-            y_shift += (sq_height + y_sep);
-            count = 0;
+        if (((single_square[0].per) >= 0.5)&&(row1_count != horizontal_limit)){
+            var shifted_svg = svg.append('g')
+                    .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
+            draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
+            x1_shift += sq_width + x_sep;
+            row1_count += 1;
         }
         
-        else{
-            x_shift += sq_width + x_sep;
-            count += 1;
+        else if (((single_square[0].per) < 0.5)&&(row2_count != horizontal_limit)){
+            var shifted_svg = svg.append('g')
+                    .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
+            draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
+            x2_shift += sq_width + x_sep;
+            row2_count += 1;
         }
+
+        
     }
 }
 
@@ -224,7 +239,5 @@ function wrap(text, width) {
         }
     });
 }
-
-
-// draw_all_graphs(totalData1,100);
+//draw_all_squares(totalData1,12,"body");
 

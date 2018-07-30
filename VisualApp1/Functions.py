@@ -446,9 +446,6 @@ def combination_finder(pre_proc_file,cols_lst,individual):
 		return final_result
 
 
-
-
-
 # changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
 
 # vals = pd.read_csv("final_data_file.csv",header=None).values

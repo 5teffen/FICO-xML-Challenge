@@ -13,6 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- SVG scripts -->
     <script type="text/javascript" src="/static/js/main_graph.js"></script>
+    <script type="text/javascript" src="/static/js/direction_signs.js"></script>
     <script type="text/javascript" src="/static/js/square_graphs_simple.js"></script>
     <script type="text/javascript" src="/static/js/occ_bar.js"></script>
     <script type="text/javascript" src="/static/js/mini_graph.js"></script>
@@ -332,7 +333,7 @@
               document.getElementById("combination-list").append(li);
               draw_all_squares(middleData[j], 14, "#"+li_div.id);
               var br = document.createElement("br");
-              // document.getElementById("combination-list").append(br);
+              document.getElementById("combination-list").append(br);
             }
           }
           else {
@@ -350,9 +351,13 @@
             var resp_arr = httpRequest.responseText;
             var barData = [];
             barData = JSON.parse(resp_arr);
+            var monot_arr = [1,1,1,1,1,-1,-1,1,1,1,1,0,-1,0,1,-1,-1,-1,-1,0,0,-1,0];
+
+            draw_occurance_text();
 
             for (i=0; i<23; i++){
               draw_occurance_bar(barData[i][0],barData[i][1],barData[i][2],barData[i][3],i);
+              draw_dir(monot_arr[i], i);
             }
           }
           else {
@@ -468,18 +473,53 @@
 
         var ft_table = document.createElement("table");
         ft_table.id = "feature-table1";
+
+        // Header
+
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        var ft_div = document.createElement("div");
+        var bar_div = document.createElement("div");
+        var monot = document.createElement("div");
+
+        monot.innerHTML = "Monot.";
+        monot.className = "monot-div";
+
+        ft_div.className = "ft-div-header";
+        td.id = "ft-header";
+
+        bar_div.className = "bar-div";
+        bar_div.id = "bar-div-header";
+
+        var link = document.createElement("a");
+
+        link.innerHTML = "Feature Name";
+        link.style.maxWidth = "125px"; 
+        link.id = "feat-header";
+
+        ft_div.append(link);
+        td.append(monot);
+        td.append(ft_div);
+        td.append(bar_div);
+        tr.append(td);
+        ft_table.append(tr);
+
         for (i = 0; i < features; i++) {
           var tr = document.createElement("tr");
           var td = document.createElement("td");
           var ft_div = document.createElement("div");
           var bar_div = document.createElement("div");
+          var monot = document.createElement("div");
+
+          monot.className = "monot-div";
+          monot.id = "monot-" + i.toString();
 
           ft_div.className = "ft-div";
 
           bar_div.className = "bar-div";
           bar_div.id = "ft-div-" + i.toString();
 
-          ft_arr = [3];
+          var ft_arr = [3];
 
           td.onclick = function () { makeRequest3(ft_arr); };
           var link = document.createElement("a");
@@ -490,6 +530,7 @@
           link.href = "#right-panel";
 
           ft_div.append(link);
+          td.append(monot);
           td.append(ft_div);
           td.append(bar_div);
           tr.append(td);

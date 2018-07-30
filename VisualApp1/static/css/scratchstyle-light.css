@@ -395,7 +395,7 @@ svg {
 
 
 #left-panel {
-  width: 240px;
+  width: 272px;
   height: calc(100% - 120px);
   /*height: 80%;*/
   background-color: white;
@@ -410,13 +410,7 @@ svg {
 /*#left-panel::-webkit-scrollbar {
   width: 8px;
 }*/
-#left-panel td {
-  -webkit-transition: all 0.2s ease-out;
-}
-#left-panel td:hover {
-  font-size: 13px;
-  font-weight: bold;
-}
+
 
 #feature-table1 {
   width: 100%;
@@ -425,6 +419,7 @@ svg {
   margin: 0px;
   display: block;
   overflow: auto;
+  vertical-align: top;
   /*border: 1px solid black;*/
 }
 
@@ -450,25 +445,91 @@ svg {
   /*background-color: #13895F;*/
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
+#feature-table1 tr{
+  width: 285px;
 
+}
 #feature-table1 td{
   width: 100%;
-  height: 50px;
+  max-height: 30px;
   text-align: left;
   /*border: 1px solid black;*/
   font-weight: 550;
+  vertical-align: top;
+}
+
+#ft-header {
+  /*border-bottom: 1px solid black;*/
+}
+
+.ft-div-header {
+  width: 120px;
+  display: inline-block;
+  margin-top: 0px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-left: 0px;
+  text-align: center;
+}
+
+#bar-div-header {
+  margin-right: 16px;
+}
+
+.bar-label {
+  margin-top: 0px;
 }
 
 .ft-div {
-  width: 120px;
+  position: relative;
+  width: 125px;
+  height: 30px;
   display: inline-block;
-  margin-top: 15px;
+  margin-top: 5px;
+
+  /*width: 125px;
+  height: 100%;
+  display: inline-block;
+  border-bottom: 25px;
+  -webkit-transition: all 0.2s ease-out;*/
+}
+
+.ft-div a {
+  min-height: 30px;
+}
+
+.monot-div {
+  display: inline-block;
+  width: 55px;
+  height: 30px;
+  float: left;
+  margin-left: 0px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+}
+
+
+
+.dir-svg {
+  margin-top: 0px;
+}
+
+.ft-div:hover {
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .bar-div {
   display: inline-block;
-  width: 100px;
+  width: 45px;
+  height: 30px;
   float: right;
+  margin-left: 8px;
+}
+
+.occ-svg {
+  margin-top: 0px;
 }
 
 
