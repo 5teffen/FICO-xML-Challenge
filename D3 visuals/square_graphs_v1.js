@@ -4,7 +4,7 @@ var squareOne = [
     name: "External Risk Estimate",
     label: "Ft.1",
     per: 0.7,
-    occ: 0.05,
+    occ: 0.5,
     inc_change: 3
     
 },
@@ -12,7 +12,7 @@ var squareOne = [
     name: "Months Since Oldest Trade Open",
     label: "Ft.2",
     per: 0.7,
-    occ: 0.05,
+    occ: 0.5,
     inc_change: -4,
 
 }];
@@ -22,7 +22,7 @@ var squareTwo = [
     name: "External Risk Estimate23",
     label: "Ft.1",
     per: 0.3,
-    occ: 0.07,
+    occ: 0.2,
     inc_change: 3
     
 },
@@ -30,7 +30,7 @@ var squareTwo = [
     name: "Months Since Oldest Trade Open1",
     label: "Ft.2",
     per: 0.3,
-    occ: 0.07,
+    occ: 0.2,
     inc_change: 2
 }];
 
@@ -66,22 +66,22 @@ var squareThree = [
     inc_change: 3
 }];
 
-var totalData1 = [squareOne,squareTwo,squareTwo,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo];
+var totalData1 = [squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo,squareOne,squareTwo];
 var totalData2 = [squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree,squareThree];
 
 function draw_single_graph(testData, svg, width, height){
-
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 
-    var the_colour = "",
-        opp_colour = "";
-
+    var the_colour = "";
+    var opp_colour = "";
+    
     var separator = 0.015
 
     if (testData[0].per > 0.5) {
         the_colour = bad_col;
-        opp_colour = good_col;}
+        opp_colour = good_col;
+    }
     else {
         the_colour = good_col;
         opp_colour = bad_col;
@@ -94,10 +94,11 @@ function draw_single_graph(testData, svg, width, height){
     var xScale = d3.scaleBand()
             .domain(testData.map(function(d){return d.name;}))
             .rangeRound([0, width])
-            .paddingInner(0),
+            .paddingInner(separator),
         yScale = d3.scaleLinear()
             .domain([0-padding_bottom, 1+padding_top])
             .rangeRound([height, 0]);
+
 
     // -- Drawing background rectangles -- 
     svg.append("g").selectAll("rect")
@@ -108,9 +109,8 @@ function draw_single_graph(testData, svg, width, height){
         .attr('y',0)
         .attr("height",function(d){return yScale(0-padding_bottom)})
         .attr("width",xScale.bandwidth())
-        .attr("opacity",function(d){return d.occ*3})
+        .attr("opacity",function(d){return d.occ;})
         .style("fill",opp_colour);
-        // .style("fill","#A9A9A9");
 
 
     // -- Drawing surrounding box -- 
@@ -131,7 +131,7 @@ function draw_single_graph(testData, svg, width, height){
         var d = testData[i];
         var abs_val = Math.abs(testData[i].inc_change); 
         for (n = 0; n < abs_val ; ++n) {
-            var one_incr = yScale(0.9)-yScale(1)
+            var one_incr = yScale(0.9)-yScale(1)+1
             svg.append("g")
                 .append("rect")
                 .attr("x",xScale(d.name) + xScale.bandwidth()*0.25)
@@ -142,6 +142,7 @@ function draw_single_graph(testData, svg, width, height){
                 })
                 .attr("height",one_incr)
                 .attr("fill", the_colour)
+                .attr("opacity",1)
                 .attr("stroke-width",0.4)
                 .attr("stroke","white");
         }
@@ -164,46 +165,45 @@ function draw_single_graph(testData, svg, width, height){
         .attr("fill", "none");
 }
 
-function draw_all_squares(totalData, limit, elemn) {
-
-    const horizontal_limit = limit/2;
+function draw_all_squares(totalData,limit) {
+    const horizontal_limit = 5;
     
-    var x1_shift = 0,
-        x2_shift = 0,
-        y1_shift = 0,
-        y2_shift = 0,
+    
+    var x_shift = 0,
+        y_shift = 0,
         
-        x_sep = 6,
-        y_sep = 6;
+        x_sep = 8,
+        y_sep = 8;
     
-    const sq_height = 35,
-          sq_width = 35;
+    const sq_height = 45,
+          sq_width = 45;
 
+    
     const margin = {
-            top: 0, 
-            right: 0,
-            bottom: 0, 
-            left: 0
+            top: 5, 
+            right: 5,
+            bottom: 5, 
+            left: 5
         };
-
           
-    var width = 420 - margin.right - margin.left,
-        height = sq_height*(Math.ceil(limit/horizontal_limit)) + 6 - margin.top - margin.bottom;
+    var width = 500 - margin.right - margin.left,
+        height = 500 - margin.top - margin.bottom;
 
-    var svg = d3.select(elemn)
+    var svg = d3.select("body")
         .append("svg")
-        .attr("class", "middle-svg")
         .attr("width",width + margin.right + margin.left)
         .attr("height",height + margin.top + margin.bottom)
             .append("g")
                 .attr("transform","translate(" + margin.left + ',' + margin.top +')');
+    
+    
     
     var text_shift = 0,
         text_feat = 30,
         text_space = 95;
     
     for (i = 0; i < totalData[0].length; ++i){
-        var name_string = (totalData[0][i].name).toString() ;
+        var name_string =(totalData[0][i].name).toString() 
         
         svg.append('g').append("text")
             .text(name_string)
@@ -246,32 +246,26 @@ function draw_all_squares(totalData, limit, elemn) {
     
     
     
-    var row1_count = 1,
-        row2_count = 1;
-    
-    y2_shift = sq_height + y_sep;
-    
+    var count = 0
     if (totalData.length <= limit) {limit = totalData.length;}
 
     for (indx = 0; indx < limit; ++indx){
         var single_square = totalData[indx];
-        if (((single_square[0].per) >= 0.5)&&(row1_count != horizontal_limit)){
-            var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
-            draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
-            x1_shift += sq_width + x_sep;
-            row1_count += 1;
+        var shifted_svg = svg.append('g')
+                        .attr("transform","translate(" + x_shift + ',' + y_shift +')');
+        
+        draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
+        
+        if (count == horizontal_limit){
+            x_shift = 0;
+            y_shift += (sq_height + y_sep);
+            count = 0;
         }
         
-        else if (((single_square[0].per) < 0.5)&&(row2_count != horizontal_limit)){
-            var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
-            draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
-            x2_shift += sq_width + x_sep;
-            row2_count += 1;
+        else{
+            x_shift += sq_width + x_sep;
+            count += 1;
         }
-
-        
     }
 }
 
@@ -307,5 +301,7 @@ function wrap(text, width) {
         }
     });
 }
-//draw_all_squares(totalData1,12,"body");
+
+
+draw_all_squares(totalData1,100);
 

@@ -5,7 +5,7 @@ function draw_occurance_bar(anch_good,anch_bad,change_good,change_bad) {
     
     var shift = bar_height+5
     
-    var text_space = 30
+    var text_space = 0
     
     var text_col = "#808080"
     
@@ -23,24 +23,24 @@ function draw_occurance_bar(anch_good,anch_bad,change_good,change_bad) {
                 .attr("width",175)
                 .attr("height",30)
     
-   // Change Label
-    svg.append('g').append("text")
-        .text("# anchors")
-        .attr("x",4)
-        .attr("y",bar_height/2+5)
-        .attr("font-family", 'sans-serif')
-        .attr("font-size", '5px')
-        .attr("fill","#808080")
-        .attr("text-anchor",'start');
-    
-    svg.append('g').append("text")
-        .text("# changes")
-        .attr("x",4)
-        .attr("y",bar_height/2+shift+5)
-        .attr("font-family", 'sans-serif')
-        .attr("font-size", '5px')
-        .attr("fill","#808080")
-        .attr("text-anchor",'start');
+//   // Change Label
+//    svg.append('g').append("text")
+//        .text("# anchors")
+//        .attr("x",4)
+//        .attr("y",bar_height/2+5)
+//        .attr("font-family", 'sans-serif')
+//        .attr("font-size", '5px')
+//        .attr("fill","#808080")
+//        .attr("text-anchor",'start');
+//    
+//    svg.append('g').append("text")
+//        .text("# changes")
+//        .attr("x",4)
+//        .attr("y",bar_height/2+shift+5)
+//        .attr("font-family", 'sans-serif')
+//        .attr("font-size", '5px')
+//        .attr("fill","#808080")
+//        .attr("text-anchor",'start');
     
     
     svg = svg.append("g")
