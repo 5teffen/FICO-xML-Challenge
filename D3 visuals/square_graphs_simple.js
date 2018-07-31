@@ -307,5 +307,5 @@ function wrap(text, width) {
         }
     });
 }
-//draw_all_squares(totalData1,12,"body");
+//draw_all_squares(totalData1,12 ,"body");
 
