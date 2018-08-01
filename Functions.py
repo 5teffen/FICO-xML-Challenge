@@ -228,9 +228,9 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 				scl_change = 0
 
 			result["val"] = int(val)
-			result["scl_val"] = scl_val
+			result["scl_val"] = float(scl_val)
 			result["change"] = int(change)
-			result["scl_change"] = scl_change
+			result["scl_change"] = float(scl_change)
 
 			single_dict_list.append(result)
 			
@@ -390,13 +390,13 @@ def combination_finder(pre_proc_file,cols_lst,individual):
 				possible_combs = my_combinations([],left_over,0)
 
 			# -- Add the leftovers -- 
-			for ending in possible_combs:
-				sorted_cols = sorted(cols_lst+ending)
-				new_key = ','.join(str(x) for x in sorted_cols)
-				if new_key in all_combinations:
-					all_combinations[new_key] += 1
-				else:
-					all_combinations[new_key] = 1
+				for ending in possible_combs:
+					sorted_cols = sorted(cols_lst+ending)
+					new_key = ','.join(str(x) for x in sorted_cols)
+					if new_key in all_combinations:
+						all_combinations[new_key] += 1
+					else:
+						all_combinations[new_key] = 1
 	if (individual):
 		ones = []
 		twos = []
@@ -445,6 +445,37 @@ def combination_finder(pre_proc_file,cols_lst,individual):
 
 		return final_result
 
+def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
+	pre_data = pd.read_csv(pre_proc_file).values
+	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
+
+	samples_list = []
+	good_ones = []
+
+	# -- Find samples with the desired anchs -- 
+
+	for sample in range(pre_data.shape[0]):
+		test_case = []
+		for test in range(5,9):
+			if (pre_data[sample][test] < 0):
+				break
+			test_case.append(pre_data[sample][test])
+
+		if (set(anchs_lst).issubset(test_case)):
+			samples_list.append(pre_data[sample][0])
+			new_pre_data.append(pre_data[sample])
+
+	new_pre_data = np.array(new_pre_data)
+
+	# -- Sort the List -- 
+
+	new_pre_data = new_pre_data[new_pre_data[:,1].argsort()]
+
+	for row in new_pre_data:
+		pass
+		
+
+
 
 
 
@@ -458,8 +489,9 @@ y = vals[:,0]
 X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
-combinations = combination_finder("pre_data1.csv",[3],False)
-print(combinations)
+
+# anchor_finder("pre_data1.csv","final_data_file.csv",[1,4])
+combinations = combination_finder("pre_data1.csv",[4,17,21],False)
 # all_results = big_scraper("pre_data1.csv",[4])
 
 # print(all_results)
@@ -473,4 +505,3 @@ print(combinations)
 # bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
 
 # testing = prep_for_D3_global("pre_data1.csv","final_data_file.csv",changes, bins_centred, X_pos_array,trans_dict)
-# print(len(testing[0]))
