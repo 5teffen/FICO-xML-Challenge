@@ -34,10 +34,10 @@ a:hover, a:active { text-decoration: none; color: black }
 }*/
 
 html, body {
-	margin: 0;
-	background-color: gainsboro;
-	height: 100vh;
-	overflow: hidden;
+  margin: 0;
+  background-color: gainsboro;
+  height: 100vh;
+  overflow: hidden;
 }
 
 a {
@@ -97,6 +97,7 @@ main {
   padding-top: 10px;
 }
 
+
 /*-------------*/
 /* Search form */
 /*-------------*/
@@ -132,6 +133,9 @@ main {
 
 .left-nav li {
   font-weight: 200;
+  height: 81.6px;
+  /* background: rgba(0,0,0,.15); */
+  
 }
 
 .left-nav a.active,
@@ -293,11 +297,11 @@ table #model-display {
 /*-----------*/
 
 svg {
-	background-color: white;
-	margin-left: auto;
-	margin-right: auto;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 15px;
-	display: auto;
+  display: auto;
 }
 
 .axis path,
@@ -393,9 +397,35 @@ svg {
 /* Left panel */
 /*------------*/
 
+.btn-group .algo-button {
+    background-color: #BEBEBE; /* Green */
+    border: 1px solid black;
+    color: white;
+    padding: 8px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    cursor: pointer;
+    float: left;
+    font-weight: 500;
+    display: inline-block;
+    margin-bottom: 25px;
+}
+.btn-group .algo-button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+.btn-group .algo-button:focus {
+    /*background-color: gray;*/
+    outline: none;
+}
+
+#key-button {
+  background-color: gray;
+}
 
 #left-panel {
-  width: 272px;
+  width: 270px;
   height: calc(100% - 120px);
   /*height: 80%;*/
   background-color: white;
@@ -403,7 +433,8 @@ svg {
   /*display: table-cell; vertical-align: middle;*/
   font-size: 12px;
   /*overflow-y: scroll;*/
-  margin-top: 60px;
+  margin-top: 15px;
+  text-align: left;
   /*margin-left: 30px;*/
 }
 
@@ -418,7 +449,8 @@ svg {
   padding: 0px;
   margin: 0px;
   display: block;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   vertical-align: top;
   /*border: 1px solid black;*/
 }
@@ -474,6 +506,9 @@ svg {
 
 #bar-div-header {
   margin-right: 16px;
+  margin-top: 2px;
+  margin-left: 0px;
+  text-align: center;
 }
 
 .bar-label {
@@ -523,13 +558,36 @@ svg {
 .bar-div {
   display: inline-block;
   width: 45px;
-  height: 30px;
+  height: 24px;
   float: right;
-  margin-left: 8px;
+  margin-left: 20px;
+  margin-top: 6px;
 }
 
 .occ-svg {
   margin-top: 0px;
+}
+
+#reset-button {
+    background-color: gainsboro;
+    border: 1px solid black;
+    color: black;
+    padding: 4px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    cursor: pointer;
+    float: right;
+    font-weight: 500;
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 12px;
+}
+
+#reset-button:focus {
+    /*background-color: gray;*/
+    outline: none;
 }
 
 
@@ -541,7 +599,7 @@ svg {
   margin-left: 5px;
   width: calc(100% - 300px);
   /*width: 900px;*/
-  height: calc(100% - 120px);
+  height: calc(100% - 100px);
   padding-top: 60px;
   /*background-color: darkgrey;*/
   display: none;

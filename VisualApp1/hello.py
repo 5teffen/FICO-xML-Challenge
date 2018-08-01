@@ -90,6 +90,19 @@ def glob_site_bars():
 		for item in arr:
 			new_item = list(item)
 			ret_arr.append(new_item)
+
+		keyTots = []
+		chgTots = []
+		for i in range(no_features):
+			keyTots.append(ret_arr[i][0]+ret_arr[i][1])
+			chgTots.append(ret_arr[i][2]+ret_arr[i][3])
+
+
+		keySort = sorted(range(len(keyTots)), key=lambda k: keyTots[k])[::-1]
+		chgSort = sorted(range(len(chgTots)), key = lambda k: chgTots[k])[::-1]
+
+		ret_arr = [keySort, chgSort, ret_arr]
+
 		ret_string = json.dumps(ret_arr)
 
 	return ret_string
@@ -122,11 +135,18 @@ def handle_request_ft():
 
 		ft_list = (request.args.get('features'))
 		ft_list = ft_list[1:-1].split(',')
-		ft_list = [int(x) for x in ft_list]
 
+		if ft_list[0] != -1:
+			ft_list = [int(x) for x in ft_list]
+			ft_list.sort()
+		else:
+			return ""
+
+		print(ft_list)
 		# FUNCTION TO GENERATE LIST OF COMBINATION AND RANK THEM
 
 		combinations = combination_finder("pre_data1.csv",ft_list,False)
+		print(combinations)
 
 		ret_arr = []
 		for combi in combinations[:15]:

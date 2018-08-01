@@ -29,7 +29,11 @@
         </header>
         <nav class="left-nav">
           <ul>
-            <li><a href="/global">GLOBAL EXPLANATION</a></li>
+            <li>
+              <a href="/global">
+                GLOBAL EXPLANATION
+              </a>
+             </li>
             <li><a href="/individual">LOCAL EXPLANATIONS</a></li>
           </ul>
         </nav>
@@ -44,7 +48,13 @@
       
       <div class="right-side-global" id="demo">
 
+
+
         <div id="left-panel">
+          <div class="btn-group">
+            <button class="algo-button" id="key-button" onclick="buttonRequest(this)">Key Features</button>
+            <button class="algo-button" id="chg-button"onclick="buttonRequest(this)">Changes</button>
+          </div>
         </div>
 
         <div id="right-panel">
@@ -81,6 +91,32 @@
 
     <script>
     
+      var ft_names = ["External Risk Estimate", 
+                        "Months Since Oldest Trade Open",
+                        "Months Since Last Trade Open",
+                        "Average Months in File",
+                        "Satisfactory Trades",
+                        "Trades 60+ Ever",
+                        "Trades 90+ Ever",
+                        "% Trades Never Delq.",
+                        "Months Since Last Delq.",
+                        "Max Delq. Last 12M",
+                        "Max Delq. Ever",
+                        "Total Trades",
+                        "Trades Open Last 12M",
+                        "% Installment Trades",
+                        "Months Since Most Recent Inq",
+                        "Inq Last 6 Months",
+                        "Inq Last 6 Months exl. 7 days",
+                        "Revolving Burden",
+                        "Installment Burden",
+                        "Revolving Trades w/ Balance:",
+                        "Installment Trades w/ Balance",
+                        "Bank Trades w/ High Utilization Ratio",
+                        "% Trades w/ Balance"]
+
+      var selected_fts = [];
+
       // Draw gliph for prediction category
       function addSquare(elemn, category, size) {
         var sqr = document.createElement("img");
@@ -159,6 +195,9 @@
         else if (source == 'list') {
           var s = sample.id.substring(5);
         }
+        else if (source == 'global') {
+          var s = sample.toString();
+        }
         else {
           var s = document.getElementById("id-display").innerHTML.substring(4);
         }
@@ -197,7 +236,21 @@
 
         // MAKE REQUEST TO GET ELEMENTS FOR MIDDLE PANEL
 
-        req_arr = features.toString();
+        
+        req_arr = [];
+
+        if (features[0] == -1){
+          req_arr.push(-1);
+        }
+        else {
+          for (i=0; i<features.length; i++) {
+            req_arr.push(ft_names.indexOf(features[i].innerHTML));
+            features[i].style.fontSize = "13px";
+            features[i].style.fontWeight = "bold"; 
+          }
+        }
+
+        console.log(req_arr);
         
         httpRequest.onreadystatechange = alertContents3;
         httpRequest.open('GET', '/first_panel?features=['+req_arr+']');
@@ -206,7 +259,7 @@
       }
 
       // Left panel global
-      function makeGlobRequest(feature) {
+      function makeGlobRequest() {
         httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
           alert('Giving up :( Cannot create an XMLHTTP instance');
@@ -217,6 +270,22 @@
         httpRequest.open('GET', '/glob_req');
         httpRequest.send();
         return false;
+      }
+
+      // Style buttons and send request
+      function buttonRequest(elem) {
+
+        if (elem.innerHTML == "Key Features") {
+          elem.style.backgroundColor = "gray";
+          var c_but = document.getElementById('chg-button');
+          c_but.style.backgroundColor = "silver";
+        }
+        else {
+          elem.style.backgroundColor = "gray";
+          var c_but = document.getElementById('key-button');
+          c_but.style.backgroundColor = "silver";
+        }
+        makeGlobRequest();
       }
 
       // Individual explanations
@@ -313,27 +382,32 @@
             //Do stuff with the response
 
             var resp_arr = httpRequest.responseText;
-            var middleData = [];
-            middleData = JSON.parse(resp_arr);
-            document.getElementById("combination-list").innerHTML = "";
+            if (resp_arr == ""){
+              document.getElementById("combination-list").innerHTML = "";
+            }
+            else{
+              var middleData = [];
+              middleData = JSON.parse(resp_arr);
+              document.getElementById("combination-list").innerHTML = "";
 
-            for (var j = 0; j < middleData.length; j++) {
-              var li = document.createElement("li");
-              var li_div = document.createElement("div");
+              for (var j = 0; j < middleData.length; j++) {
+                var li = document.createElement("li");
+                var li_div = document.createElement("div");
 
-              // li.innerHTML = j.toString();
-              li.id = "middle-link-" + j.toString();
-        
-              li_div.id = "middle-graph-" + j.toString();
-              // li_div.innerHTML = "MID GRAPH";
-              li.onclick = function () { makeRequest2(li.innerHTML); };
-              
+                // li.innerHTML = j.toString();
+                li.id = "middle-link-" + j.toString();
+          
+                li_div.id = "middle-graph-" + j.toString();
+                // li_div.innerHTML = "MID GRAPH";
+                li.onclick = function () { makeRequest2(li.innerHTML); };
+                
 
-              li.append(li_div);
-              document.getElementById("combination-list").append(li);
-              draw_all_squares(middleData[j], 14, "#"+li_div.id);
-              var br = document.createElement("br");
-              document.getElementById("combination-list").append(br);
+                li.append(li_div);
+                document.getElementById("combination-list").append(li);
+                draw_all_squares(middleData[j], 14, "#"+li_div.id);
+                var br = document.createElement("br");
+                document.getElementById("combination-list").append(br);
+              }
             }
           }
           else {
@@ -349,16 +423,39 @@
             //Do stuff with the response
             // var resp = JSON.parse(httpRequest.responseText);
             var resp_arr = httpRequest.responseText;
-            var barData = [];
-            barData = JSON.parse(resp_arr);
+            var totalData = JSON.parse(resp_arr);
             var monot_arr = [1,1,1,1,1,-1,-1,1,1,1,1,0,-1,0,1,-1,-1,-1,-1,0,0,-1,0];
 
-            draw_occurance_text();
+            var barData = totalData[2];
+            var keySort = totalData[0];
+            var chgSort = totalData[1];
 
-            for (i=0; i<23; i++){
-              draw_occurance_bar(barData[i][0],barData[i][1],barData[i][2],barData[i][3],i);
-              draw_dir(monot_arr[i], i);
+            document.getElementById("bar-div-header").innerHTML = '';
+
+            if (document.getElementById("chg-button").style.backgroundColor == "gray"){
+              draw_occurance_text("chg");
+              for (i=0; i<23; i++){
+                document.getElementById("ft-div-" + i.toString()).innerHTML = '';
+                document.getElementById("monot-" + i.toString()).innerHTML = '';
+                draw_occurance_bar(barData[chgSort[i]][2],barData[chgSort[i]][3],i);
+                draw_dir(monot_arr[chgSort[i]], i);
+                document.getElementById("bar-div-header").style.marginRight = "5px";
+                document.getElementById("feat-" + i.toString()).innerHTML = ft_names[chgSort[i]];
+                document.getElementById("feat-" + i.toString()).onclick = function () {flip_feature(this);};
+              }
             }
+            else{
+              draw_occurance_text("key");
+              for (i=0; i<23; i++){
+                document.getElementById("ft-div-" + i.toString()).innerHTML = '';
+                document.getElementById("monot-" + i.toString()).innerHTML = '';
+                draw_occurance_bar(barData[keySort[i]][0],barData[keySort[i]][1],i);
+                draw_dir(monot_arr[keySort[i]], i);
+                document.getElementById("bar-div-header").style.marginRight = "16px";
+                document.getElementById("feat-" + i.toString()).innerHTML = ft_names[keySort[i]];
+                document.getElementById("feat-" + i.toString()).onclick = function () { flip_feature(this);};
+              }
+            }         
           }
           else {
               alert('HttpRequest Error');
@@ -447,29 +544,6 @@
       // Initialize feature list for global
       function ft_list() {
         var features = 23;
-        var ft_names = ["External Risk Estimate", 
-                        "Months Since Oldest Trade Open",
-                        "Months Since Last Trade Open",
-                        "Average Months in File",
-                        "Satisfactory Trades",
-                        "Trades 60+ Ever",
-                        "Trades 90+ Ever",
-                        "% Trades Never Delq.",
-                        "Months Since Last Delq.",
-                        "Max Delq. Last 12M",
-                        "Max Delq. Ever",
-                        "Total Trades",
-                        "Trades Open Last 12M",
-                        "% Installment Trades",
-                        "Months Since Most Recent Inq",
-                        "Inq Last 6 Months",
-                        "Inq Last 6 Months exl. 7 days",
-                        "Revolving Burden",
-                        "Installment Burden",
-                        "Revolving Trades w/ Balance:",
-                        "Installment Trades w/ Balance",
-                        "Bank Trades w/ High Utilization Ratio",
-                        "% Trades w/ Balance"]
 
         var ft_table = document.createElement("table");
         ft_table.id = "feature-table1";
@@ -519,12 +593,11 @@
           bar_div.className = "bar-div";
           bar_div.id = "ft-div-" + i.toString();
 
-          var ft_arr = [3];
+          var loc_i = i;
 
-          td.onclick = function () { makeRequest3(ft_arr); };
           var link = document.createElement("a");
 
-          link.innerHTML = ft_names[i];
+          // link.innerHTML = ft_names[i];
           link.style.maxWidth = "125px"; 
           link.id = "feat-" + i.toString();
           link.href = "#right-panel";
@@ -538,14 +611,46 @@
         }
 
         document.getElementById("left-panel").append(ft_table);
+
+        var reset = document.createElement("button");
+        reset.innerHTML = "Reset";
+        reset.id = "reset-button";
+        reset.onclick = function(){ resetFeatures(); };
+        document.getElementById("left-panel").append(reset);
       }
 
-      function redirect_to_instance () {
-        window.location.replace("http://localhost:5005/individual");
-        // console.log("first");
-        // setTimeout(function(){window.location.replace("http://localhost:5005/instance?sample=15"); }, 1000);
-        // console.log("second");
+      function redirect_to_instance() {
+        window.location.replace("http://localhost:5005/individual?sample=52");       
+      }
+
+      function resetFeatures() {
+        selected_fts = [-1];
         
+        for (i=0; i<23; i++){
+          document.getElementById("feat-" + i.toString()).style.fontSize = "12px";
+          document.getElementById("feat-" + i.toString()).style.fontWeight = "550";
+        }
+        makeRequest3(selected_fts);
+      }
+
+      function flip_feature(elemn) {
+        console.log(selected_fts);
+        var index = selected_fts.indexOf(-1);
+        if (index > -1) {
+          selected_fts.splice(index, 1);
+        }
+        if (selected_fts.includes(elemn)){
+          index = selected_fts.indexOf(elemn);
+          selected_fts.splice(index, 1);
+          elemn.style.fontSize = "12px";
+          elemn.style.fontWeight = "550";
+          makeRequest3(selected_fts);
+        }
+        else{
+          console.log("enter)=");
+          selected_fts.push(elemn);
+          makeRequest3(selected_fts);
+        }
       }
 
       $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 700)});

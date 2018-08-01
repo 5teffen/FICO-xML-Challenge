@@ -143,6 +143,10 @@
         else if (source == 'list') {
           var s = sample.id.substring(5);
         }
+        else if (source == "global") {
+          console.log("called from global");
+          var s = sample.toString();
+        }
         else {
           var s = document.getElementById("id-display").innerHTML.substring(4);
         }
@@ -292,6 +296,13 @@
 
       $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 200)});
 
+      var url_str = window.location.href;
+      var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));
+      if (isNaN(initial_sample)) {      
+      }
+      else {
+        setTimeout(function(){makeRequest("global", initial_sample);}, 100);
+      }
       // draw_percent_bar(.41);
       // addSquare("container", "TP", 45);
 
