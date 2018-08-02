@@ -417,7 +417,6 @@ def combination_finder(pre_proc_file,cols_lst,anchs):
 
 	return final_result
 
-
 def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
@@ -442,13 +441,16 @@ def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
 			else:
 				bad_ones.append(pre_data[sample])
 
+
 	good_ones = np.array(good_ones)
 	bad_ones = np.array(bad_ones)
 
 	# -- Sort the List -- 
+	if good_ones.shape[0] != 0:
+		good_ones = good_ones[(-good_ones[:,1]).argsort()]
 
-	good_ones = good_ones[(-good_ones[:,1]).argsort()]
-	bad_ones = bad_ones[bad_ones[:,1].argsort()]
+	if bad_ones.shape[0] != 0:
+		bad_ones = bad_ones[bad_ones[:,1].argsort()]
 
 
 	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
@@ -500,7 +502,7 @@ X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
 
-# names, squares = anchor_finder("pre_data1.csv","final_data_file.csv",[1,4])
+names, squares = anchor_finder("pre_data1.csv","final_data_file.csv",[3,21])
 # combinations = combination_finder("pre_data1.csv",[4,17,21],True)
 # all_results = big_scraper("pre_data1.csv",[4])
 
