@@ -446,12 +446,13 @@ def sort_by_val(main, density):
     ordered_main = []
     ordered_density = []
 
-    ordered_main = sorted(main, key=itemgetter('scl_val')) 
+    ordered_main = sorted(main, key=itemgetter('scl_val'), reverse=True) 
+    keySort = sorted(range(len(main)), key = lambda k: main[k]["scl_val"], reverse=True)
 
-    return ordered_main
-    # index = 0
-    # for a_dict in main:
-    #     for test in ordered_main:
+    for key in keySort:
+        ordered_density.append(density[key])
+
+    return ordered_main, ordered_density
 
 
 
@@ -475,11 +476,13 @@ svm_model.test_model()
 sample = 10 # NOTE THIS VALUE
 
 bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
-# change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
+change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
 
-# data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)
-# dict_array = scaling_data_density(X, bins_centred,False)
-# print(dict_array)
+data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)
+dens_array = scaling_data_density(X, bins_centred,False)
+
+new_data, new_dens = sort_by_val(data_array,dens_array)
+
 
 transformer = sample_transf(X_orig)
 # for i_sample in range(200,220):
