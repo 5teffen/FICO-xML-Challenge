@@ -318,7 +318,7 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
         if (scl_change > 1):
             scl_change = 1
 
-        if (monot and monot_array[i] == -1):
+        if (monot and monot_array[i] == 0):
             result["val"] = int(val)
             result["scl_val"] = 1-float(scl_val)
             result["change"] = int(change)
@@ -355,10 +355,10 @@ def scaling_data_density(data, bins_centred,monot):
             max_bin = 10
     
         for row in range(data.shape[0]):
-            if (monot and monot_array[col]==-1):
-                new_val = ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
-            else:
+            if (monot and monot_array[col]==0):
                 new_val = 1 - ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
+            else:
+                new_val = ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
 
             if (new_val <= 0):
                 new_val = 0
@@ -453,11 +453,6 @@ def sort_by_val(main, density):
         ordered_density.append(density[key])
 
     return ordered_main, ordered_density
-
-
-
-
-
 
 
 vals = prepare_for_analysis("final_data_file.csv")
