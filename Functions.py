@@ -441,13 +441,16 @@ def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
 			else:
 				bad_ones.append(pre_data[sample])
 
+
 	good_ones = np.array(good_ones)
 	bad_ones = np.array(bad_ones)
 
 	# -- Sort the List -- 
+	if good_ones.shape[0] != 0:
+		good_ones = good_ones[(-good_ones[:,1]).argsort()]
 
-	good_ones = good_ones[(-good_ones[:,1]).argsort()]
-	bad_ones = bad_ones[bad_ones[:,1].argsort()]
+	if bad_ones.shape[0] != 0:
+		bad_ones = bad_ones[bad_ones[:,1].argsort()]
 
 
 	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
