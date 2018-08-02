@@ -61,8 +61,14 @@
           <!-- D3 graphs -->
         </div>
         <div class="txt-space">
-          <input id="check-density" type="checkbox" name="density" value="yes" checked onchange="checkHandle(event)" style="display: none;">
-          <p id="check-text"></p>
+          <input id="check-density" type="checkbox" name="density" value="yes" checked onchange="densityCheckHandle(event)" style="display: none;">
+          <p id="check-density-text"></p>
+          <br>
+          <input id="check-monot" type="checkbox" name="monotonicity" value="no" onchange="monotCheckHandle(event)" style="display: none;">
+          <p id="check-monot-text"></p>
+          <br>
+          <input id="check-sort" type="checkbox" name="sort" value="no" onchange="sortCheckHandle(event)" style="display: none;">
+          <p id="check-sort-text"></p>
           <br>
           <!-- Text explanation -->
 
@@ -103,8 +109,18 @@
         }
       }
 
-      function checkHandle(event) {
-        makeRequest("check", 0);
+      function densityCheckHandle(event) {
+        makeRequest("check-density", 0);
+        return false;   
+      }
+
+      function monotCheckHandle(event) {
+        makeRequest("check-monot", 0);
+        return false;   
+      }
+
+      function sortCheckHandle(event) {
+        makeRequest("check-sort", 0);
         return false;   
       }
 
@@ -144,15 +160,27 @@
           var s = sample.id.substring(5);
         }
         else if (source == "global") {
-          console.log("called from global");
           var s = sample.toString();
         }
-        else {
+        else if (source == "check-density" || source == "check-monot") {
           var s = document.getElementById("id-display").innerHTML.substring(4);
+        }
+        else if (source == "check-sort"){
+          var s = document.getElementById("id-display").innerHTML.substring(4);
+          console.log("sorted");
+        }
+
+        var monot = "False";
+        if (document.getElementById("check-monot").checked == true){
+          monot = "True";
+        }
+        var sort = "False";
+        if (document.getElementById("check-sort").checked == true){
+          sort = "True";
         }
         
         httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', '/instance?sample='+s);
+        httpRequest.open('GET', '/instance?sample='+s+'&monot='+monot+'&sort='+sort);
         httpRequest.send();
         return false;
       }
@@ -180,6 +208,8 @@
             for (i=0; i<23; i++){
               densityData.push(JSON.parse(resp_arr[i+23]));
             }
+
+            // console.log(densityData);
             var resp = JSON.parse(resp_arr[46]);
             
             var index = resp['sample'].toString();
@@ -204,8 +234,13 @@
             }
             else {
               document.getElementById("check-density").style.display = "inline";
-              document.getElementById("check-text").innerHTML = "Density distribution";
+              document.getElementById("check-density-text").innerHTML = "Density distribution";
+              document.getElementById("check-monot").style.display = "inline";
+              document.getElementById("check-monot-text").innerHTML = "Account for monotonicity";
+              document.getElementById("check-sort").style.display = "inline";
+              document.getElementById("check-sort-text").innerHTML = "Sort by value";
               if (document.getElementById("check-density").checked == true){
+                // console.log(densityData);
                 draw_graph(testData, densityData, result);
               }
               else {
@@ -294,7 +329,7 @@
         console.log("IMGS");
       }
 
-      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 200)});
+      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 400)});
 
       var url_str = window.location.href;
       var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));

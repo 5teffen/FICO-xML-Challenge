@@ -14,6 +14,7 @@
     <!-- SVG scripts -->
     <script type="text/javascript" src="/static/js/main_graph.js"></script>
     <script type="text/javascript" src="/static/js/direction_signs.js"></script>
+     <script type="text/javascript" src="/static/js/anchor_graphs.js"></script>
     <script type="text/javascript" src="/static/js/square_graphs_simple.js"></script>
     <script type="text/javascript" src="/static/js/occ_bar.js"></script>
     <script type="text/javascript" src="/static/js/mini_graph.js"></script>
@@ -47,8 +48,6 @@
       </div>
       
       <div class="right-side-global" id="demo">
-
-
 
         <div id="left-panel">
           <div class="btn-group">
@@ -227,7 +226,7 @@
       }
 
       // Middle panel graphs
-      function makeRequest3(features) {
+      function makeRequest3(features, algo) {
         httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
           alert('Giving up :( Cannot create an XMLHTTP instance');
@@ -253,7 +252,7 @@
         console.log(req_arr);
         
         httpRequest.onreadystatechange = alertContents3;
-        httpRequest.open('GET', '/first_panel?features=['+req_arr+']');
+        httpRequest.open('GET', '/first_panel?features=['+req_arr+']&algorithm='+algo);
         httpRequest.send();
         return false;
       }
@@ -285,7 +284,9 @@
           var c_but = document.getElementById('key-button');
           c_but.style.backgroundColor = "silver";
         }
+        resetFeatures();
         makeGlobRequest();
+
       }
 
       // Individual explanations
@@ -386,6 +387,7 @@
               document.getElementById("combination-list").innerHTML = "";
             }
             else{
+
               var middleData = [];
               middleData = JSON.parse(resp_arr);
               document.getElementById("combination-list").innerHTML = "";
@@ -404,7 +406,18 @@
 
                 li.append(li_div);
                 document.getElementById("combination-list").append(li);
-                draw_all_squares(middleData[j], 14, "#"+li_div.id);
+   
+                var curr_alg = "True";
+
+                if (document.getElementById("chg-button").style.backgroundColor == "gray") {
+                  curr_alg = "False";
+                }
+                if (curr_alg == "False") {
+                  draw_all_squares(middleData[j], 14, "#"+li_div.id);
+                }
+                else {
+                  draw_all_anchs(middleData[j][0],middleData[j][1], 1000, "#"+li_div.id);
+                }
                 var br = document.createElement("br");
                 document.getElementById("combination-list").append(br);
               }
@@ -472,6 +485,8 @@
         // setTimeout(function(){ callback1();
 
         // callback2(); }, 50);
+        document.getElementById("key-button").style.backgroundColor = "gray";
+        document.getElementById("chg-button").style.backgroundColor = "silver";
       }
 
       // Add loading animation
@@ -624,17 +639,30 @@
       }
 
       function resetFeatures() {
+
         selected_fts = [-1];
+
+        var curr_alg = "True";
+
+        if (document.getElementById("chg-button").style.backgroundColor == "gray") {
+          curr_alg = "False";
+        }
         
         for (i=0; i<23; i++){
           document.getElementById("feat-" + i.toString()).style.fontSize = "12px";
           document.getElementById("feat-" + i.toString()).style.fontWeight = "550";
         }
-        makeRequest3(selected_fts);
+        makeRequest3(selected_fts, curr_alg);
       }
 
       function flip_feature(elemn) {
-        console.log(selected_fts);
+
+        var curr_alg = "True";
+
+        if (document.getElementById("chg-button").style.backgroundColor == "gray") {
+          curr_alg = "False";
+        }
+
         var index = selected_fts.indexOf(-1);
         if (index > -1) {
           selected_fts.splice(index, 1);
@@ -644,12 +672,11 @@
           selected_fts.splice(index, 1);
           elemn.style.fontSize = "12px";
           elemn.style.fontWeight = "550";
-          makeRequest3(selected_fts);
+          makeRequest3(selected_fts, curr_alg);
         }
-        else{
-          console.log("enter)=");
+        else if (selected_fts.length < 5){
           selected_fts.push(elemn);
-          makeRequest3(selected_fts);
+          makeRequest3(selected_fts, curr_alg);
         }
       }
 

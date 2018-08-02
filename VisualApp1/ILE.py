@@ -7,29 +7,6 @@ from SVM_model import SVM_model
 from Functions import *
 
 
-
-def divide_data_bins(data, special=[]):
-    no_feat = data.shape[1]
-    bins_centred = []
-    X_pos_array = []
-    in_vals = []
-    
-    for i in range(no_feat):
-        # Handles special case
-        bins, new_col, val = separate_bins_feature(data[:,i].flatten(),(i in special))[:3]
-        
-        in_vals.append(val)
-        bins_centred.append(bins)
-        X_pos_array.append(new_col)
-        
-    # Convert to numpy array
-    in_vals = np.array(in_vals).transpose()
-    bins_centred = np.array(bins_centred)
-    X_pos_array = (np.array(X_pos_array)).transpose() 
-
-    return bins_centred, X_pos_array, in_vals
-
-
 def evaluate_data_set(data):
     no_features = data.shape[1]
     avg_list = []
@@ -273,7 +250,7 @@ def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
     return change_vector, change_row, anchors, initial_percentage
 
 
-def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, percent):
+def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, percent,monot):
     data = []
     
     names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
@@ -283,6 +260,9 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
              ,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
             ,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
     
+
+    monot_array = np.array([1,1,1,1,1,0,0,1,1,1,1,-1,0,-1,1,0,0,0,0,-1,-1,0,-1])
+
     for i in range(bins_centred.shape[0]):
         result = {}
         result["name"] = names[i]
@@ -333,27 +313,34 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
             scl_val = 0
         if (scl_change < 0):
             scl_change = 0
+        if (scl_val > 1 ):
+            scl_val = 1
+        if (scl_change > 1):
+            scl_change = 1
 
+        if (monot and monot_array[i] == 0):
+            result["val"] = int(val)
+            result["scl_val"] = 1-float(scl_val)
+            result["change"] = int(change)
+            result["scl_change"] = 1-float(scl_change)
 
-        
-        result["val"] = int(val)
-        result["scl_val"] = scl_val
-        result["change"] = int(change)
-        result["scl_change"] = scl_change
-        
-#         print("Val:",result["val"])
-#         print("Scl_Val:",result["scl_val"])
-#         print("Change:",result["change"])
-#         print("Scl_Change",result["scl_change"])
-        
+        else:
+            result["val"] = int(val)
+            result["scl_val"] = float(scl_val)
+            result["change"] = int(change)
+            result["scl_change"] = float(scl_change)
+
         data.append(result)
         
     return data
-        
 
-def scaling_data_density(data, bins_centred):
+
+def scaling_data_density(data, bins_centred,monot):
     new_data = np.empty(data.shape)
     output_array = []
+
+    monot_array = np.array([1,1,1,1,1,0,0,1,1,1,1,-1,0,-1,1,0,0,0,0,-1,-1,0,-1])
+
     
     for col in range(bins_centred.shape[0]):
         values_dict = {}
@@ -368,7 +355,11 @@ def scaling_data_density(data, bins_centred):
             max_bin = 10
     
         for row in range(data.shape[0]):
-            new_val = ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
+            if (monot and monot_array[col]==0):
+                new_val = 1 - ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
+            else:
+                new_val = ((data[row][col]-min_bin)/(max_bin-min_bin)).round(2)
+
             if (new_val <= 0):
                 new_val = 0
             if (new_val > 1):
@@ -386,10 +377,91 @@ def scaling_data_density(data, bins_centred):
     return output_array
 
 
+def sample_transf(X):
+    trans_dict = {}
+    my_count = 0
+    for sample in range(10459):
+        if X[sample][0] != -9:
+            trans_dict[str(sample)] = my_count
+            my_count += 1
+        else:
+            trans_dict[str(sample)] = -9
 
+    return trans_dict
+
+
+def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, bins, percent):
+    pre_data = pd.read_csv(pre_data_file).values
+    all_data = pd.read_csv(all_data_file,header=None).values
+
+    similar_rows = []
+
+    if (change_row is None):
+        original = sample_vec
+
+    else:
+        original = change_row
+
+
+
+
+    for sample_id in range(all_data.shape[0]):
+
+    # for sample_id in range(6,10):
+        test_sample = all_data[sample_id][1:]
+        # new_index = int(transformer[str(sample)])
+        
+        fail_count = 0
+        
+        for col in range(original.shape[0]):  
+            test_val = test_sample[col]
+            uncertainty = 1.5*(bins[col][2]-bins[col][1])
+
+
+            # print("Test_val", test_val)
+
+            bottom_thresh = original[col]-uncertainty
+            top_thresh = original[col]+uncertainty
+
+            # print("Bottom",bottom_thresh)
+            # print("Top",top_thresh)
+
+            if (test_val > top_thresh or test_val < bottom_thresh):
+                fail_count += 1;
+
+        if (fail_count < 4):
+            if np.round(percent,0) != np.round(pre_data[sample_id][1]):
+                similar_rows.append(sample_id)
+
+    print(similar_rows)
+    return similar_rows
+
+
+
+
+    # new_sample_ind = int(transform[str(s)])
+
+
+def sort_by_val(main, density):
+    ordered_main = []
+    ordered_density = []
+
+    print(density[0])
+
+    # ordered_main = sorted(main, key = lambda k: main[k], reverse=True) 
+    keySort = sorted(range(len(main)), key = lambda k: main[k]["scl_val"], reverse=True)
+
+    for key in keySort:
+        ordered_main.append(main[key])
+        ordered_density.append(density[key])
+
+    return ordered_main, ordered_density
 
 
 # vals = prepare_for_analysis("final_data_file.csv")
+
+# X_orig = pd.read_csv("final_data_file.csv",header=None).values[:,1:]
+
 # X = vals[:,1:]
 # y = vals[:,0]
 
@@ -398,11 +470,19 @@ def scaling_data_density(data, bins_centred):
 # svm_model = SVM_model(None,"final_data_file.csv")
 # svm_model.train_model(0.001)
 # svm_model.test_model()
-"""
-sample = 1 # NOTE THIS VALUE
 
-bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
-change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
-data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent)
-dict_array = scaling_data_density(X, bins_centred)
-"""
+# sample = 10 # NOTE THIS VALUE
+
+# bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
+# change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
+
+# data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)
+# dens_array = scaling_data_density(X, bins_centred,False)
+
+# new_data, new_dens = sort_by_val(data_array,dens_array)
+
+
+# transformer = sample_transf(X_orig)
+# for i_sample in range(200,220):
+#     change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[i_sample], sample, X_pos_array, bins_centred)
+#     similar_ids = detect_similarities("pre_data1.csv","final_data_file.csv", X[i_sample] ,change_row, bins_centred, percent)

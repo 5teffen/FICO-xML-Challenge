@@ -1,4 +1,5 @@
 function draw_graph(testData, densityData, result){
+
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 

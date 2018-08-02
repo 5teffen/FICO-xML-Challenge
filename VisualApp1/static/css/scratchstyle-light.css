@@ -337,7 +337,15 @@ svg {
   background-color: white;
 }
 
-#check-text {
+#check-density-text {
+  display: inline;
+}
+
+#check-monot-text {
+  display: inline;
+}
+
+#check-sort-text {
   display: inline;
 }
 
