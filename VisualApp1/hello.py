@@ -117,10 +117,6 @@ def handle_request():
 				ret_string = ""
 				data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent, monot)
 
-				for dct in data_array:
-					ret_string += json.dumps(dct)
-					ret_string += "~"
-
 				dict_array = []
 				if monot:
 					dict_array = dict_array_monot
@@ -133,6 +129,9 @@ def handle_request():
 					print('sort')
 					data_array, dict_array = sort_by_val(data_array, dict_array)
 
+				for dct in data_array:
+					ret_string += json.dumps(dct)
+					ret_string += "~"
 
 				for dct in dict_array:
 					ret_string += json.dumps(dct)
@@ -203,7 +202,7 @@ def handle_request_ft():
 		# False = changes, True = keyfts
 		algorithm = (request.args.get('algorithm') == "True")
 
-		print(algorithm)
+		# print(algorithm)
 
 		if ft_list[0] == -1 or ft_list == ['']:
 			return ""
@@ -211,7 +210,7 @@ def handle_request_ft():
 			ft_list = [int(x) for x in ft_list]
 			ft_list.sort()
 
-		print(ft_list)
+		# print(ft_list)
 		# FUNCTION TO GENERATE LIST OF COMBINATION AND RANK THEM
 
 		combinations = combination_finder("pre_data1.csv",ft_list,algorithm)

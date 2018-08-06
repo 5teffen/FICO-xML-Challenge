@@ -13,8 +13,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- SVG scripts -->
     <script type="text/javascript" src="/static/js/main_graph.js"></script>
+    <script type="text/javascript" src="/static/js/model_summary.js"></script>
     <script type="text/javascript" src="/static/js/direction_signs.js"></script>
-     <script type="text/javascript" src="/static/js/anchor_graphs.js"></script>
+    <script type="text/javascript" src="/static/js/anchor_graphs.js"></script>
     <script type="text/javascript" src="/static/js/square_graphs_simple.js"></script>
     <script type="text/javascript" src="/static/js/occ_bar.js"></script>
     <script type="text/javascript" src="/static/js/mini_graph.js"></script>
@@ -40,10 +41,6 @@
         </nav>
 
         <nav class="id-list">
-          <br>
-          <br>
-          <br>
-          MODEL SUMMARY
         </nav>
       </div>
       
@@ -52,7 +49,7 @@
         <div id="left-panel">
           <div class="btn-group">
             <button class="algo-button" id="key-button" onclick="buttonRequest(this)">Key Features</button>
-            <button class="algo-button" id="chg-button"onclick="buttonRequest(this)">Changes</button>
+            <button class="algo-button" id="chg-button" onclick="buttonRequest(this)">Changes</button>
           </div>
         </div>
 
@@ -115,6 +112,11 @@
                         "% Trades w/ Balance"]
 
       var selected_fts = [];
+
+      // var dark_shade = "#727f87";
+      var dark_shade = "rgb(126, 140, 149)";
+      // var light_shade = "#b1c4d1";
+      var light_shade = "rgb(177, 196, 209)"
 
       // Draw gliph for prediction category
       function addSquare(elemn, category, size) {
@@ -179,33 +181,6 @@
       }
 
       var httpRequest;
-
-      // Individual explanations
-      function makeRequest(source, sample) {
-        httpRequest = new XMLHttpRequest();
-        if (!httpRequest) {
-          alert('Giving up :( Cannot create an XMLHTTP instance');
-          return false;
-        }
-        if (source == 'form') {
-          var s = document.getElementById("search-bar").value;
-          document.getElementById("search-bar").value="";
-        }
-        else if (source == 'list') {
-          var s = sample.id.substring(5);
-        }
-        else if (source == 'global') {
-          var s = sample.toString();
-        }
-        else {
-          var s = document.getElementById("id-display").innerHTML.substring(4);
-        }
-        
-        httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', '/instance?sample='+s);
-        httpRequest.send();
-        return false;
-      }
 
       // Right panel mini graphs
       function makeRequest2(feature) {
@@ -275,83 +250,18 @@
       function buttonRequest(elem) {
 
         if (elem.innerHTML == "Key Features") {
-          elem.style.backgroundColor = "gray";
+          elem.style.backgroundColor = dark_shade;
           var c_but = document.getElementById('chg-button');
-          c_but.style.backgroundColor = "silver";
+          c_but.style.backgroundColor = light_shade;
         }
         else {
-          elem.style.backgroundColor = "gray";
+          elem.style.backgroundColor = dark_shade;
           var c_but = document.getElementById('key-button');
-          c_but.style.backgroundColor = "silver";
+          c_but.style.backgroundColor = light_shade;
         }
         resetFeatures();
         makeGlobRequest();
 
-      }
-
-      // Individual explanations
-      function alertContents() {
-
-        if (httpRequest.readyState === XMLHttpRequest.OPENED) {
-          document.getElementsByClassName("d3-space")[0].innerHTML="";
-          var load_wrap = document.createElement("div");
-          load_wrap.className = "loader_wrap";
-          var loader = document.createElement("div");
-          loader.className = "lds-dual-ring";
-          load_wrap.append(loader);
-          document.getElementsByClassName("d3-space")[0].append(load_wrap);
-        }
-
-        else if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          if (httpRequest.status === 200) {
-            //Do stuff with the response
-
-            var resp_arr = httpRequest.responseText.split('~');
-            var testData = [];
-            var densityData = [];
-            for (i=0; i<23; i++){
-              testData.push(JSON.parse(resp_arr[i]));
-            }
-            for (i=0; i<23; i++){
-              densityData.push(JSON.parse(resp_arr[i+23]));
-            }
-
-            var resp = JSON.parse(resp_arr[46]);
-            
-            var index = resp['sample'].toString();
-            var trans_sample = resp['trans_sample'].toString();
-            var good_percent = resp['good_percent'];
-            var correct = parseInt(resp['model_correct']);
-            var category = resp['category'];
-            var result = resp['predicted'];
-            var disp_percent = good_percent;
-
-            document.getElementById("id-display").innerHTML = "ID: " + index;
-            document.getElementById("model-display").innerHTML = "";
-            var image_x = document.getElementById('category-img')
-            image_x.parentNode.removeChild(image_x);
-            addSquare("container", category, 45);
-            draw_percent_bar(disp_percent);
-            document.getElementsByClassName("cat-text")[0].innerHTML = category;
-            document.getElementsByClassName("d3-space")[0].innerHTML = "";
-
-            if (trans_sample == '-9') {
-              document.getElementsByClassName("d3-space")[0].innerHTML = "SPECIAL CASE";
-            }
-            else {
-              document.getElementById("check-density").style.display = "inline";
-              document.getElementById("check-text").innerHTML = "Density distribution";
-              if (document.getElementById("check-density").checked == true){
-                draw_graph(testData, densityData, result);
-              }
-              else {
-                draw_graph(testData, "no", result);
-              }
-            }
-          } else {
-            alert('HttpRequest Error')
-          }
-        }
       }
 
       // Right panel mini graphs
@@ -409,7 +319,7 @@
    
                 var curr_alg = "True";
 
-                if (document.getElementById("chg-button").style.backgroundColor == "gray") {
+                if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
                   curr_alg = "False";
                 }
                 if (curr_alg == "False") {
@@ -445,7 +355,7 @@
 
             document.getElementById("bar-div-header").innerHTML = '';
 
-            if (document.getElementById("chg-button").style.backgroundColor == "gray"){
+            if (document.getElementById("chg-button").style.backgroundColor == dark_shade){
               draw_occurance_text("chg");
               for (i=0; i<23; i++){
                 document.getElementById("ft-div-" + i.toString()).innerHTML = '';
@@ -477,16 +387,11 @@
       }
 
       // Initialize contents
-      function prep_content(callback0, callback1, callback2) {
+      function prep_content() {
 
-        // callback0();
-
-        // // setTimeout(function(){ alert("Hello"); }, 3000);
-        // setTimeout(function(){ callback1();
-
-        // callback2(); }, 50);
-        document.getElementById("key-button").style.backgroundColor = "gray";
-        document.getElementById("chg-button").style.backgroundColor = "silver";
+        document.getElementById("key-button").style.backgroundColor = dark_shade;
+        document.getElementById("chg-button").style.backgroundColor = light_shade;
+        draw_summary(".id-list");
       }
 
       // Add loading animation
@@ -498,62 +403,6 @@
         loader.className = "lds-dual-ring";
         load_wrap.append(loader);
         document.getElementsByClassName("id-list")[0].append(load_wrap);
-      }
-
-      // Initialize left bar list of IDs
-      function id_list(){
-        var samples = 10459;
-        var list_cont = document.createElement("ul");
-        for (i = 1; i <= samples; i++) {
-          var para = document.createElement("li");
-          para.innerHTML = "ID " + i.toString();
-          para.id = "link-" + i.toString();
-          para.onclick = function () { makeRequest('list', this); };
-          var li_div = document.createElement("div");
-          li_div.style.width = "75px";
-          li_div.style.float = "right";
-          li_div.style.margin = "0px 25px 0px 0px";
-          li_div.id = "link-div-" + i.toString();
-          para.append(li_div);
-          list_cont.append(para);
-        }
-        console.log("LIST");
-        document.getElementsByClassName("id-list")[0].innerHTML="";
-        document.getElementsByClassName("id-list")[0].append(list_cont);
-      }
-
-      // Draw cateogry gliphs for left bar
-      function add_images() {
-        for (var i = 1; i < pre_array.length; i++) {
-
-          var sqr = document.createElement("img");
-          if (pre_array[i][2].trim() == "FN"){
-            sqr.src="/static/images/square2-min.jpg";
-          }
-          else if (pre_array[i][2].trim() == "TN"){
-            sqr.src="/static/images/square4-min.jpg";
-          }
-          else if (pre_array[i][2].trim() == "FP"){
-            sqr.src="/static/images/square1-min.jpg";
-          }
-          else if (pre_array[i][2].trim() == "TP"){
-            sqr.src="/static/images/square3-min.jpg";
-          } 
-          else if (pre_array[i][2].trim() == "NA"){
-            sqr.src="/static/images/square5-min.jpg";
-          } 
-          sqr.height="15";
-          sqr.width="15";
-          sqr.style.borderRadius = "50%";
-          sqr.style.verticalAlign = "middle";
-          sqr.style.margin = "4px 0px 0px 0px";
-          sqr.style.float = "left";
-          var link_string = pre_array[i][3] + "\xa0 \xa0"  + pre_array[i][4];
-          document.getElementById("link-div-"+i.toString()).innerHTML = link_string;
-          document.getElementById("link-div-"+i.toString()).append(sqr);
-          
-        }
-        console.log("IMGS");
       }
 
       // Initialize feature list for global
@@ -644,7 +493,7 @@
 
         var curr_alg = "True";
 
-        if (document.getElementById("chg-button").style.backgroundColor == "gray") {
+        if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
           curr_alg = "False";
         }
         
@@ -659,7 +508,7 @@
 
         var curr_alg = "True";
 
-        if (document.getElementById("chg-button").style.backgroundColor == "gray") {
+        if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
           curr_alg = "False";
         }
 
@@ -680,7 +529,9 @@
         }
       }
 
-      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 700)});
+      // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(); }, 700)});
+      fetch_csv();
+      prep_content();
 
       ft_list();
 

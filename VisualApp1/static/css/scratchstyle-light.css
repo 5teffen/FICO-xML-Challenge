@@ -58,7 +58,7 @@ main {
   width: 250px;
   /* background-color: #1f2124; */
   /*background-color: #20262e;*/
-  background-color: gainsboro;
+  background-color: #87959e;
   color: black;
   height: 100vh;
   text-align: center;
@@ -141,17 +141,20 @@ main {
 .left-nav a.active,
 .left-nav a:hover {
   max-width: 250px;
-  background: lightgray;
+  /*background: lightgray;*/
+  background: #b1c4d1;
   border-left: 8px solid #13895F;
 }
 
 .left-nav a {
   /* background: #18191b; */
-  background: rgba(0,0,0,.15);
+  /*background: rgba(0,0,0,.15);*/
+  /*background-color: rgba(135, 149, 158, 0.1);*/
+  background: #727f87;
   color: black;
   display: block;
   padding: 30px;
-  transition: all 0.2s ease;
+  /*transition: all 0.1s;*/
 }
 
 /*---------*/
@@ -209,6 +212,10 @@ main {
 .id-list li:hover {
   color: #13895F;
   cursor: pointer;
+}
+
+.mini-category-img {
+  border: 1px solid black;
 }
 
 
@@ -275,9 +282,60 @@ table #category-display {
 table #category-img {
   margin-top: 0px;
   border-radius: 50%;
+  border: 0.7px solid black;
 }
 table #model-display {
   /*width: 30%;*/
+}
+
+/*--------------*/
+/* Button space */
+/*--------------*/
+
+.ind-header {
+  width: 880px;
+  margin: auto;
+  text-align: center;
+  margin-top: 50px;
+  padding-left: 10px;
+  /*border: 1px solid black;*/
+}
+
+.ind-header td{
+  margin: auto;
+  text-align: center;
+  /*border: 1px solid black;*/
+}
+.ind-text {
+  display: inline-block;
+  float: left;
+}
+.btn-td {
+  width: 236px;
+}
+.check-group {
+  display: inline-block;
+  float: right;
+}
+.check-group .prop-button {
+  background-color: #BEBEBE; /* Green */
+  border: 1px solid black;
+  color: black;
+  padding: 8px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  cursor: pointer;
+  float: left;
+  font-weight: 500;
+  display: inline-block;
+}
+.check-group .prop-button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+.check-group .prop-button:focus {
+    outline: none;
 }
 
 /*----------*/
@@ -288,7 +346,7 @@ table #model-display {
   background-color: white;
   /*background-color: Gainsboro;*/
   width: 100%;
-  height: calc(100% - 150px);
+  height: 420px;
   text-align:  center;
 }
 
@@ -296,11 +354,11 @@ table #model-display {
 /* SVG space */
 /*-----------*/
 
-svg {
+.main-svg {
   background-color: white;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 15px;
+  margin-top: 0px;
   display: auto;
 }
 
@@ -408,7 +466,7 @@ svg {
 .btn-group .algo-button {
     background-color: #BEBEBE; /* Green */
     border: 1px solid black;
-    color: white;
+    color: black;
     padding: 8px 15px;
     text-align: center;
     text-decoration: none;
@@ -424,13 +482,9 @@ svg {
     border-right: none; /* Prevent double borders */
 }
 .btn-group .algo-button:focus {
-    /*background-color: gray;*/
     outline: none;
 }
 
-#key-button {
-  background-color: gray;
-}
 
 #left-panel {
   width: 270px;
@@ -577,7 +631,7 @@ svg {
 }
 
 #reset-button {
-    background-color: gainsboro;
+    background-color: rgb(135, 149, 158);
     border: 1px solid black;
     color: black;
     padding: 4px 15px;

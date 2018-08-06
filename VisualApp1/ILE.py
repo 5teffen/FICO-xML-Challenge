@@ -433,7 +433,6 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
             if np.round(percent,0) != np.round(pre_data[sample_id][1]):
                 similar_rows.append(sample_id)
 
-    print(similar_rows)
     return similar_rows
 
 
@@ -443,10 +442,9 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
 
 
 def sort_by_val(main, density):
+    # print("Original Data",main[:5], "\n")
     ordered_main = []
     ordered_density = []
-
-    print(density[0])
 
     # ordered_main = sorted(main, key = lambda k: main[k], reverse=True) 
     keySort = sorted(range(len(main)), key = lambda k: main[k]["scl_val"], reverse=True)
@@ -455,6 +453,7 @@ def sort_by_val(main, density):
         ordered_main.append(main[key])
         ordered_density.append(density[key])
 
+    # print("New Data",ordered_main[:5], "\n")
     return ordered_main, ordered_density
 
 
