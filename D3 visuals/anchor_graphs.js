@@ -224,8 +224,6 @@ function draw_all_anchs(textData,totalData, limit, elemn) {
             x2_shift += sq_width + x_sep;
             bad_row_count += 1;
         }
-
-        
     }
 }
 
