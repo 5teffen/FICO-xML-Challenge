@@ -228,9 +228,9 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 				scl_change = 0
 
 			result["val"] = int(val)
-			result["scl_val"] = scl_val
+			result["scl_val"] = float(scl_val)
 			result["change"] = int(change)
-			result["scl_change"] = scl_change
+			result["scl_change"] = float(scl_change)
 
 			single_dict_list.append(result)
 			
@@ -364,14 +364,19 @@ def my_combinations(target,data,limit):
 		result += my_combinations(new_target,new_data,limit)
 	return result
 
-def combination_finder(pre_proc_file,cols_lst,individual):
+def combination_finder(pre_proc_file,cols_lst,anchs):
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_combinations = {}
 
 	for sample in range(pre_data.shape[0]):
 
 		cur_lst = []
-		for c in range(9,14):
+
+		if (anchs):
+			range_val = range(5,9)
+		else:
+			range_val = range(9,14)
+		for c in range_val:
 			val = pre_data[sample][c]
 			if (val < 0 or len(cur_lst) > 5):
 				break
@@ -390,84 +395,97 @@ def combination_finder(pre_proc_file,cols_lst,individual):
 				possible_combs = my_combinations([],left_over,0)
 
 			# -- Add the leftovers -- 
-			for ending in possible_combs:
-				sorted_cols = sorted(cols_lst+ending)
-				new_key = ','.join(str(x) for x in sorted_cols)
-				if new_key in all_combinations:
-					all_combinations[new_key] += 1
-				else:
-					all_combinations[new_key] = 1
-	if (individual):
-		ones = []
-		twos = []
-		threes = []
-		fours = []
-		fives = []
+				for ending in possible_combs:
+					sorted_cols = sorted(cols_lst+ending)
+					new_key = ','.join(str(x) for x in sorted_cols)
+					if new_key in all_combinations:
+						all_combinations[new_key] += 1
+					else:
+						all_combinations[new_key] = 1
 
-		for one_case in all_combinations:
-			lst_case = one_case.split(',')
-			if len(lst_case) == 1:
-				ones.append((lst_case,all_combinations[one_case]))
-				ones = sorted(ones, key=itemgetter(1), reverse=True)
-			elif len(lst_case) == 2:
-				twos.append((lst_case,all_combinations[one_case]))
-				twos = sorted(twos, key=itemgetter(1), reverse=True)
-			elif len(lst_case) == 3:
-				threes.append((lst_case,all_combinations[one_case]))
-				threes = sorted(threes, key=itemgetter(1), reverse=True)
-			elif len(lst_case) == 4:
-				fours.append((lst_case,all_combinations[one_case]))
-				fours = sorted(fours, key=itemgetter(1), reverse=True)
+
+	tuple_result = []
+	for one_case in all_combinations:
+		lst_case = one_case.split(',')
+		tuple_result.append((lst_case,all_combinations[one_case]))
+		tuple_result = sorted(tuple_result, key=itemgetter(1), reverse=True)
+
+	final_result = []
+	for item_pair in tuple_result:
+		string_result = [int(x) for x in item_pair[0]]
+		final_result.append(string_result)
+
+	return final_result
+
+def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
+	pre_data = pd.read_csv(pre_proc_file).values
+	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
+
+	samples_list = []
+	good_ones = []
+	bad_ones = []
+
+	# -- Find samples with the desired anchs -- 
+
+	for sample in range(pre_data.shape[0]):
+		test_case = []
+		for test in range(5,9):
+			if (pre_data[sample][test] < 0):
+				break
+			test_case.append(pre_data[sample][test])
+
+		if (set(anchs_lst).issubset(test_case)):
+			samples_list.append(pre_data[sample][0])
+			if ((pre_data[sample][1])> 0.5):
+				good_ones.append(pre_data[sample])
 			else:
-				fives.append((lst_case,all_combinations[one_case]))
-				fives = sorted(fives, key=itemgetter(1), reverse=True)
-
-		big_list = ones+twos+threes+fours+fives
-
-		final_result = []
-		for item_pair in big_list:
-			string_result = [int(x) for x in item_pair[0]]
-			final_result.append(string_result)
-
-		return final_result
-
-	else:
-		tuple_result = []
-		for one_case in all_combinations:
-			lst_case = one_case.split(',')
-			tuple_result.append((lst_case,all_combinations[one_case]))
-			tuple_result = sorted(tuple_result, key=itemgetter(1), reverse=True)
-
-		final_result = []
-		for item_pair in tuple_result:
-			string_result = [int(x) for x in item_pair[0]]
-			final_result.append(string_result)
-
-		return final_result
+				bad_ones.append(pre_data[sample])
 
 
-# changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
+	good_ones = np.array(good_ones)
+	bad_ones = np.array(bad_ones)
 
-# vals = pd.read_csv("final_data_file.csv",header=None).values
-# X = vals[:,1:]
-# y = vals[:,0]
+	# -- Sort the List -- 
+	if good_ones.shape[0] != 0:
+		good_ones = good_ones[(-good_ones[:,1]).argsort()]
 
-# X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
-
-# no_samples, no_features = X.shape
-# combinations = combination_finder("pre_data1.csv",[3],False)
-# print(combinations)
-# all_results = big_scraper("pre_data1.csv",[4])
-
-# print(all_results)
-# print(all_results)
-
-# count_total = occurance_counter("pre_data1.csv")
+	if bad_ones.shape[0] != 0:
+		bad_ones = bad_ones[bad_ones[:,1].argsort()]
 
 
-# trans_dict = sample_transf(X)
+	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
+		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
+		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
+		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
+		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
+		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
+	
 
-# bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
+	names_dicts = []
+	# -- Creating Labels Dictionary -- 
+	for col_ind in range(len(anchs_lst)):
+		one_dict = {}
+		one_dict["name"] = names[col_ind]
+		one_dict["label"] = col_ind + 1
+		names_dicts.append(one_dict)
 
-# testing = prep_for_D3_global("pre_data1.csv","final_data_file.csv",changes, bins_centred, X_pos_array,trans_dict)
-# print(len(testing[0]))
+	# -- Create Dictionaries
+	squares_dicts = []
+	for row in good_ones:
+		one_dict = {}
+
+		one_dict["per"] = row[1]
+		one_dict["id"] = row[0]
+
+		squares_dicts.append(one_dict)
+		
+
+	for row in bad_ones:
+		one_dict = {}
+
+		one_dict["per"] = row[1]
+		one_dict["id"] = row[0]
+
+		squares_dicts.append(one_dict)
+
+	return names_dicts,squares_dicts

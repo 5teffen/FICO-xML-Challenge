@@ -61,9 +61,15 @@
           <!-- D3 graphs -->
         </div>
         <div class="txt-space">
-          <input id="check-density" type="checkbox" name="density" value="yes" checked onchange="checkHandle(event)" style="display: none;">
-          <p id="check-text"></p>
+          <!-- <input id="check-density" type="checkbox" name="density" value="yes" checked onchange="densityCheckHandle(event)" style="display: none;">
+          <p id="check-density-text"></p>
           <br>
+          <input id="check-monot" type="checkbox" name="monotonicity" value="no" onchange="monotCheckHandle(event)" style="display: none;">
+          <p id="check-monot-text"></p>
+          <br>
+          <input id="check-sort" type="checkbox" name="sort" value="no" onchange="sortCheckHandle(event)" style="display: none;">
+          <p id="check-sort-text"></p>
+          <br> -->
           <!-- Text explanation -->
 
         </div>
@@ -71,6 +77,12 @@
     </div>
 
     <script>
+
+      // var dark_shade = "#727f87";
+      var dark_shade = "rgb(126, 140, 149)";
+      // var light_shade = "#b1c4d1";
+      var light_shade = "rgb(177, 196, 209)"
+
     
       function addSquare(elemn, category, size) {
         var sqr = document.createElement("img");
@@ -103,8 +115,18 @@
         }
       }
 
-      function checkHandle(event) {
-        makeRequest("check", 0);
+      function densityCheckHandle(event) {
+        makeRequest("check-density", 0);
+        return false;   
+      }
+
+      function monotCheckHandle(event) {
+        makeRequest("check-monot", 0);
+        return false;   
+      }
+
+      function sortCheckHandle(event) {
+        makeRequest("check-sort", 0);
         return false;   
       }
 
@@ -136,6 +158,7 @@
           alert('Giving up :( Cannot create an XMLHTTP instance');
           return false;
         }
+        // document.getElementsByClassName("ind-header")[0].style.display = "none";
         if (source == 'form') {
           var s = document.getElementById("search-bar").value;
           document.getElementById("search-bar").value="";
@@ -143,17 +166,32 @@
         else if (source == 'list') {
           var s = sample.id.substring(5);
         }
-        else {
+        else if (source == "global") {
+          var s = sample.toString();
+        }
+
+        else if (source == "prop-button"){
           var s = document.getElementById("id-display").innerHTML.substring(4);
+          console.log("sorted");
+        }
+
+        var monot = "False";
+        if (document.getElementById("monot-button").style.backgroundColor == dark_shade){
+          monot = "True";
+        }
+        var sort = "False";
+        if (document.getElementById("sort-button").style.backgroundColor == dark_shade){
+          sort = "True";
         }
         
         httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', '/instance?sample='+s);
+        httpRequest.open('GET', '/instance?sample='+s+'&monot='+monot+'&sort='+sort);
         httpRequest.send();
         return false;
       }
 
       function alertContents() {
+
         if (httpRequest.readyState === XMLHttpRequest.OPENED) {
           document.getElementsByClassName("d3-space")[0].innerHTML="";
           var load_wrap = document.createElement("div");
@@ -163,10 +201,24 @@
           load_wrap.append(loader);
           document.getElementsByClassName("d3-space")[0].append(load_wrap);
         }
+
         else if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
             //Do stuff with the response
-            // var resp = JSON.parse(httpRequest.responseText);
+
+            document.getElementsByClassName("d3-space")[0].innerHTML="";
+
+            if (document.getElementsByClassName("ind-header")[0].style.display == "none"){
+              document.getElementsByClassName("ind-header")[0].style.display = "table";
+            }
+            // else {
+            //   console.log("enter");
+            //   var r_side = document.getElementsByClassName("right-side")[0];
+            //   r_side.removeChild(r_side.childNodes[2]);
+            //   create_buttons();
+            //   document.getElementsByClassName("ind-header")[0].style.display = "table";
+            // }
+                      
             var resp_arr = httpRequest.responseText.split('~');
             var testData = [];
             var densityData = [];
@@ -176,6 +228,8 @@
             for (i=0; i<23; i++){
               densityData.push(JSON.parse(resp_arr[i+23]));
             }
+
+            // console.log(densityData);
             var resp = JSON.parse(resp_arr[46]);
             
             var index = resp['sample'].toString();
@@ -186,7 +240,6 @@
             var result = resp['predicted'];
             var disp_percent = good_percent;
             document.getElementById("id-display").innerHTML = "ID: " + index;
-            // document.getElementsByClassName("model-display")[0].innerHTML = "Model prediction: " + disp_percent.toString() + "% ";
             document.getElementById("model-display").innerHTML = "";
             var image_x = document.getElementById('category-img')
             image_x.parentNode.removeChild(image_x);
@@ -199,9 +252,8 @@
               document.getElementsByClassName("d3-space")[0].innerHTML = "SPECIAL CASE";
             }
             else {
-              document.getElementById("check-density").style.display = "inline";
-              document.getElementById("check-text").innerHTML = "Density distribution";
-              if (document.getElementById("check-density").checked == true){
+              if (document.getElementById("density-button").style.backgroundColor == dark_shade){
+                // console.log(densityData);
                 draw_graph(testData, densityData, result);
               }
               else {
@@ -214,7 +266,7 @@
         }
       }
 
-      function prep_content(callback0, callback1, callback2) {
+      function prep_content(callback0, callback1, callback2, callback3) {
 
         callback0();
 
@@ -222,6 +274,8 @@
         setTimeout(function(){ callback1();
 
         callback2(); }, 50);
+
+        callback3();
 
       }
 
@@ -282,6 +336,7 @@
           sqr.style.verticalAlign = "middle";
           sqr.style.margin = "4px 0px 0px 0px";
           sqr.style.float = "left";
+          sqr.className = "mini-category-img";
           var link_string = pre_array[i][3] + "\xa0 \xa0"  + pre_array[i][4];
           document.getElementById("link-div-"+i.toString()).innerHTML = link_string;
           document.getElementById("link-div-"+i.toString()).append(sqr);
@@ -290,8 +345,79 @@
         console.log("IMGS");
       }
 
-      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 200)});
+      function flip_property(elemn) {
 
+        if (elemn.style.backgroundColor == dark_shade) {
+          elemn.style.backgroundColor = light_shade;
+        }
+        else {
+          elemn.style.backgroundColor = dark_shade;
+        }
+
+        makeRequest("prop-button", 0);
+      }
+
+      function create_buttons(){
+        console.log("buttons");
+        var ind_header = document.createElement("table");
+        var row = document.createElement("tr");
+        ind_header.className = "ind-header";
+
+        var ind_text = document.createElement("td");
+        ind_text.className = "ind-text";
+        console.log("ADSGAS");
+        ind_text.innerHTML = "WARNINGS";
+
+        var btn_td = document.createElement("td");
+        btn_td.className = "btn-td";
+        var check_group = document.createElement("div");
+        check_group.className = "check-group";
+
+        var density_button = document.createElement("button");
+        var monot_button = document.createElement("button");
+        var sort_button = document.createElement("button");
+
+        density_button.className = "prop-button";
+        monot_button.className = "prop-button";
+        sort_button.className = "prop-button";
+
+        density_button.id = "density-button";
+        monot_button.id = "monot-button";
+        sort_button.id = "sort-button";
+
+        density_button.innerHTML = "Density";
+        monot_button.innerHTML = "Monotonicity";
+        sort_button.innerHTML = "Sort";
+
+        density_button.style.backgroundColor = dark_shade;
+        monot_button.style.backgroundColor = light_shade;
+        sort_button.style.backgroundColor = light_shade;
+
+        density_button.onclick = function(){flip_property(this);};
+        monot_button.onclick = function(){flip_property(this);};
+        sort_button.onclick = function(){flip_property(this);};
+
+        check_group.append(density_button);
+        check_group.append(monot_button);
+        check_group.append(sort_button);
+        btn_td.append(check_group);
+        row.append(ind_text);
+        row.append(btn_td);
+        ind_header.append(row);
+        ind_header.style.display = "none";
+        var right_side = document.getElementsByClassName("right-side")[0];
+        right_side.insertBefore(ind_header, right_side.childNodes[2]);
+      }
+
+      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons); }, 400)});
+
+      var url_str = window.location.href;
+      var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));
+      if (isNaN(initial_sample)) {      
+      }
+      else {
+        setTimeout(function(){makeRequest("global", initial_sample);}, 100);
+      }
       // draw_percent_bar(.41);
       // addSquare("container", "TP", 45);
 

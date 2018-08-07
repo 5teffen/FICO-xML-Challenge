@@ -24,71 +24,47 @@ function draw_dir(dir, ft_index) {
     var defs = svg.append("defs");
 
    
-    if (dir == 1){
+    if ((dir == 1) || (dir == -1)) {
         svg.append('g').append("line")
             .attr("class","arrow")
             .attr("x1",xScale(0.5))
             .attr("x2",xScale(0.5))
-            .attr("y1",yScale(0.2))
-            .attr("y2",yScale(0.8))
-            .style("stroke","#1b9e77")
+            .attr("y1",yScale(0.25))
+            .attr("y2",yScale(0.75))
+            .style("stroke",function(){
+                if (dir == 1) {return "#1b9e77";}
+                else {return "rgb(217, 95, 2)";}
+            })
             .style("stroke-linecap","round")
-            .style("stroke-width",3); 
+            .style("stroke-width",2); 
         
         svg.append('g').append("line")
             .attr("class","arrow")
             .attr("x1",xScale(0.5))
-            .attr("x2",xScale(0.7))
-            .attr("y1",yScale(0.8))
+            .attr("x2",xScale(0.66))
+            .attr("y1",yScale(0.75))
             .attr("y2",yScale(0.5))
-            .style("stroke","#1b9e77")
+            .style("stroke",function(){
+                if (dir == 1) {return "#1b9e77";}
+                else {return "rgb(217, 95, 2)";}
+            })
             .style("stroke-linecap","round")
-            .style("stroke-width",3); 
+            .style("stroke-width",2); 
         
         svg.append('g').append("line")
             .attr("class","arrow")
             .attr("x1",xScale(0.5))
-            .attr("x2",xScale(0.3))
-            .attr("y1",yScale(0.8))
+            .attr("x2",xScale(0.35))
+            .attr("y1",yScale(0.75))
             .attr("y2",yScale(0.5))
-            .style("stroke","#1b9e77")
+            .style("stroke",function(){
+                if (dir == 1) {return "#1b9e77";}
+                else {return "rgb(217, 95, 2)";}
+            })
             .style("stroke-linecap","round")
-            .style("stroke-width",3); 
-        
+            .style("stroke-width",2); 
     }
     
-    else if (dir == -1){
-        svg.append('g').append("line")
-            .attr("class","arrow")
-            .attr("x1",xScale(0.5))
-            .attr("x2",xScale(0.5))
-            .attr("y1",yScale(0.2))
-            .attr("y2",yScale(0.8))
-            .style("stroke","#1b9e77")
-            .style("stroke-linecap","round")
-            .style("stroke-width",3); 
-        
-        svg.append('g').append("line")
-            .attr("class","arrow")
-            .attr("x1",xScale(0.5))
-            .attr("x2",xScale(0.7))
-            .attr("y1",yScale(0.2))
-            .attr("y2",yScale(0.5))
-            .style("stroke","#1b9e77")
-            .style("stroke-linecap","round")
-            .style("stroke-width",3); 
-        
-        svg.append('g').append("line")
-            .attr("class","arrow")
-            .attr("x1",xScale(0.5))
-            .attr("x2",xScale(0.3))
-            .attr("y1",yScale(0.2))
-            .attr("y2",yScale(0.5))
-            .style("stroke","#1b9e77")
-            .style("stroke-linecap","round")
-            .style("stroke-width",3); 
-        
-    }
     
     else{
         svg.append('g').append("line")
@@ -99,7 +75,7 @@ function draw_dir(dir, ft_index) {
             .attr("y2",yScale(0.5))
             .style("stroke","black")
             .style("stroke-linecap","round")
-            .style("stroke-width",3); 
+            .style("stroke-width",2); 
     }
     
 }

@@ -13,9 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- SVG scripts -->
     <script type="text/javascript" src="/static/js/main_graph.js"></script>
-    <script type="text/javascript" src="/static/js/model_summary.js"></script>
     <script type="text/javascript" src="/static/js/direction_signs.js"></script>
-    <script type="text/javascript" src="/static/js/anchor_graphs.js"></script>
     <script type="text/javascript" src="/static/js/square_graphs_simple.js"></script>
     <script type="text/javascript" src="/static/js/occ_bar.js"></script>
     <script type="text/javascript" src="/static/js/mini_graph.js"></script>
@@ -31,26 +29,30 @@
         </header>
         <nav class="left-nav">
           <ul>
-            <li>
-              <a href="/global">
-                GLOBAL EXPLANATION
-              </a>
+            <li class="dropdown">
+              <a>GLOBAL EXPLANATION</a>
+              <!-- <a href="/global">GLOBAL EXPLANATION -->
+                <div class="dropdown-content">
+                  <a href="#">KEY FEATURES</a>
+                  <a href="#">CHANGES</a>
+                </div>
+              <!--</a>-->
              </li>
             <li><a href="/individual">LOCAL EXPLANATIONS</a></li>
           </ul>
         </nav>
 
         <nav class="id-list">
+          <br>
+          <br>
+          <br>
+          MODEL SUMMARY
         </nav>
       </div>
       
       <div class="right-side-global" id="demo">
 
         <div id="left-panel">
-          <div class="btn-group">
-            <button class="algo-button" id="key-button" onclick="buttonRequest(this)">Key Features</button>
-            <button class="algo-button" id="chg-button" onclick="buttonRequest(this)">Changes</button>
-          </div>
         </div>
 
         <div id="right-panel">
@@ -87,37 +89,6 @@
 
     <script>
     
-      var ft_names = ["External Risk Estimate", 
-                        "Months Since Oldest Trade Open",
-                        "Months Since Last Trade Open",
-                        "Average Months in File",
-                        "Satisfactory Trades",
-                        "Trades 60+ Ever",
-                        "Trades 90+ Ever",
-                        "% Trades Never Delq.",
-                        "Months Since Last Delq.",
-                        "Max Delq. Last 12M",
-                        "Max Delq. Ever",
-                        "Total Trades",
-                        "Trades Open Last 12M",
-                        "% Installment Trades",
-                        "Months Since Most Recent Inq",
-                        "Inq Last 6 Months",
-                        "Inq Last 6 Months exl. 7 days",
-                        "Revolving Burden",
-                        "Installment Burden",
-                        "Revolving Trades w/ Balance:",
-                        "Installment Trades w/ Balance",
-                        "Bank Trades w/ High Utilization Ratio",
-                        "% Trades w/ Balance"]
-
-      var selected_fts = [];
-
-      // var dark_shade = "#727f87";
-      var dark_shade = "rgb(126, 140, 149)";
-      // var light_shade = "#b1c4d1";
-      var light_shade = "rgb(177, 196, 209)"
-
       // Draw gliph for prediction category
       function addSquare(elemn, category, size) {
         var sqr = document.createElement("img");
@@ -182,6 +153,30 @@
 
       var httpRequest;
 
+      // Individual explanations
+      function makeRequest(source, sample) {
+        httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+        if (source == 'form') {
+          var s = document.getElementById("search-bar").value;
+          document.getElementById("search-bar").value="";
+        }
+        else if (source == 'list') {
+          var s = sample.id.substring(5);
+        }
+        else {
+          var s = document.getElementById("id-display").innerHTML.substring(4);
+        }
+        
+        httpRequest.onreadystatechange = alertContents;
+        httpRequest.open('GET', '/instance?sample='+s);
+        httpRequest.send();
+        return false;
+      }
+
       // Right panel mini graphs
       function makeRequest2(feature) {
         httpRequest = new XMLHttpRequest();
@@ -201,7 +196,7 @@
       }
 
       // Middle panel graphs
-      function makeRequest3(features, algo) {
+      function makeRequest3(features) {
         httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
           alert('Giving up :( Cannot create an XMLHTTP instance');
@@ -210,30 +205,16 @@
 
         // MAKE REQUEST TO GET ELEMENTS FOR MIDDLE PANEL
 
-        
-        req_arr = [];
-
-        if (features[0] == -1){
-          req_arr.push(-1);
-        }
-        else {
-          for (i=0; i<features.length; i++) {
-            req_arr.push(ft_names.indexOf(features[i].innerHTML));
-            features[i].style.fontSize = "13px";
-            features[i].style.fontWeight = "bold"; 
-          }
-        }
-
-        console.log(req_arr);
+        req_arr = features.toString();
         
         httpRequest.onreadystatechange = alertContents3;
-        httpRequest.open('GET', '/first_panel?features=['+req_arr+']&algorithm='+algo);
+        httpRequest.open('GET', '/first_panel?features=['+req_arr+']');
         httpRequest.send();
         return false;
       }
 
       // Left panel global
-      function makeGlobRequest() {
+      function makeGlobRequest(feature) {
         httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
           alert('Giving up :( Cannot create an XMLHTTP instance');
@@ -246,22 +227,69 @@
         return false;
       }
 
-      // Style buttons and send request
-      function buttonRequest(elem) {
+      // Individual explanations
+      function alertContents() {
 
-        if (elem.innerHTML == "Key Features") {
-          elem.style.backgroundColor = dark_shade;
-          var c_but = document.getElementById('chg-button');
-          c_but.style.backgroundColor = light_shade;
+        if (httpRequest.readyState === XMLHttpRequest.OPENED) {
+          document.getElementsByClassName("d3-space")[0].innerHTML="";
+          var load_wrap = document.createElement("div");
+          load_wrap.className = "loader_wrap";
+          var loader = document.createElement("div");
+          loader.className = "lds-dual-ring";
+          load_wrap.append(loader);
+          document.getElementsByClassName("d3-space")[0].append(load_wrap);
         }
-        else {
-          elem.style.backgroundColor = dark_shade;
-          var c_but = document.getElementById('key-button');
-          c_but.style.backgroundColor = light_shade;
-        }
-        resetFeatures();
-        makeGlobRequest();
 
+        else if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            //Do stuff with the response
+
+            var resp_arr = httpRequest.responseText.split('~');
+            var testData = [];
+            var densityData = [];
+            for (i=0; i<23; i++){
+              testData.push(JSON.parse(resp_arr[i]));
+            }
+            for (i=0; i<23; i++){
+              densityData.push(JSON.parse(resp_arr[i+23]));
+            }
+
+            var resp = JSON.parse(resp_arr[46]);
+            
+            var index = resp['sample'].toString();
+            var trans_sample = resp['trans_sample'].toString();
+            var good_percent = resp['good_percent'];
+            var correct = parseInt(resp['model_correct']);
+            var category = resp['category'];
+            var result = resp['predicted'];
+            var disp_percent = good_percent;
+
+            document.getElementById("id-display").innerHTML = "ID: " + index;
+            document.getElementById("model-display").innerHTML = "";
+            var image_x = document.getElementById('category-img')
+            image_x.parentNode.removeChild(image_x);
+            addSquare("container", category, 45);
+            draw_percent_bar(disp_percent);
+            document.getElementsByClassName("cat-text")[0].innerHTML = category;
+            document.getElementsByClassName("d3-space")[0].innerHTML = "";
+
+            if (trans_sample == '-9') {
+              document.getElementsByClassName("d3-space")[0].innerHTML = "SPECIAL CASE";
+            }
+            else {
+              document.getElementById("check-density").style.display = "inline";
+              document.getElementById("check-text").innerHTML = "Density distribution";
+              if (document.getElementById("check-density").checked == true){
+                draw_graph(testData, densityData, result);
+              }
+              else {
+                draw_graph(testData, "no", result);
+              }
+            }
+          } else {
+            alert('HttpRequest Error')
+          }
+        }
       }
 
       // Right panel mini graphs
@@ -293,44 +321,27 @@
             //Do stuff with the response
 
             var resp_arr = httpRequest.responseText;
-            if (resp_arr == ""){
-              document.getElementById("combination-list").innerHTML = "";
-            }
-            else{
+            var middleData = [];
+            middleData = JSON.parse(resp_arr);
+            document.getElementById("combination-list").innerHTML = "";
 
-              var middleData = [];
-              middleData = JSON.parse(resp_arr);
-              document.getElementById("combination-list").innerHTML = "";
+            for (var j = 0; j < middleData.length; j++) {
+              var li = document.createElement("li");
+              var li_div = document.createElement("div");
 
-              for (var j = 0; j < middleData.length; j++) {
-                var li = document.createElement("li");
-                var li_div = document.createElement("div");
+              // li.innerHTML = j.toString();
+              li.id = "middle-link-" + j.toString();
+        
+              li_div.id = "middle-graph-" + j.toString();
+              // li_div.innerHTML = "MID GRAPH";
+              li.onclick = function () { makeRequest2(li.innerHTML); };
+              
 
-                // li.innerHTML = j.toString();
-                li.id = "middle-link-" + j.toString();
-          
-                li_div.id = "middle-graph-" + j.toString();
-                // li_div.innerHTML = "MID GRAPH";
-                li.onclick = function () { makeRequest2(li.innerHTML); };
-                
-
-                li.append(li_div);
-                document.getElementById("combination-list").append(li);
-   
-                var curr_alg = "True";
-
-                if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
-                  curr_alg = "False";
-                }
-                if (curr_alg == "False") {
-                  draw_all_squares(middleData[j], 14, "#"+li_div.id);
-                }
-                else {
-                  draw_all_anchs(middleData[j][0],middleData[j][1], 1000, "#"+li_div.id);
-                }
-                var br = document.createElement("br");
-                document.getElementById("combination-list").append(br);
-              }
+              li.append(li_div);
+              document.getElementById("combination-list").append(li);
+              draw_all_squares(middleData[j], 14, "#"+li_div.id);
+              var br = document.createElement("br");
+              document.getElementById("combination-list").append(br);
             }
           }
           else {
@@ -346,39 +357,18 @@
             //Do stuff with the response
             // var resp = JSON.parse(httpRequest.responseText);
             var resp_arr = httpRequest.responseText;
-            var totalData = JSON.parse(resp_arr);
+            var barData = [];
+            barData = JSON.parse(resp_arr[0]);
             var monot_arr = [1,1,1,1,1,-1,-1,1,1,1,1,0,-1,0,1,-1,-1,-1,-1,0,0,-1,0];
+            
+            var sortedOrder = JSON.parse(resp_arr[1]);
 
-            var barData = totalData[2];
-            var keySort = totalData[0];
-            var chgSort = totalData[1];
+            draw_occurance_text();
 
-            document.getElementById("bar-div-header").innerHTML = '';
-
-            if (document.getElementById("chg-button").style.backgroundColor == dark_shade){
-              draw_occurance_text("chg");
-              for (i=0; i<23; i++){
-                document.getElementById("ft-div-" + i.toString()).innerHTML = '';
-                document.getElementById("monot-" + i.toString()).innerHTML = '';
-                draw_occurance_bar(barData[chgSort[i]][2],barData[chgSort[i]][3],i);
-                draw_dir(monot_arr[chgSort[i]], i);
-                document.getElementById("bar-div-header").style.marginRight = "5px";
-                document.getElementById("feat-" + i.toString()).innerHTML = ft_names[chgSort[i]];
-                document.getElementById("feat-" + i.toString()).onclick = function () {flip_feature(this);};
-              }
+            for (i=0; i<23; i++){
+              draw_occurance_bar(barData[sortedOrder[i]][0],barData[sortedOrder[i]][1],barData[sortedOrder[i]][2],barData[sortedOrder[i]][3],i);
+              draw_dir(monot_arr[sortedOrder[i]], i);
             }
-            else{
-              draw_occurance_text("key");
-              for (i=0; i<23; i++){
-                document.getElementById("ft-div-" + i.toString()).innerHTML = '';
-                document.getElementById("monot-" + i.toString()).innerHTML = '';
-                draw_occurance_bar(barData[keySort[i]][0],barData[keySort[i]][1],i);
-                draw_dir(monot_arr[keySort[i]], i);
-                document.getElementById("bar-div-header").style.marginRight = "16px";
-                document.getElementById("feat-" + i.toString()).innerHTML = ft_names[keySort[i]];
-                document.getElementById("feat-" + i.toString()).onclick = function () { flip_feature(this);};
-              }
-            }         
           }
           else {
               alert('HttpRequest Error');
@@ -387,11 +377,14 @@
       }
 
       // Initialize contents
-      function prep_content() {
+      function prep_content(callback0, callback1, callback2) {
 
-        document.getElementById("key-button").style.backgroundColor = dark_shade;
-        document.getElementById("chg-button").style.backgroundColor = light_shade;
-        draw_summary(".id-list");
+        // callback0();
+
+        // // setTimeout(function(){ alert("Hello"); }, 3000);
+        // setTimeout(function(){ callback1();
+
+        // callback2(); }, 50);
       }
 
       // Add loading animation
@@ -405,9 +398,88 @@
         document.getElementsByClassName("id-list")[0].append(load_wrap);
       }
 
+      // Initialize left bar list of IDs
+      function id_list(){
+        var samples = 10459;
+        var list_cont = document.createElement("ul");
+        for (i = 1; i <= samples; i++) {
+          var para = document.createElement("li");
+          para.innerHTML = "ID " + i.toString();
+          para.id = "link-" + i.toString();
+          para.onclick = function () { makeRequest('list', this); };
+          var li_div = document.createElement("div");
+          li_div.style.width = "75px";
+          li_div.style.float = "right";
+          li_div.style.margin = "0px 25px 0px 0px";
+          li_div.id = "link-div-" + i.toString();
+          para.append(li_div);
+          list_cont.append(para);
+        }
+        console.log("LIST");
+        document.getElementsByClassName("id-list")[0].innerHTML="";
+        document.getElementsByClassName("id-list")[0].append(list_cont);
+      }
+
+      // Draw cateogry gliphs for left bar
+      function add_images() {
+        for (var i = 1; i < pre_array.length; i++) {
+
+          var sqr = document.createElement("img");
+          if (pre_array[i][2].trim() == "FN"){
+            sqr.src="/static/images/square2-min.jpg";
+          }
+          else if (pre_array[i][2].trim() == "TN"){
+            sqr.src="/static/images/square4-min.jpg";
+          }
+          else if (pre_array[i][2].trim() == "FP"){
+            sqr.src="/static/images/square1-min.jpg";
+          }
+          else if (pre_array[i][2].trim() == "TP"){
+            sqr.src="/static/images/square3-min.jpg";
+          } 
+          else if (pre_array[i][2].trim() == "NA"){
+            sqr.src="/static/images/square5-min.jpg";
+          } 
+          sqr.height="15";
+          sqr.width="15";
+          sqr.style.borderRadius = "50%";
+          sqr.style.verticalAlign = "middle";
+          sqr.style.margin = "4px 0px 0px 0px";
+          sqr.style.float = "left";
+          var link_string = pre_array[i][3] + "\xa0 \xa0"  + pre_array[i][4];
+          document.getElementById("link-div-"+i.toString()).innerHTML = link_string;
+          document.getElementById("link-div-"+i.toString()).append(sqr);
+          
+        }
+        console.log("IMGS");
+      }
+
       // Initialize feature list for global
       function ft_list() {
         var features = 23;
+        var ft_names = ["External Risk Estimate", 
+                        "Months Since Oldest Trade Open",
+                        "Months Since Last Trade Open",
+                        "Average Months in File",
+                        "Satisfactory Trades",
+                        "Trades 60+ Ever",
+                        "Trades 90+ Ever",
+                        "% Trades Never Delq.",
+                        "Months Since Last Delq.",
+                        "Max Delq. Last 12M",
+                        "Max Delq. Ever",
+                        "Total Trades",
+                        "Trades Open Last 12M",
+                        "% Installment Trades",
+                        "Months Since Most Recent Inq",
+                        "Inq Last 6 Months",
+                        "Inq Last 6 Months exl. 7 days",
+                        "Revolving Burden",
+                        "Installment Burden",
+                        "Revolving Trades w/ Balance:",
+                        "Installment Trades w/ Balance",
+                        "Bank Trades w/ High Utilization Ratio",
+                        "% Trades w/ Balance"]
 
         var ft_table = document.createElement("table");
         ft_table.id = "feature-table1";
@@ -457,11 +529,12 @@
           bar_div.className = "bar-div";
           bar_div.id = "ft-div-" + i.toString();
 
-          var loc_i = i;
+          var ft_arr = [3];
 
+          td.onclick = function () { makeRequest3(ft_arr); };
           var link = document.createElement("a");
 
-          // link.innerHTML = ft_names[i];
+          link.innerHTML = ft_names[i];
           link.style.maxWidth = "125px"; 
           link.id = "feat-" + i.toString();
           link.href = "#right-panel";
@@ -475,63 +548,17 @@
         }
 
         document.getElementById("left-panel").append(ft_table);
-
-        var reset = document.createElement("button");
-        reset.innerHTML = "Reset";
-        reset.id = "reset-button";
-        reset.onclick = function(){ resetFeatures(); };
-        document.getElementById("left-panel").append(reset);
       }
 
-      function redirect_to_instance() {
-        window.location.replace("http://localhost:5005/individual?sample=52");       
-      }
-
-      function resetFeatures() {
-
-        selected_fts = [-1];
-
-        var curr_alg = "True";
-
-        if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
-          curr_alg = "False";
-        }
+      function redirect_to_instance () {
+        window.location.replace("http://localhost:5005/individual");
+        // console.log("first");
+        // setTimeout(function(){window.location.replace("http://localhost:5005/instance?sample=15"); }, 1000);
+        // console.log("second");
         
-        for (i=0; i<23; i++){
-          document.getElementById("feat-" + i.toString()).style.fontSize = "12px";
-          document.getElementById("feat-" + i.toString()).style.fontWeight = "550";
-        }
-        makeRequest3(selected_fts, curr_alg);
       }
 
-      function flip_feature(elemn) {
-
-        var curr_alg = "True";
-
-        if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
-          curr_alg = "False";
-        }
-
-        var index = selected_fts.indexOf(-1);
-        if (index > -1) {
-          selected_fts.splice(index, 1);
-        }
-        if (selected_fts.includes(elemn)){
-          index = selected_fts.indexOf(elemn);
-          selected_fts.splice(index, 1);
-          elemn.style.fontSize = "12px";
-          elemn.style.fontWeight = "550";
-          makeRequest3(selected_fts, curr_alg);
-        }
-        else if (selected_fts.length < 5){
-          selected_fts.push(elemn);
-          makeRequest3(selected_fts, curr_alg);
-        }
-      }
-
-      // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(); }, 700)});
-      fetch_csv();
-      prep_content();
+      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images); }, 700)});
 
       ft_list();
 

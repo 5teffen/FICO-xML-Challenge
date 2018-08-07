@@ -8,7 +8,7 @@ from Functions import *
 
 np.random.seed(12345)
  
-# ------ Helper functions ------- #
+# ------- Helper functions ------- #
 
 def display_data (sample):
 	sample -= 1
@@ -46,9 +46,11 @@ def sample_transf ():
 		else:
 			trans_dict[str(sample)] = -9
 
-# ------ Initialize model ------- #
 
-from ILE import instance_explanation, prepare_for_D3, divide_data_bins, scaling_data_density
+
+# ------- Initialize model ------- #
+
+from ILE import instance_explanation, prepare_for_D3, divide_data_bins, scaling_data_density, sort_by_val
 
 vals = pd.read_csv("final_data_file.csv", header=None).values
 X = vals[:,1:]
@@ -64,9 +66,12 @@ svm_model.train_model(0.001)
 svm_model.test_model()
 
 bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
-dict_array = scaling_data_density(X_no_9, bins_centred)
+dict_array_orig = scaling_data_density(X_no_9, bins_centred, False)
+dict_array_monot = scaling_data_density(X_no_9, bins_centred, True)
 count_total = occurance_counter("pre_data1.csv")
 sample_transf()
+
+
 
 # ------ Initialize WebApp ------- #
 
@@ -76,9 +81,67 @@ app = Flask(__name__, static_folder="C:/Users/Oscar/Documents/UGR 2018/Fico-Chal
 def intro_site():
 	return render_template("index_intro.html")
 
+
+# ------- Individual Explanations ------- #
+
 @app.route('/individual')
 def ind_site():
     return render_template("index_individual.html")
+
+@app.route('/instance', methods=['GET'])
+def handle_request():
+
+	np.random.seed(12345)
+
+	if request.method == 'GET':
+		sample = -10
+		try:
+			sample = int(request.args.get('sample'))
+		except:
+			return "Please enter a sample number in the range (1, 10459)."
+
+		if sample != -10:
+			if sample<1 or sample>10459:
+				return "Please enter a sample number in the range (1, 10459)."
+			else:			
+				
+				monot = (request.args.get('monot') == "True")
+				sort = (request.args.get('sort') == "True")
+				sample, good_percent, model_correct, category, predicted = display_data(sample)
+				
+				### Run MSC and Anchors
+				trans_sample = trans_dict[str(sample)]
+				change_vector, change_row, anchors, percent = instance_explanation(svm_model, X_no_9, X_no_9[trans_sample], trans_sample, X_pos_array, bins_centred)
+
+				### Parse values into python dictionary
+				ret_string = ""
+				data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent, monot)
+
+				dict_array = []
+				if monot:
+					dict_array = dict_array_monot
+					print("monot")
+				else:
+					dict_array = dict_array_orig
+					print("orig")
+
+				if sort:
+					print('sort')
+					data_array, dict_array = sort_by_val(data_array, dict_array)
+
+				for dct in data_array:
+					ret_string += json.dumps(dct)
+					ret_string += "~"
+
+				for dct in dict_array:
+					ret_string += json.dumps(dct)
+					ret_string += "~"
+				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted, 'trans_sample': trans_sample})
+				return ret_string
+
+
+
+# ------- Global Explanations ------- #
 
 @app.route('/glob_req')
 def glob_site_bars():
@@ -90,6 +153,19 @@ def glob_site_bars():
 		for item in arr:
 			new_item = list(item)
 			ret_arr.append(new_item)
+
+		keyTots = []
+		chgTots = []
+		for i in range(no_features):
+			keyTots.append(ret_arr[i][0]+ret_arr[i][1])
+			chgTots.append(ret_arr[i][2]+ret_arr[i][3])
+
+
+		keySort = sorted(range(len(keyTots)), key=lambda k: keyTots[k])[::-1]
+		chgSort = sorted(range(len(chgTots)), key = lambda k: chgTots[k])[::-1]
+
+		ret_arr = [keySort, chgSort, ret_arr]
+
 		ret_string = json.dumps(ret_arr)
 
 	return ret_string
@@ -120,60 +196,47 @@ def handle_request_ft():
 
 	if request.method == 'GET':
 
-		ft_list = (request.args.get('features'))
+		ft_list = request.args.get('features')
 		ft_list = ft_list[1:-1].split(',')
-		ft_list = [int(x) for x in ft_list]
 
+		# False = changes, True = keyfts
+		algorithm = (request.args.get('algorithm') == "True")
+
+		# print(algorithm)
+
+		if ft_list[0] == -1 or ft_list == ['']:
+			return ""
+		else:
+			ft_list = [int(x) for x in ft_list]
+			ft_list.sort()
+
+		# print(ft_list)
 		# FUNCTION TO GENERATE LIST OF COMBINATION AND RANK THEM
 
-		combinations = combination_finder("pre_data1.csv",ft_list,False)
+		combinations = combination_finder("pre_data1.csv",ft_list,algorithm)
+
+		#textData, squareData = anchor_finder("pre_data1.csv","final_data_file.csv",[1,4])
 
 		ret_arr = []
-		for combi in combinations[:15]:
-			ret_arr.append(big_scraper("pre_data1.csv", combi))
+		if not algorithm:
+			print("changes")
+			for combi in combinations[:15]:
+				ret_arr.append(big_scraper("pre_data1.csv", combi))
+		else:
+			print("keyfts")
+			for combi in combinations[:15]:
+				print(combi)
+				names, squares = anchor_finder("pre_data1.csv","final_data_file.csv", combi)
+				ret_arr.append([names,squares])
 
 		## Parse values into python dictionary
 		ret_string = json.dumps(ret_arr)
 
 		return ret_string
 
-@app.route('/instance', methods=['GET'])
-def handle_request():
 
-	np.random.seed(12345)
 
-	if request.method == 'GET':
-		sample = -10
-		try:
-			sample = int(request.args.get('sample'))
-		except:
-			return "Please enter a sample number in the range (1, 10459)."
-
-		if sample != -10:
-			if sample<1 or sample>10459:
-				return "Please enter a sample number in the range (1, 10459)."
-			else:			
-				
-				sample, good_percent, model_correct, category, predicted = display_data(sample)
-				
-				### Run MSC and Anchors
-				trans_sample = trans_dict[str(sample)]
-				change_vector, change_row, anchors, percent = instance_explanation(svm_model, X_no_9, X_no_9[trans_sample], trans_sample, X_pos_array, bins_centred)
-
-				### Parse values into python dictionary
-				ret_string = ""
-				data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent)
-
-				for dct in data_array:
-					ret_string += json.dumps(dct)
-					ret_string += "~"
-				for dct in dict_array:
-					ret_string += json.dumps(dct)
-					ret_string += "~"
-				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted, 'trans_sample': trans_sample})
-				return ret_string
-
-# ------ Run WebApp ------- #
+# ------- Run WebApp ------- #
 
 if __name__ == '__main__':
 

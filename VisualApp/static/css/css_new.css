@@ -34,10 +34,10 @@ a:hover, a:active { text-decoration: none; color: black }
 }*/
 
 html, body {
-  margin: 0;
-  background-color: gainsboro;
-  height: 100vh;
-  overflow: hidden;
+	margin: 0;
+	background-color: gainsboro;
+	height: 100vh;
+	overflow: hidden;
 }
 
 a {
@@ -58,7 +58,7 @@ main {
   width: 250px;
   /* background-color: #1f2124; */
   /*background-color: #20262e;*/
-  background-color: #87959e;
+  background-color: gainsboro;
   color: black;
   height: 100vh;
   text-align: center;
@@ -97,6 +97,31 @@ main {
   padding-top: 10px;
 }
 
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1;}
+.dropdown:hover .dropdown-content {display: block;}
 
 /*-------------*/
 /* Search form */
@@ -133,7 +158,7 @@ main {
 
 .left-nav li {
   font-weight: 200;
-  height: 81.6px;
+  height: 78px;
   /* background: rgba(0,0,0,.15); */
   
 }
@@ -141,20 +166,17 @@ main {
 .left-nav a.active,
 .left-nav a:hover {
   max-width: 250px;
-  /*background: lightgray;*/
-  background: #b1c4d1;
+  background: lightgray;
   border-left: 8px solid #13895F;
 }
 
 .left-nav a {
   /* background: #18191b; */
-  /*background: rgba(0,0,0,.15);*/
-  /*background-color: rgba(135, 149, 158, 0.1);*/
-  background: #727f87;
+  background: rgba(0,0,0,.15);
   color: black;
   display: block;
   padding: 30px;
-  /*transition: all 0.1s;*/
+  transition: all 0.2s ease;
 }
 
 /*---------*/
@@ -212,10 +234,6 @@ main {
 .id-list li:hover {
   color: #13895F;
   cursor: pointer;
-}
-
-.mini-category-img {
-  border: 1px solid black;
 }
 
 
@@ -282,60 +300,9 @@ table #category-display {
 table #category-img {
   margin-top: 0px;
   border-radius: 50%;
-  border: 0.7px solid black;
 }
 table #model-display {
   /*width: 30%;*/
-}
-
-/*--------------*/
-/* Button space */
-/*--------------*/
-
-.ind-header {
-  width: 880px;
-  margin: auto;
-  text-align: center;
-  margin-top: 50px;
-  padding-left: 10px;
-  /*border: 1px solid black;*/
-}
-
-.ind-header td{
-  margin: auto;
-  text-align: center;
-  /*border: 1px solid black;*/
-}
-.ind-text {
-  display: inline-block;
-  float: left;
-}
-.btn-td {
-  width: 236px;
-}
-.check-group {
-  display: inline-block;
-  float: right;
-}
-.check-group .prop-button {
-  background-color: #BEBEBE; /* Green */
-  border: 1px solid black;
-  color: black;
-  padding: 8px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 13px;
-  cursor: pointer;
-  float: left;
-  font-weight: 500;
-  display: inline-block;
-}
-.check-group .prop-button:not(:last-child) {
-    border-right: none; /* Prevent double borders */
-}
-.check-group .prop-button:focus {
-    outline: none;
 }
 
 /*----------*/
@@ -346,7 +313,7 @@ table #model-display {
   background-color: white;
   /*background-color: Gainsboro;*/
   width: 100%;
-  height: 420px;
+  height: calc(100% - 150px);
   text-align:  center;
 }
 
@@ -354,12 +321,12 @@ table #model-display {
 /* SVG space */
 /*-----------*/
 
-.main-svg {
-  background-color: white;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0px;
-  display: auto;
+svg {
+	background-color: white;
+	margin-left: auto;
+	margin-right: auto;
+  margin-top: 15px;
+	display: auto;
 }
 
 .axis path,
@@ -395,15 +362,7 @@ table #model-display {
   background-color: white;
 }
 
-#check-density-text {
-  display: inline;
-}
-
-#check-monot-text {
-  display: inline;
-}
-
-#check-sort-text {
+#check-text {
   display: inline;
 }
 
@@ -463,31 +422,9 @@ table #model-display {
 /* Left panel */
 /*------------*/
 
-.btn-group .algo-button {
-    background-color: #BEBEBE; /* Green */
-    border: 1px solid black;
-    color: black;
-    padding: 8px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 13px;
-    cursor: pointer;
-    float: left;
-    font-weight: 500;
-    display: inline-block;
-    margin-bottom: 25px;
-}
-.btn-group .algo-button:not(:last-child) {
-    border-right: none; /* Prevent double borders */
-}
-.btn-group .algo-button:focus {
-    outline: none;
-}
-
 
 #left-panel {
-  width: 270px;
+  width: 272px;
   height: calc(100% - 120px);
   /*height: 80%;*/
   background-color: white;
@@ -495,8 +432,7 @@ table #model-display {
   /*display: table-cell; vertical-align: middle;*/
   font-size: 12px;
   /*overflow-y: scroll;*/
-  margin-top: 15px;
-  text-align: left;
+  margin-top: 60px;
   /*margin-left: 30px;*/
 }
 
@@ -511,8 +447,7 @@ table #model-display {
   padding: 0px;
   margin: 0px;
   display: block;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
   vertical-align: top;
   /*border: 1px solid black;*/
 }
@@ -568,9 +503,6 @@ table #model-display {
 
 #bar-div-header {
   margin-right: 16px;
-  margin-top: 2px;
-  margin-left: 0px;
-  text-align: center;
 }
 
 .bar-label {
@@ -620,36 +552,13 @@ table #model-display {
 .bar-div {
   display: inline-block;
   width: 45px;
-  height: 24px;
+  height: 30px;
   float: right;
-  margin-left: 20px;
-  margin-top: 6px;
+  margin-left: 8px;
 }
 
 .occ-svg {
   margin-top: 0px;
-}
-
-#reset-button {
-    background-color: rgb(135, 149, 158);
-    border: 1px solid black;
-    color: black;
-    padding: 4px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 13px;
-    cursor: pointer;
-    float: right;
-    font-weight: 500;
-    display: inline-block;
-    margin-top: 5px;
-    margin-right: 12px;
-}
-
-#reset-button:focus {
-    /*background-color: gray;*/
-    outline: none;
 }
 
 
@@ -661,7 +570,7 @@ table #model-display {
   margin-left: 5px;
   width: calc(100% - 300px);
   /*width: 900px;*/
-  height: calc(100% - 100px);
+  height: calc(100% - 120px);
   padding-top: 60px;
   /*background-color: darkgrey;*/
   display: none;

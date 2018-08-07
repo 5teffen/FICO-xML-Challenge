@@ -1,4 +1,8 @@
 function draw_graph(testData, densityData, result){
+
+    console.log(testData)
+    console.log(densityData)
+
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 
@@ -16,13 +20,13 @@ function draw_graph(testData, densityData, result){
     
     // -- Establishing margins and canvas bounds -- 
     var margin = {
-            top: 50, 
+            top: 10, 
             right: 60, 
             bottom: 140, 
             left: 70
         },
         width = 1000 - margin.right - margin.left,
-        height = 400 - margin.top - margin.bottom;
+        height = 360 - margin.top - margin.bottom;
 
     var padding_top = 0.2,
         padding_bottom = 0.1;
@@ -42,6 +46,7 @@ function draw_graph(testData, densityData, result){
                 .append("svg")
                 .attr("width",width + margin.right + margin.left)
                 .attr("height",height + margin.top + margin.bottom)
+                .attr("class", "main-svg")
                 .append("g")
                      .attr("transform","translate(" + margin.left + ',' + margin.top +')');
 
