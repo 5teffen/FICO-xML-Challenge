@@ -4,6 +4,54 @@ from operator import itemgetter
 import copy
 
 
+def model_overview(pre_proc_file):
+	pre_data = pd.read_csv(pre_proc_file).values
+
+	total_count = pre_data.shape[0]
+	
+	changes_count = 0
+	key_count = 0
+
+	tp_count = 0
+	fp_count = 0
+
+	tn_count = 0
+	fn_count = 0
+
+	for sample in pre_data:
+
+		if sample[2]== "TP":
+			tp_count += 1
+
+		elif sample[2]== "FP":
+			fp_count += 1
+
+		elif sample[2]== "TN":
+			tn_count += 1
+
+		else:
+			fn_count += 1
+
+
+		if sample[3] > 0:
+			key_count += 1
+
+		if sample[4] > 0:
+			changes_count += 1
+
+
+	print("-- Model Summary --")
+
+	print("Total # of samples:", total_count)
+	print()
+	print("True Positive:",tp_count)
+	print("False Positive:",fp_count)
+	print("True Negative:",tn_count)
+	print("False Negative:",fn_count)
+	print()
+	print("Key Features:",key_count)
+	print("Changes",changes_count)
+
 def separate_bins_feature(feat_column,special_case = False):
 	no_bins = 10
 
@@ -117,47 +165,6 @@ def prepare_for_analysis(filename):
 
 	return data_array
 
-def get_change_samples(pre_proc_file,all_data_file,cols,height):
-	# 0-4 General Data
-	# 5-8 Anchor Cols
-	# 9-12 Change Cols
-	# 13-16 Col Heights
-
-	pre_data = pd.read_csv(pre_proc_file).values
-	all_data = pd.read_csv(all_data_file,header=None).values
-
-	change_samples = []
-
-	# Identify Changes
-	for test in range(9,14):
-		for s in range(pre_data.shape[0]):
-			if (pre_data[s][test] == cols):
-				if (pre_data[s][test+5] == height):
-					change_samples.append(s)
-
-	return change_samples
-
-# def get_anch_samples(pre_proc_file,all_data_file,anchs):
-	# 0-4 General Data
-	# 5-8 Anchor Cols
-	# 9-12 Change Cols
-	# 13-16 Col Heights
-
-	pre_data = pd.read_csv(pre_proc_file).values
-	all_data = pd.read_csv(all_data_file,header=None).values
-	anch_samples = []
-
-	# Identify Anchors
-	for test in range(5,9):
-		for s in range(pre_data.shape[0]):
-			if (pre_data[s][test] == anchs):
-				anch_samples.append(s)
-
-	return anch_samples
-
-def combinations_to_samples(pre_proc_file,all_data_file):
-	pass
-
 def sample_transf(X):
 	trans_dict = {}
 	my_count = 0
@@ -169,77 +176,6 @@ def sample_transf(X):
 			trans_dict[str(sample)] = -9
 
 	return trans_dict
-
-def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,positions,transform):
-
-	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
-		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
-		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
-		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
-		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
-		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
-	pre_data = pd.read_csv(pre_proc_file).values
-	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
-
-	final_data = []
-	
-	for s in samples:
-		single_dict_list = []
-		for i in range(all_data.shape[1]):
-			result = {}
-			result["name"] = names[i]
-			result["incr"] = 0 
-			result["per"] = pre_data[s][1]
-			result["anch"] = 0
-
-			val = all_data[s][i].round(0)
-			change = val
-
-	        # -- Identify Anchors --
-			for an in range(5,9):
-				col = pre_data[s][an]
-				if (i == col):
-					result["anch"] = 1
-
-			# -- Find Change -- 
-			for a in range(9,14):
-				col = pre_data[s][a]
-				if (i == col):
-
-					new_sample_ind = int(transform[str(s)])
-					idx = positions[new_sample_ind][col]
-					increments = pre_data[s][a+5]
-					change = bins_centred[i][int(idx+increments)]
-
-
-
-			max_bin = np.max(bins_centred[i])
-			min_bin = np.min(bins_centred[i])
-
-			if (min_bin == -1):
-				min_bin = 0
-
-			if (max_bin < 10):
-				max_bin = 10
-
-			scl_val = ((val-min_bin)/(max_bin-min_bin)).round(2)
-			scl_change = ((change-min_bin)/(max_bin-min_bin)).round(2)
-
-			if (scl_val < 0 ):
-				scl_val = 0
-			if (scl_change < 0):
-				scl_change = 0
-
-			result["val"] = int(val)
-			result["scl_val"] = float(scl_val)
-			result["change"] = int(change)
-			result["scl_change"] = float(scl_change)
-
-			single_dict_list.append(result)
-			
-		final_data.append(single_dict_list)
-
-	return final_data
 
 def occurance_counter(pre_proc_file):
 	# --- Finds how many changes and anchors there are in ratio form ---
@@ -272,6 +208,62 @@ def occurance_counter(pre_proc_file):
 	# for i in range(ratio_array.shape[1]):
 	# 	ratio_array
 	return ratio_array
+
+def combination_finder(pre_proc_file,cols_lst,anchs):
+	# --- Finds all the combinations with the desired columns --- 
+	pre_data = pd.read_csv(pre_proc_file).values
+	all_combinations = {}
+
+	samples_list = []
+
+	for sample in range(pre_data.shape[0]):
+
+		cur_lst = []
+
+		if (anchs):
+			range_val = range(5,9)
+		else:
+			range_val = range(9,14)
+		for c in range_val:
+			val = pre_data[sample][c]
+			if (val < 0 or len(cur_lst) > 5):
+				break
+			cur_lst.append(val)
+
+		if (set(cols_lst).issubset(cur_lst)):
+			new_key = ','.join(str(x) for x in cols_lst)
+			if new_key in all_combinations:
+				all_combinations[new_key] += 1
+			else:
+				all_combinations[new_key] = 1
+
+			left_over = [x for x in cur_lst if (x not in cols_lst)]
+
+			if len(left_over) > 0:
+				possible_combs = my_combinations([],left_over,0)
+
+			# -- Add the leftovers -- 
+				for ending in possible_combs:
+					sorted_cols = sorted(cols_lst+ending)
+					new_key = ','.join(str(x) for x in sorted_cols)
+					if new_key in all_combinations:
+						all_combinations[new_key] += 1
+					else:
+						all_combinations[new_key] = 1
+
+
+	tuple_result = []
+	for one_case in all_combinations:
+		lst_case = one_case.split(',')
+		tuple_result.append((lst_case,all_combinations[one_case]))
+		tuple_result = sorted(tuple_result, key=itemgetter(1), reverse=True)
+
+	final_result = []
+	for item_pair in tuple_result:
+		string_result = [int(x) for x in item_pair[0]]
+		final_result.append(string_result)
+
+	return final_result
 
 def changes_generator(pre_proc_file,desired_cols):
 	# --- Generates the list of lists needed for D3 visualisation ---
@@ -371,74 +363,6 @@ def changes_generator(pre_proc_file,desired_cols):
 	#print(global_samples)
 	return all_dicts,global_samples
 
-def my_combinations(target,data,limit):
-	result = []
-	for i in range(len(data)):
-		new_target = copy.copy(target)
-		new_data = copy.copy(data)
-		new_target.append(data[i])
-		new_data = data[i+1:]
-		if (4 >= len(new_target) >= limit):
-			result.append(new_target)
-		result += my_combinations(new_target,new_data,limit)
-	return result
-
-def combination_finder(pre_proc_file,cols_lst,anchs):
-	# --- Finds all the combinations with the desired columns --- 
-	pre_data = pd.read_csv(pre_proc_file).values
-	all_combinations = {}
-
-	samples_list = []
-
-	for sample in range(pre_data.shape[0]):
-
-		cur_lst = []
-
-		if (anchs):
-			range_val = range(5,9)
-		else:
-			range_val = range(9,14)
-		for c in range_val:
-			val = pre_data[sample][c]
-			if (val < 0 or len(cur_lst) > 5):
-				break
-			cur_lst.append(val)
-
-		if (set(cols_lst).issubset(cur_lst)):
-			new_key = ','.join(str(x) for x in cols_lst)
-			if new_key in all_combinations:
-				all_combinations[new_key] += 1
-			else:
-				all_combinations[new_key] = 1
-
-			left_over = [x for x in cur_lst if (x not in cols_lst)]
-
-			if len(left_over) > 0:
-				possible_combs = my_combinations([],left_over,0)
-
-			# -- Add the leftovers -- 
-				for ending in possible_combs:
-					sorted_cols = sorted(cols_lst+ending)
-					new_key = ','.join(str(x) for x in sorted_cols)
-					if new_key in all_combinations:
-						all_combinations[new_key] += 1
-					else:
-						all_combinations[new_key] = 1
-
-
-	tuple_result = []
-	for one_case in all_combinations:
-		lst_case = one_case.split(',')
-		tuple_result.append((lst_case,all_combinations[one_case]))
-		tuple_result = sorted(tuple_result, key=itemgetter(1), reverse=True)
-
-	final_result = []
-	for item_pair in tuple_result:
-		string_result = [int(x) for x in item_pair[0]]
-		final_result.append(string_result)
-
-	return final_result
-
 def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
@@ -521,53 +445,76 @@ def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 	# return names_dicts,squares_dicts,good_samples,bad_samples
 	return names_dicts,squares_dicts
 
-def model_overview(pre_proc_file):
+def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,positions,transform):
+
+	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
+		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
+		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
+		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
+		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
+		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
 	pre_data = pd.read_csv(pre_proc_file).values
+	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
 
-	total_count = pre_data.shape[0]
+	final_data = []
 	
-	changes_count = 0
-	key_count = 0
+	for s in samples:
+		single_dict_list = []
+		for i in range(all_data.shape[1]):
+			result = {}
+			result["name"] = names[i]
+			result["incr"] = 0 
+			result["per"] = pre_data[s][1]
+			result["anch"] = 0
 
-	tp_count = 0
-	fp_count = 0
+			val = all_data[s][i].round(0)
+			change = val
 
-	tn_count = 0
-	fn_count = 0
+	        # -- Identify Anchors --
+			for an in range(5,9):
+				col = pre_data[s][an]
+				if (i == col):
+					result["anch"] = 1
 
-	for sample in pre_data:
+			# -- Find Change -- 
+			for a in range(9,14):
+				col = pre_data[s][a]
+				if (i == col):
 
-		if sample[2]== "TP":
-			tp_count += 1
-
-		elif sample[2]== "FP":
-			fp_count += 1
-
-		elif sample[2]== "TN":
-			tn_count += 1
-
-		else:
-			fn_count += 1
-
-
-		if sample[3] > 0:
-			key_count += 1
-
-		if sample[4] > 0:
-			changes_count += 1
+					new_sample_ind = int(transform[str(s)])
+					idx = positions[new_sample_ind][col]
+					increments = pre_data[s][a+5]
+					change = bins_centred[i][int(idx+increments)]
 
 
-	print("-- Model Summary --")
 
-	print("Total # of samples:", total_count)
-	print()
-	print("True Positive:",tp_count)
-	print("False Positive:",fp_count)
-	print("True Negative:",tn_count)
-	print("False Negative:",fn_count)
-	print()
-	print("Key Features:",key_count)
-	print("Changes",changes_count)
+			max_bin = np.max(bins_centred[i])
+			min_bin = np.min(bins_centred[i])
+
+			if (min_bin == -1):
+				min_bin = 0
+
+			if (max_bin < 10):
+				max_bin = 10
+
+			scl_val = ((val-min_bin)/(max_bin-min_bin)).round(2)
+			scl_change = ((change-min_bin)/(max_bin-min_bin)).round(2)
+
+			if (scl_val < 0 ):
+				scl_val = 0
+			if (scl_change < 0):
+				scl_change = 0
+
+			result["val"] = int(val)
+			result["scl_val"] = float(scl_val)
+			result["change"] = int(change)
+			result["scl_change"] = float(scl_change)
+
+			single_dict_list.append(result)
+			
+		final_data.append(single_dict_list)
+
+	return final_data
 
 
 
