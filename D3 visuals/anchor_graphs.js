@@ -18,7 +18,7 @@ var textData = [
 }
 ];
     
-var squareData = [
+var goodData = [
 {
     per: 0.95,
     id: 1
@@ -48,30 +48,82 @@ var squareData = [
     id: 7
 },
 {
-    per: 0.5,
+    per: 0.55,
     id: 8
 },
 {
-    per: 0.4,
+    per: 0.55,
     id: 9
 },
 {
-    per: 0.35,
+    per: 0.55,
     id: 10
 },
 {
-    per: 0.2,
+    per: 0.55,
     id: 11
 },  
 {
-    per: 0.1,
+    per: 0.55,
+    id: 12
+}];
+
+var goodData2 = [];
+
+var badData = [
+{
+    per: 0.49,
+    id: 1
+},
+{
+    per: 0.45,
+    id: 2
+},
+{
+    per: 0.40,
+    id: 3
+},
+{
+    per: 0.35,
+    id: 4
+},
+{
+    per: 0.25,
+    id: 5
+},  
+{
+    per: 0.2,
+    id: 6
+},
+{
+    per: 0.2,
+    id: 7
+},
+{
+    per: 0.15,
+    id: 8
+},
+{
+    per: 0.05,
+    id: 9
+},
+{
+    per: 0.03,
+    id: 10
+},
+{
+    per: 0.01,
+    id: 11
+},  
+{
+    per: 0.005,
     id: 12
 }];
 
 
-function draw_all_anchs(textData,totalData, limit, elemn) {
+function draw_all_anchs(textData,goodData,badData, limit, elemn) {
 
-    const horizontal_limit = 5;
+    const horizontal_limit = limit/2;
     
     const good_col = "#1b9e77",
           bad_col = "#d95f02";
@@ -146,24 +198,26 @@ function draw_all_anchs(textData,totalData, limit, elemn) {
             .attr("transform","translate(" + (text_space+text_feat+5) + ",0)");
     
       
-    var good_row_count = 1,
-        bad_row_count = 1;
+    var good_row_count = 0,
+        bad_row_count = 0;
     
-    y2_shift = 2*(sq_height + y_sep)+5;
+    if (goodData.length == 0){y2_shift = 0;}
+    else {y2_shift = 2*(sq_height + y_sep)+5;}
     
-    if (totalData.length <= limit) {limit = totalData.length;}
-
-    for (indx = 0; indx < limit; ++indx){
-        var single_square = totalData[indx];
+    var row_cap = 2;
+    for (indx = 0; indx < goodData.length; ++indx){
+        if (row_cap == 0) {break;}
         
-        if (single_square.per > 0.5){
-            
-            if (good_row_count == horizontal_limit) {
-                x1_shift = 0;
-                y1_shift += (sq_height + y_sep);}
-            
-            var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
+        var single_square = goodData[indx];
+
+        if (good_row_count == horizontal_limit) {
+            row_cap -= 1
+            good_row_count = 0;
+            x1_shift = 0;
+            y1_shift += (sq_height + y_sep);}
+
+        var shifted_svg = svg.append('g')
+                .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
             
             
             shifted_svg.append("rect")
@@ -190,40 +244,46 @@ function draw_all_anchs(textData,totalData, limit, elemn) {
             good_row_count += 1;
         }
         
-        else if (single_square.per <= 0.5){
-            
-            if (bad_row_count == horizontal_limit) {
-                y2_shift += (sq_height + y_sep);
-                x2_shift = 0;}
-            
-            
-            var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
-            
-            shifted_svg.append('g').append("rect")
-                .attr("id","smallsquare-"+single_square.id)
-                .attr('x',0)
-                .attr('y',0)
-                .attr("height",sq_height)
-                .attr("width",sq_width)
-                .attr("opacity",((single_square.per*-2)+1))
-                .attr("fill",bad_col);
-            
-            var percent_string = Math.round(single_square.per*100).toString();
-            
-            shifted_svg.append('g').append("text")
-                .text(percent_string)
-                .attr("x",sq_width/2)
-                .attr("y",sq_height/2+3)
-                .attr("font-family", 'sans-serif')
-                .attr("font-size", '9px')
-                .attr("fill","white")
-                .attr("text-anchor",'middle');
-            
-            
-            x2_shift += sq_width + x_sep;
-            bad_row_count += 1;
-        }
+    
+    var row_cap = 2;
+    for (indx = 0; indx < badData.length; ++indx){
+        if (row_cap == 0) {break;}
+        
+        var single_square = badData[indx];
+
+        if (bad_row_count == horizontal_limit) {
+            row_cap -= 1
+            bad_row_count = 0;
+            y2_shift += (sq_height + y_sep);
+            x2_shift = 0;}
+
+
+        var shifted_svg = svg.append('g')
+                .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
+
+        shifted_svg.append('g').append("rect")
+            .attr("id","smallsquare-"+single_square.id)
+            .attr('x',0)
+            .attr('y',0)
+            .attr("height",sq_height)
+            .attr("width",sq_width)
+            .attr("opacity",((single_square.per*-2)+1))
+            .attr("fill",bad_col);
+
+        var percent_string = Math.round(single_square.per*100).toString();
+
+        shifted_svg.append('g').append("text")
+            .text(percent_string)
+            .attr("x",sq_width/2)
+            .attr("y",sq_height/2+3)
+            .attr("font-family", 'sans-serif')
+            .attr("font-size", '9px')
+            .attr("fill","white")
+            .attr("text-anchor",'middle');
+
+
+        x2_shift += sq_width + x_sep;
+        bad_row_count += 1;
     }
 }
 
@@ -260,4 +320,4 @@ function wrap(text, width) {
     });
 }
 
-draw_all_anchs(textData,squareData, 1000, "body")
+draw_all_anchs(textData,goodData2, badData, 5, "body")
