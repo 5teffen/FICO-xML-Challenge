@@ -137,7 +137,7 @@ def get_change_samples(pre_proc_file,all_data_file,cols,height):
 
 	return change_samples
 
-def get_anch_samples(pre_proc_file,all_data_file,anchs):
+# def get_anch_samples(pre_proc_file,all_data_file,anchs):
 	# 0-4 General Data
 	# 5-8 Anchor Cols
 	# 9-12 Change Cols
@@ -154,6 +154,9 @@ def get_anch_samples(pre_proc_file,all_data_file,anchs):
 				anch_samples.append(s)
 
 	return anch_samples
+
+def combinations_to_samples(pre_proc_file,all_data_file):
+	pass
 
 def sample_transf(X):
 	trans_dict = {}
@@ -239,6 +242,7 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 	return final_data
 
 def occurance_counter(pre_proc_file):
+	# --- Finds how many changes and anchors there are in ratio form ---
 	pre_data = pd.read_csv(pre_proc_file).values
 
 	count_array = np.zeros((23,4))
@@ -269,10 +273,13 @@ def occurance_counter(pre_proc_file):
 	# 	ratio_array
 	return ratio_array
 
-def big_scraper(pre_proc_file,desired_cols):
-	# Note: desired_cols is a list
+def changes_generator(pre_proc_file,desired_cols):
+	# --- Generates the list of lists needed for D3 visualisation ---
+	# --- Also outputs list of sample lists needed for global vis --- 
 
 	pre_data = pd.read_csv(pre_proc_file).values
+
+	global_samples = []
 
 	all_changes = []
 	all_counts = []
@@ -294,10 +301,13 @@ def big_scraper(pre_proc_file,desired_cols):
 					if (changes_lst in all_changes):
 						idx = all_changes.index(changes_lst)
 						all_counts[idx] += 1
+						global_samples[idx].append(pre_data[sam][0])
 					else:
 						all_changes.append(changes_lst)
 						all_counts.append(1)
 						all_per.append(int(np.round(pre_data[sam][1],0)))
+
+						global_samples.append([pre_data[sam][0]])
 
 		# - Resets changes list -
 		changes_lst = [0]*no_of_cols
@@ -306,6 +316,7 @@ def big_scraper(pre_proc_file,desired_cols):
 
 	if (all_changes == []):
 		return None
+
 	# -- Sorting Changes by Count-- 
 	all_changes = np.array(all_changes)
 
@@ -314,15 +325,23 @@ def big_scraper(pre_proc_file,desired_cols):
 
 	all_per = np.array(all_per)
 	all_per = all_per.reshape((all_per.shape[0],1))
+
+	global_samples = np.array(global_samples)
+	global_samples = global_samples.reshape((global_samples.shape[0],1))
+
+	# -- Combine all the columns for effective sort 
 	
 	sort_array = np.append(all_counts,all_per,axis=1)
+	sort_array = np.append(sort_array,global_samples,axis=1)
 	sort_array = np.append(sort_array,all_changes,axis=1)
 
 	sort_array = sort_array[(-sort_array[:,0]).argsort()]
 
 	all_counts = sort_array[:,0].flatten()
 	all_per = sort_array[:,1]
-	all_changes = sort_array[:,2:]
+	global_samples = sort_array[:,2]
+	all_changes = sort_array[:,3:]
+
 
 	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
 		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
@@ -349,8 +368,8 @@ def big_scraper(pre_proc_file,desired_cols):
 
 		all_dicts.append(single_dicts)
 
-
-	return all_dicts
+	#print(global_samples)
+	return all_dicts,global_samples
 
 def my_combinations(target,data,limit):
 	result = []
@@ -365,8 +384,11 @@ def my_combinations(target,data,limit):
 	return result
 
 def combination_finder(pre_proc_file,cols_lst,anchs):
+	# --- Finds all the combinations with the desired columns --- 
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_combinations = {}
+
+	samples_list = []
 
 	for sample in range(pre_data.shape[0]):
 
@@ -417,11 +439,16 @@ def combination_finder(pre_proc_file,cols_lst,anchs):
 
 	return final_result
 
-def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
+def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
 
 	samples_list = []
+
+	# -- A list of sample IDs which are used to draw global explanations --
+	good_samples = []
+	bad_samples = []
+
 	good_ones = []
 	bad_ones = []
 
@@ -477,22 +504,76 @@ def anchor_finder(pre_proc_file, all_data_file, anchs_lst):
 		one_dict["per"] = row[1]
 		one_dict["id"] = row[0]
 
+		good_samples.append(row[0])
+
 		squares_dicts.append(one_dict)
 		
-
 	for row in bad_ones:
 		one_dict = {}
 
 		one_dict["per"] = row[1]
 		one_dict["id"] = row[0]
 
+		bad_samples.append(row[0])
+
 		squares_dicts.append(one_dict)
 
-	print("NAMES:",names_dicts)
-	print("SQUARES:",squares_dicts)
+	# return names_dicts,squares_dicts,good_samples,bad_samples
 	return names_dicts,squares_dicts
 
-changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
+def model_overview(pre_proc_file):
+	pre_data = pd.read_csv(pre_proc_file).values
+
+	total_count = pre_data.shape[0]
+	
+	changes_count = 0
+	key_count = 0
+
+	tp_count = 0
+	fp_count = 0
+
+	tn_count = 0
+	fn_count = 0
+
+	for sample in pre_data:
+
+		if sample[2]== "TP":
+			tp_count += 1
+
+		elif sample[2]== "FP":
+			fp_count += 1
+
+		elif sample[2]== "TN":
+			tn_count += 1
+
+		else:
+			fn_count += 1
+
+
+		if sample[3] > 0:
+			key_count += 1
+
+		if sample[4] > 0:
+			changes_count += 1
+
+
+	print("-- Model Summary --")
+
+	print("Total # of samples:", total_count)
+	print()
+	print("True Positive:",tp_count)
+	print("False Positive:",fp_count)
+	print("True Negative:",tn_count)
+	print("False Negative:",fn_count)
+	print()
+	print("Key Features:",key_count)
+	print("Changes",changes_count)
+
+
+
+# changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
+
+# model_overview("pre_data1.csv")
 
 vals = pd.read_csv("final_data_file.csv",header=None).values
 X = vals[:,1:]
@@ -502,12 +583,10 @@ X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
 
-names, squares = anchor_finder("pre_data1.csv","final_data_file.csv",[3,21])
-# combinations = combination_finder("pre_data1.csv",[4,17,21],True)
-# all_results = big_scraper("pre_data1.csv",[4])
+# names, squares = anchor_generator("pre_data1.csv","final_data_file.csv",[3,21])
+combinations = combination_finder("pre_data1.csv",[4,17,21],False)
+all_results = changes_generator("pre_data1.csv",combinations[1])
 
-# print(all_results)
-# print(all_results)
 
 # count_total = occurance_counter("pre_data1.csv")
 
