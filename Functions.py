@@ -25,11 +25,11 @@ def model_overview(pre_proc_file):
 
 		elif sample[2]== "FP":
 			fp_count += 1
-
-		elif sample[2]== "TN":
+ 
+		elif sample[2] == "TN":
 			tn_count += 1
 
-		else:
+		elif sample[2] == "FN":
 			fn_count += 1
 
 
@@ -209,6 +209,19 @@ def occurance_counter(pre_proc_file):
 	# 	ratio_array
 	return ratio_array
 
+def my_combinations(target,data,limit):
+	# --- Finds the mathematical combinations using recursion ---
+	result = []
+	for i in range(len(data)):
+		new_target = copy.copy(target)
+		new_data = copy.copy(data)
+		new_target.append(data[i])
+		new_data = data[i+1:]
+		if (4 >= len(new_target) >= limit):
+			result.append(new_target)
+		result += my_combinations(new_target,new_data,limit)
+	return result
+
 def combination_finder(pre_proc_file,cols_lst,anchs):
 	# --- Finds all the combinations with the desired columns --- 
 	pre_data = pd.read_csv(pre_proc_file).values
@@ -355,13 +368,15 @@ def changes_generator(pre_proc_file,desired_cols):
 			result["inc_change"] = int(single_change[n])
 			result["occ"] = float(np.round((all_counts[i]/total_count),2))
 			result["per"] = float(all_per[i])
+			result["id_list"] = global_samples[i]
 
 			single_dicts.append(result)
 
 		all_dicts.append(single_dicts)
 
-	#print(global_samples)
-	return all_dicts,global_samples
+	# print(global_samples)
+	# return all_dicts,global_samples
+	return all_dicts
 
 def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 	pre_data = pd.read_csv(pre_proc_file).values
@@ -422,6 +437,7 @@ def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 
 	# -- Create Dictionaries
 	squares_dicts = []
+	good_dicts = []
 	for row in good_ones:
 		one_dict = {}
 
@@ -430,20 +446,23 @@ def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 
 		good_samples.append(row[0])
 
+		good_dicts.append(one_dict)
 		squares_dicts.append(one_dict)
 		
+	bad_dicts = []
 	for row in bad_ones:
 		one_dict = {}
 
 		one_dict["per"] = row[1]
 		one_dict["id"] = row[0]
-
 		bad_samples.append(row[0])
 
+		bad_dicts.append(one_dict)
 		squares_dicts.append(one_dict)
 
 	# return names_dicts,squares_dicts,good_samples,bad_samples
-	return names_dicts,squares_dicts
+	# return names_dicts,squares_dicts
+	return names_dicts, good_dicts, bad_dicts, good_samples, bad_samples
 
 def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,positions,transform):
 
@@ -518,9 +537,7 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 
 
 
-# changes = get_change_samples("pre_data1.csv","final_data_file.csv",3,4)
-
-# model_overview("pre_data1.csv")
+model_overview("pre_data1.csv")
 
 vals = pd.read_csv("final_data_file.csv",header=None).values
 X = vals[:,1:]
@@ -530,13 +547,13 @@ X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
 no_samples, no_features = X.shape
 
-# names, squares = anchor_generator("pre_data1.csv","final_data_file.csv",[3,21])
+names, good_squares, bad_squares, good_samp, bad_samp = anchor_generator("pre_data1.csv","final_data_file.csv",[3,21])
+
 combinations = combination_finder("pre_data1.csv",[4,17,21],False)
 all_results = changes_generator("pre_data1.csv",combinations[1])
 
 
 # count_total = occurance_counter("pre_data1.csv")
-
 
 # trans_dict = sample_transf(X)
 
