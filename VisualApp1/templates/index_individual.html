@@ -134,7 +134,7 @@
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/flask_pre_data_nums_new_debug_tryseed3.csv");
+        txtFile.open("GET", "/static/data/pre_data2.csv");
         txtFile.send()
       }
       
@@ -266,7 +266,7 @@
         }
       }
 
-      function prep_content(callback0, callback1, callback2, callback3) {
+      function prep_content(callback0, callback1, callback2, callback3, callback4) {
 
         callback0();
 
@@ -276,6 +276,8 @@
         callback2(); }, 50);
 
         callback3();
+
+        callback4();
 
       }
 
@@ -409,15 +411,19 @@
         right_side.insertBefore(ind_header, right_side.childNodes[2]);
       }
 
-      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons); }, 400)});
+      function from_global() {
+        var url_str = window.location.href;
+        var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));
+        if (isNaN(initial_sample)) {      
+        }
+        else {
+          setTimeout(function(){makeRequest("global", initial_sample);}, 100);
+        }
+      }
 
-      var url_str = window.location.href;
-      var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));
-      if (isNaN(initial_sample)) {      
-      }
-      else {
-        setTimeout(function(){makeRequest("global", initial_sample);}, 100);
-      }
+      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
+
+
       // draw_percent_bar(.41);
       // addSquare("container", "TP", 45);
 

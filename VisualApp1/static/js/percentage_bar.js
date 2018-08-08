@@ -46,6 +46,8 @@ function draw_percent_bar(result) {
         .attr("width",bar_width)
         .attr("rx",15)
         .attr("ry",15)
+        .style("stroke","black")
+        .style("stroke-width",1)
         .style("fill","url(#lin_gradient)");
     
     // Drawing middle marker 

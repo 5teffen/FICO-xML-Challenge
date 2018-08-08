@@ -34,7 +34,7 @@ print(X_no_9.shape)
 
 # print(np.random.normal())
 
-fp = open("flask_pre_data_nums_new_debug_tryseed3.csv", 'w')
+fp = open("flask_pre_data_4changes_no_top.csv", 'w')
 
 fp.write("ID,Percentage,Category,no_Anch,no_Chg,Anch1,Anch2,Anch3,Anch4,Chg1,Chg2,Chg3,Chg4,Chg5,Hgt1,Hgt2,Hgt3,Hgt4,Hgt5\n")
 

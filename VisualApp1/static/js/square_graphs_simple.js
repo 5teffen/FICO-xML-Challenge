@@ -1,4 +1,4 @@
-function draw_single_graph(testData, svg, width, height){
+function draw_single_graph(testData, svg, width, height, idx){
 
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
@@ -43,17 +43,6 @@ function draw_single_graph(testData, svg, width, height){
         // .style("fill","#A9A9A9");
 
 
-    // -- Drawing surrounding box -- 
-        // svg.append("rect")
-        // .attr("class","border")
-        // .attr('x',xScale(testData[0].name))
-        // .attr('y',0)
-        // .attr("height",function(d){return yScale(0-padding_bottom)})
-        // .attr("width",(xScale.bandwidth()+0.1)*testData.length)
-        // .attr("fill","None")
-        // .attr("stroke","#A9A9A9")
-        // .attr("stroke-width",1);
-
 
     // -- Drawing Change Box -- 
     
@@ -92,6 +81,18 @@ function draw_single_graph(testData, svg, width, height){
         .attr("stroke", "black")
         .attr("stroke-width",1)
         .attr("fill", "none");
+
+    //-- Drawing surrounding box -- 
+        svg.append("rect")
+        
+        .attr("class","border")
+        .attr('x',xScale(testData[0].name))
+        .attr('y',0)
+        .attr("height",function(d){return yScale(0-padding_bottom)})
+        .attr("width",(xScale.bandwidth()+0.1)*testData.length)
+        .attr("fill","None")
+        .attr("stroke","#A9A9A9")
+        .attr("stroke-width",0);
 }
 
 function draw_all_squares(totalData, limit, elemn) {
@@ -167,7 +168,8 @@ function draw_all_squares(totalData, limit, elemn) {
     
     
     var row1_count = 0,
-        row2_count = 0;
+        row2_count = 0
+        drawn_idx = 0;
     
     y2_shift = sq_height + y_sep;
     
@@ -177,16 +179,20 @@ function draw_all_squares(totalData, limit, elemn) {
         var single_square = totalData[indx];
         if (((single_square[0].per) > 0.5)&&(row1_count != horizontal_limit)){
             var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
-            draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
+                    .attr("transform","translate(" + x1_shift + ',' + y1_shift +')')
+                    .attr("class", "mini-square-"+drawn_idx.toString());
+            draw_single_graph(single_square, shifted_svg, sq_width, sq_height, indx);
+            drawn_idx+=1;
             x1_shift += sq_width + x_sep;
             row1_count += 1;
         }
         
         else if (((single_square[0].per) <= 0.5)&&(row2_count != horizontal_limit)){
             var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
-            draw_single_graph(single_square, shifted_svg, sq_width, sq_height);
+                    .attr("transform","translate(" + x2_shift + ',' + y2_shift +')')
+                    .attr("class", "mini-square-"+drawn_idx.toString());  
+            draw_single_graph(single_square, shifted_svg, sq_width, sq_height, indx);
+            drawn_idx+=1;
             x2_shift += sq_width + x_sep;
             row2_count += 1;
         }
