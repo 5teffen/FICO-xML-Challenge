@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Visual Interface</title>
+    <meta name="author" content="NYU UGR Team">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link href="/static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
+    <!-- D3.js and jQuery source -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- SVG scripts -->
+    <script type="text/javascript" src="/static/js/main_graph.js"></script>
+    <script type="text/javascript" src="/static/js/model_summary.js"></script>
+    <script type="text/javascript" src="/static/js/direction_signs.js"></script>
+    <script type="text/javascript" src="/static/js/anchor_graphs.js"></script>
+    <script type="text/javascript" src="/static/js/square_graphs_simple.js"></script>
+    <script type="text/javascript" src="/static/js/occ_bar.js"></script>
+    <script type="text/javascript" src="/static/js/mini_graph.js"></script>
+    <script type="text/javascript" src="/static/js/percentage_bar.js"></script>
+    <script type="text/javascript" src="/static/js/squares.js"></script>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="left-sidebar">
+        <header class="site-header">
+          <h1>FICO CHALLENGE</h1>
+        </header>
+        <nav class="left-nav">
+          <ul>
+            <li>
+              <a href="/global">
+                GLOBAL EXPLANATION
+              </a>
+             </li>
+            <li><a href="/individual">LOCAL EXPLANATIONS</a></li>
+          </ul>
+        </nav>
+
+        <nav class="id-list">
+        </nav>
+      </div>
+      
+      <div class="right-side-global" id="demo">
+
+        <div id="left-panel">
+          <div class="btn-group">
+            <button class="algo-button" id="key-button" onclick="buttonRequest(this)">Key Features</button>
+            <button class="algo-button" id="chg-button" onclick="buttonRequest(this)">Changes</button>
+          </div>
+        </div>
+
+        <div id="right-panel">
+          <table id="feature-table2">
+            <tr>
+
+              <td id="middle-col">
+                <!-- <nav id="middle-nav"> -->
+                  <ul id="combination-list">
+                  </ul>
+                <!-- </nav> -->
+              </td>
+              
+              <td id="right-part">
+                <div id="right-part-div">        
+                </div>
+              </td> 
+
+            </tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <script>
+    
+      var ft_names = ["External Risk Estimate", 
+                        "Months Since Oldest Trade Open",
+                        "Months Since Last Trade Open",
+                        "Average Months in File",
+                        "Satisfactory Trades",
+                        "Trades 60+ Ever",
+                        "Trades 90+ Ever",
+                        "% Trades Never Delq.",
+                        "Months Since Last Delq.",
+                        "Max Delq. Last 12M",
+                        "Max Delq. Ever",
+                        "Total Trades",
+                        "Trades Open Last 12M",
+                        "% Installment Trades",
+                        "Months Since Most Recent Inq",
+                        "Inq Last 6 Months",
+                        "Inq Last 6 Months exl. 7 days",
+                        "Revolving Burden",
+                        "Installment Burden",
+                        "Revolving Trades w/ Balance:",
+                        "Installment Trades w/ Balance",
+                        "Bank Trades w/ High Utilization Ratio",
+                        "% Trades w/ Balance"]
+
+      var selected_fts = [];
+
+      // var dark_shade = "#727f87";
+      var dark_shade = "rgb(126, 140, 149)";
+      // var light_shade = "#b1c4d1";
+      var light_shade = "rgb(177, 196, 209)"
+
+      var txtFile;
+
+      // Get preprocessed csv file
+      function fetch_csv(){
+        txtFile = new XMLHttpRequest();
+        txtFile.onreadystatechange = initContents;
+        txtFile.open("GET", "/static/data/pre_data.csv");
+        txtFile.send()
+      }
+      
+      var pre_array = [];
+      function initContents() {
+        if (txtFile.readyState === XMLHttpRequest.DONE) {
+          if (txtFile.status === 200) {
+            var rows = txtFile.responseText.split("\n");
+            for (var i = 0; i < rows.length; i++) {
+              var cells = rows[i].split(",");
+              pre_array.push(cells);
+            }
+          }
+        }
+      }
+
+      var httpRequest;
+
+      // Right panel mini graphs
+      function makeRequest2(elem, source) {
+        httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+
+        if (source=="chg"){
+          var id_list = elem.id_list;
+          console.log(id_list);
+        }
+
+        else {
+          if (elem.className.baseVal.toString().indexOf("good") > -1){
+            var id_list = elem.parentNode.parentNode.parentNode.id_list_good;
+          }
+          else{
+            var id_list = elem.parentNode.parentNode.parentNode.id_list_bad;
+          }
+          console.log(id_list);
+        }
+
+        httpRequest.onreadystatechange = alertContents2;
+        httpRequest.open('GET', '/glob_feat?id_list='+id_list);
+        httpRequest.send();
+        return false;
+      }
+
+      // Middle panel graphs
+      function makeRequest3(features, algo) {
+        httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+
+        // MAKE REQUEST TO GET ELEMENTS FOR MIDDLE PANEL
+
+        
+        req_arr = [];
+
+        if (features[0] == -1){
+          req_arr.push(-1);
+        }
+        else {
+          for (i=0; i<features.length; i++) {
+            req_arr.push(ft_names.indexOf(features[i].innerHTML));
+            features[i].style.fontSize = "13px";
+            features[i].style.fontWeight = "bold"; 
+          }
+        }
+
+        console.log(req_arr);
+        
+        httpRequest.onreadystatechange = alertContents3;
+        httpRequest.open('GET', '/first_panel?features=['+req_arr+']&algorithm='+algo);
+        httpRequest.send();
+        return false;
+      }
+
+      // Left panel global
+      function makeGlobRequest() {
+        httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+        
+        httpRequest.onreadystatechange = alertGlobContents;
+        httpRequest.open('GET', '/glob_req');
+        httpRequest.send();
+        return false;
+      }
+
+      // Style buttons and send request
+      function buttonRequest(elem) {
+
+        if (elem.innerHTML == "Key Features") {
+          elem.style.backgroundColor = dark_shade;
+          var c_but = document.getElementById('chg-button');
+          c_but.style.backgroundColor = light_shade;
+        }
+        else {
+          elem.style.backgroundColor = dark_shade;
+          var c_but = document.getElementById('key-button');
+          c_but.style.backgroundColor = light_shade;
+        }
+        resetFeatures();
+        makeGlobRequest();
+
+      }
+
+      // Right panel mini graphs
+      function alertContents2() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            //Do stuff with the response
+            document.getElementById("right-part-div").innerHTML = '';
+
+            var resp_arr = httpRequest.responseText;
+            var miniData = [];
+            miniData = JSON.parse(resp_arr);
+            draw_all_graphs(miniData[0], miniData[1]);
+
+
+            // setTimeout(function(){document.getElementById("right-part").onclick = function() {redirect_to_instance()}}, 700);
+
+            // document.getElementById("right-part").onclick = redirect_to_instance;
+            // document.getElementById("right-part-div").onclick = redirect_to_instance; 
+            
+          }
+          else {
+              alert('HttpRequest Error')
+          }
+        }
+      }
+
+      // Middle panel graphs
+      function alertContents3() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            //Do stuff with the response
+
+            var resp_arr = httpRequest.responseText;
+            if (resp_arr == ""){
+              document.getElementById("combination-list").innerHTML = "";
+            }
+            else{
+
+              var middleData = [];
+              middleData = JSON.parse(resp_arr);
+              document.getElementById("combination-list").innerHTML = "";
+
+              for (var j = 0; j < middleData.length; j++) {
+                var li = document.createElement("li");
+                var li_div = document.createElement("div");
+
+                // li.innerHTML = j.toString();
+                li.id = "middle-link-" + j.toString();
+          
+                li_div.id = "middle-graph-" + j.toString();
+                // li_div.innerHTML = "MID GRAPH";                
+
+                li.append(li_div);
+                document.getElementById("combination-list").append(li);
+   
+                var curr_alg = "True";
+
+                if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
+                  curr_alg = "False";
+                }
+                if (curr_alg == "False") {
+                  draw_all_squares(middleData[j][0], 14, "#"+li_div.id);
+                  for (k=0; k<document.getElementsByClassName("mini-square-0")[j].parentNode.childNodes.length; k++){
+                    var idxx = $(".mini-square-" + k.toString()).length;
+                    idxx = Math.max(0,idxx-1);
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].id_list = middleData[j][1][k].toString();
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].onclick = function () { makeRequest2(this, "chg"); };
+                  }
+                  
+                  
+                }
+                else {
+                  draw_all_anchs(middleData[j][0], middleData[j][1], middleData[j][2], 30, "#"+li_div.id, j);
+                  document.getElementById("middle-section-"+j.toString()).id_list_good = middleData[j][3];
+                  document.getElementById("middle-section-"+j.toString()).id_list_bad = middleData[j][4];
+
+                  var tot_len = document.getElementsByClassName("mini-square-good-0")[j].parentNode.childNodes.length;
+                  var good_len = 0;
+                  var bad_len = 0;
+                  for (k=0; k<tot_len; k++){
+                    var pcnt = document.getElementsByClassName("mini-square-good-0")[j].parentNode.childNodes[k].className.baseVal.toString();
+                    // console.log(pcnt);
+                    if (pcnt.indexOf("good") > -1){
+                      good_len += 1;
+                    }
+                    else{
+                      bad_len += 1;
+                    }
+                  }
+
+                  if (typeof document.getElementsByClassName("mini-square-good-0")[j] != 'undefined'){
+                    for (k=0; k<good_len; k++){
+                      var idxx = $(".mini-square-good-" + k.toString()).length;
+                      idxx = Math.max(0,idxx-1);
+                      document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { makeRequest2(this, "anch"); };
+                    }
+                  }
+
+                  if (typeof document.getElementsByClassName("mini-square-bad-0")[j] != 'undefined'){
+                    for (k=0; k<bad_len; k++){
+                      var idxx = $(".mini-square-bad-" + k.toString()).length;
+                      idxx = Math.max(0,idxx-1);
+                      document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onclick = function () { makeRequest2(this, "anch"); };
+                    }
+                  }
+
+                }
+                var br = document.createElement("br");
+                document.getElementById("combination-list").append(br);
+              }
+            }
+          }
+          else {
+              alert('HttpRequest Error')
+          }
+        }
+      }
+
+      // Left panel global
+      function alertGlobContents() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+            //Do stuff with the response
+            // var resp = JSON.parse(httpRequest.responseText);
+            var resp_arr = httpRequest.responseText;
+            var totalData = JSON.parse(resp_arr);
+            var monot_arr = [1,1,1,1,1,-1,-1,1,1,1,1,0,-1,0,1,-1,-1,-1,-1,0,0,-1,0];
+
+            var barData = totalData[2];
+            var keySort = totalData[0];
+            var chgSort = totalData[1];
+
+            document.getElementById("bar-div-header").innerHTML = '';
+
+            if (document.getElementById("chg-button").style.backgroundColor == dark_shade){
+              draw_occurance_text("chg");
+              for (i=0; i<23; i++){
+                document.getElementById("ft-div-" + i.toString()).innerHTML = '';
+                document.getElementById("monot-" + i.toString()).innerHTML = '';
+                draw_occurance_bar(barData[chgSort[i]][2],barData[chgSort[i]][3],i);
+                draw_dir(monot_arr[chgSort[i]], i);
+                document.getElementById("bar-div-header").style.marginRight = "5px";
+                document.getElementById("feat-" + i.toString()).innerHTML = ft_names[chgSort[i]];
+                document.getElementById("feat-" + i.toString()).onclick = function () {flip_feature(this);};
+                document.getElementById("feat-" + i.toString()).onmouseover = function(){hoverStyleEnter(this);};
+                document.getElementById("feat-" + i.toString()).onmouseleave = function(){hoverStyleLeave(this);};
+              }
+            }
+            else{
+              draw_occurance_text("key");
+              for (i=0; i<23; i++){
+                document.getElementById("ft-div-" + i.toString()).innerHTML = '';
+                document.getElementById("monot-" + i.toString()).innerHTML = '';
+                draw_occurance_bar(barData[keySort[i]][0],barData[keySort[i]][1],i);
+                draw_dir(monot_arr[keySort[i]], i);
+                document.getElementById("bar-div-header").style.marginRight = "16px";
+                document.getElementById("feat-" + i.toString()).innerHTML = ft_names[keySort[i]];
+                document.getElementById("feat-" + i.toString()).onclick = function () { flip_feature(this);};
+                document.getElementById("feat-" + i.toString()).onmouseover = function(){hoverStyleEnter(this);};
+                document.getElementById("feat-" + i.toString()).onmouseleave = function(){hoverStyleLeave(this);};
+              }
+            } 
+
+            // var css = '.ft-div:hover {font-size: 13px;font-weight: bold;} .ft-div {color: red;}';
+            // var style = document.createElement('style');
+            // if (style.styleSheet) {
+            //     style.styleSheet.cssText = css;
+            // } else {
+            //     style.appendChild(document.createTextNode(css));
+            // }
+
+            // document.getElementsByTagName('head')[0].appendChild(style);
+
+
+          }
+          else {
+              alert('HttpRequest Error');
+          }
+        }
+      }
+
+      function hoverStyleEnter(elem){
+        if (elem.style.fontWeight != "bold"){
+          elem.style.fontWeight = "bold";
+          elem.style.fontSize = "13px";
+        }
+      }
+      function hoverStyleLeave(elem){
+        if (selected_fts.includes(elem)){
+        }
+        else{
+          elem.style.fontWeight = "normal";
+          elem.style.fontSize = "12px";
+        }
+      }
+
+      // Initialize contents
+      function prep_content() {
+
+        document.getElementById("key-button").style.backgroundColor = dark_shade;
+        document.getElementById("chg-button").style.backgroundColor = light_shade;
+        draw_summary(".id-list");
+      }
+
+      // Add loading animation
+      function add_loader() {
+        document.getElementsByClassName("id-list")[0].innerHTML="";
+        var load_wrap = document.createElement("div");
+        load_wrap.className = "loader_wrap";
+        var loader = document.createElement("div");
+        loader.className = "lds-dual-ring";
+        load_wrap.append(loader);
+        document.getElementsByClassName("id-list")[0].append(load_wrap);
+      }
+
+      // Initialize feature list for global
+      function ft_list() {
+        var features = 23;
+
+        var ft_table = document.createElement("table");
+        ft_table.id = "feature-table1";
+
+        // Header
+
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        var ft_div = document.createElement("div");
+        var bar_div = document.createElement("div");
+        var monot = document.createElement("div");
+
+        monot.innerHTML = "Monot.";
+        monot.className = "monot-div";
+
+        ft_div.className = "ft-div-header";
+        td.id = "ft-header";
+
+        bar_div.className = "bar-div";
+        bar_div.id = "bar-div-header";
+
+        var link = document.createElement("a");
+
+        link.innerHTML = "Feature Name";
+        link.style.maxWidth = "125px"; 
+        link.id = "feat-header";
+
+        ft_div.append(link);
+        td.append(monot);
+        td.append(ft_div);
+        td.append(bar_div);
+        tr.append(td);
+        ft_table.append(tr);
+
+        for (i = 0; i < features; i++) {
+          var tr = document.createElement("tr");
+          var td = document.createElement("td");
+          var ft_div = document.createElement("div");
+          var bar_div = document.createElement("div");
+          var monot = document.createElement("div");
+
+          monot.className = "monot-div";
+          monot.id = "monot-" + i.toString();
+
+          ft_div.className = "ft-div";
+
+          bar_div.className = "bar-div";
+          bar_div.id = "ft-div-" + i.toString();
+
+          var loc_i = i;
+
+          var link = document.createElement("a");
+
+          // link.innerHTML = ft_names[i];
+          link.style.maxWidth = "125px"; 
+          link.id = "feat-" + i.toString();
+          link.href = "#right-panel";
+
+          ft_div.append(link);
+          td.append(monot);
+          td.append(ft_div);
+          td.append(bar_div);
+          tr.append(td);
+          ft_table.append(tr);
+        }
+
+        document.getElementById("left-panel").append(ft_table);
+
+        var reset = document.createElement("button");
+        reset.innerHTML = "Reset";
+        reset.id = "reset-button";
+        reset.onclick = function(){ resetFeatures(); };
+        document.getElementById("left-panel").append(reset);
+      }
+
+      function redirect_to_instance(elem) {
+        var id_numb = elem.id.substring(11);
+        window.location.replace("http://localhost:5005/individual?sample="+id_numb.toString());       
+      }
+
+      function resetFeatures() {
+
+        selected_fts = [-1];
+        var curr_alg = "True";
+
+        if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
+          curr_alg = "False";
+        }
+        
+        for (i=0; i<23; i++){
+          document.getElementById("feat-" + i.toString()).style.fontSize = "12px";
+          document.getElementById("feat-" + i.toString()).style.fontWeight = "550";
+        }
+        makeRequest3(selected_fts, curr_alg);
+      }
+
+      function flip_feature(elemn) {
+
+        var curr_alg = "True";
+
+        if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
+          curr_alg = "False";
+        }
+
+        var index = selected_fts.indexOf(-1);
+        if (index > -1) {
+          selected_fts.splice(index, 1);
+        }
+        if (selected_fts.includes(elemn)){
+          index = selected_fts.indexOf(elemn);
+          selected_fts.splice(index, 1);
+          elemn.style.fontSize = "12px";
+          elemn.style.fontWeight = "550";
+          makeRequest3(selected_fts, curr_alg);
+        }
+        else if (selected_fts.length < 5){
+          selected_fts.push(elemn);
+          makeRequest3(selected_fts, curr_alg);
+        }
+      }
+
+      // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(); }, 700)});
+      fetch_csv();
+      prep_content();
+
+      ft_list();
+
+      makeGlobRequest();
+
+    </script>
+
+  </body>
+
+</html>
