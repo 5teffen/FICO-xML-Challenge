@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Visual Interface</title>
+    <meta name="author" content="NYU UGR Team">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link href="/static/css/scratchstyle-table.css" rel="stylesheet" type="text/css">
+    <!-- D3.js and jQuery source -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- SVG scripts -->
+    <script type="text/javascript" src="/static/js/main_graph.js"></script>
+    <script type="text/javascript" src="/static/js/percentage_bar.js"></script>
+    <script type="text/javascript" src="/static/js/squares.js"></script>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="left-sidebar">
+        <header class="site-header">
+          <h1>FICO CHALLENGE</h1>
+        </header>
+        <nav class="left-nav">
+          <ul>
+            <li><a>GLOBAL EXPLANATION</a></li>
+            <li><a>LOCAL EXPLANATIONS</a></li>
+          </ul>
+        </nav>
+        <!-- Search box -->
+        <div class="input-group">
+          <input id="search-bar" type="text" class="form-control" placeholder="ID number" name="srch-term" autocomplete="off"
+                 onkeydown="formHandle(event)">
+        </div>
+        <nav class="id-list">
+          <ul>
+          </ul>
+        </nav>
+      </div>
+      
+      <div class="right-side" id="demo">
+        <table class="right-header">
+
+        <tr>
+
+            <td id="id-display">
+              ID: 100
+            </td>
+            <td id="category-display">
+              <div id="container">
+                <div class="cat-text">TP</div>
+              </div>
+            </td>
+            <!-- <td id="category-text">TP</td> -->
+            <td id="space"></td>
+            <td id="model-display">
+              <!-- Model Prediction: 61% -->
+            </td>
+        </tr>
+
+        </table>
+        <div class="d3-space">
+          D3 graphs
+        </div>
+        <div class="txt-space">
+          Text explanation
+        </div>
+        <
+      </div>
+
+    </div>
+
+    <script>
+    
+      function addSquare(elemn, category, size) {
+        var sqr = document.createElement("img");
+          if (category == "FN"){
+            sqr.src="/static/images/square2-min.jpg";
+          }
+          else if (category == "TN"){
+            sqr.src="/static/images/square4-min.jpg";
+          }
+          else if (category == "FP"){
+            sqr.src="/static/images/square1-min.jpg";
+          }
+          else if (category == "TP"){
+            sqr.src="/static/images/square3-min.jpg";
+          } 
+          sqr.height=size;
+          sqr.width=size;
+          sqr.id = "category-img";
+          sqr.style.margin = "0px 0px 0px 0px";
+          document.getElementById(elemn).append(sqr);
+      }
+
+      // function delSquare(elemn) {
+      //   elemn.removeChild(elemn.childNodes[1]);
+      // }
+
+      // #------ Functions to add the squares by hovering -------#
+
+      // for (i = 1; i <= samples; i++) {
+      //   document.getElementById("link-" + i.toString()).addEventListener("mouseenter", function(){addSquare(this)});
+      //   document.getElementById("link-" + i.toString()).addEventListener("mouseleave", function(){delSquare(this)});
+      // }
+
+      function formHandle(event) {
+        if (event.which == 13 || event.keyCode == 13){
+          makeRequest('form', 0);
+          return false;
+        }
+      }
+
+      var txtFile = new XMLHttpRequest();
+      function fetch_csv(){
+        txtFile.onreadystatechange = initContents;
+        txtFile.open("GET", "/static/data/flask_pre_data_nums.csv");
+        txtFile.send()
+      }
+      
+      var pre_array = [];
+      function initContents() {
+        if (txtFile.readyState === XMLHttpRequest.DONE) {
+          if (txtFile.status === 200) {
+            var rows = txtFile.responseText.split("\n");
+            for (var i = 0; i < rows.length; i++) {
+              var cells = rows[i].split(",");
+              pre_array.push(cells);
+            }
+          }
+        }
+      }
+
+      var httpRequest;
+      function makeRequest(source, sample) {
+        httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+        if (source == 'form') {
+          var s = document.getElementById("search-bar").value;
+          document.getElementById("search-bar").value="";
+        }
+        else if (source == 'list') {
+          var s = sample.id.substring(5);
+        } 
+          httpRequest.onreadystatechange = alertContents;
+          httpRequest.open('GET', '/instance?sample='+s);
+          httpRequest.send();
+          return false;        
+      }
+
+      function alertContents() {
+        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+          if (httpRequest.status === 200) {
+
+            //Do stuff with the response
+            // var resp = JSON.parse(httpRequest.responseText);
+            var resp_arr = httpRequest.responseText.split('~');
+            var testData = [];
+            for (i=0; i<22; i++){
+              testData.push(JSON.parse(resp_arr[i]));
+            }
+            var resp = JSON.parse(resp_arr[23]);
+            
+            var index = resp['sample'].toString();
+            var good_percent = resp['good_percent'];
+            var correct = parseInt(resp['model_correct']);
+            var category = resp['category'];
+            var result = resp['predicted'];
+            var disp_percent = good_percent;
+            document.getElementById("id-display").innerHTML = "ID: " + index;
+            // document.getElementsByClassName("model-display")[0].innerHTML = "Model prediction: " + disp_percent.toString() + "% ";
+            document.getElementById("model-display").innerHTML = "";
+            var image_x = document.getElementById('category-img')
+            image_x.parentNode.removeChild(image_x);
+            addSquare("container", category, 45);
+            draw_percent_bar(disp_percent);
+            document.getElementsByClassName("cat-text")[0].innerHTML = category;
+            document.getElementsByClassName("d3-space")[0].innerHTML = "";
+            draw_graph(testData, result);
+            
+          } else {
+            alert('HttpRequest Error')
+          }
+        }
+      }
+
+      function prep_content() {
+        id_list();
+        for (var i = 1; i < pre_array.length-1; i++) {
+          var sqr = document.createElement("img");
+          if (pre_array[i][3].trim() == "FN"){
+            sqr.src="/static/images/square2-min.jpg";
+          }
+          else if (pre_array[i][3].trim() == "TN"){
+            sqr.src="/static/images/square4-min.jpg";
+          }
+          else if (pre_array[i][3].trim() == "FP"){
+            sqr.src="/static/images/square1-min.jpg";
+          }
+          else if (pre_array[i][3].trim() == "TP"){
+            sqr.src="/static/images/square3-min.jpg";
+          } 
+          sqr.height="15";
+          sqr.width="15";
+          sqr.style.borderRadius = "50%";
+          sqr.style.verticalAlign = "middle";
+          sqr.style.margin = "4px 0px 0px 0px";
+          sqr.style.float = "left";
+          var link_string = pre_array[i][0] + "\xa0 \xa0"  + pre_array[i][1];
+          document.getElementById("link-div-"+i.toString()).innerHTML = link_string;
+          document.getElementById("link-div-"+i.toString()).append(sqr);
+          
+        }
+      }
+
+      function id_list (){
+        var samples = 10459;
+        for (i = 1; i <= samples; i++) {
+          var para = document.createElement("li");
+          para.innerHTML = "ID " + i.toString();
+          para.id = "link-" + i.toString();
+          // para.style.textAlign = 
+          // para.style.display = "inline-block";
+          para.onclick = function () { makeRequest('list', this); };
+          var li_div = document.createElement("div");
+          li_div.style.width = "75px";
+          li_div.style.float = "right";
+          li_div.style.margin = "0px 25px 0px 0px";
+          li_div.id = "link-div-" + i.toString();
+          para.append(li_div);
+          document.getElementsByTagName("ul")[1].append(para);
+
+        }
+      }
+
+      // id_list();
+
+      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(); }, 100)});
+
+      draw_percent_bar(.41);
+      addSquare("container", "TP", 45);
+
+    
+    </script>
+
+  </body>
+
+</html>
