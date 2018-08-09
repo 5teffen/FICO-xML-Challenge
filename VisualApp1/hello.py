@@ -68,7 +68,7 @@ svm_model.test_model()
 bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
 dict_array_orig = scaling_data_density(X_no_9, bins_centred, False)
 dict_array_monot = scaling_data_density(X_no_9, bins_centred, True)
-count_total = occurance_counter("pre_data1.csv")
+count_total = occurance_counter("pre_data2.csv")
 sample_transf()
 
 
@@ -175,19 +175,18 @@ def glob_site():
 	return render_template("index_global.html")
 
 @app.route('/glob_feat', methods=['GET'])
-def handle_request_rr():
+def handle_request_mini_graphs():
 
 	if request.method == 'GET':
 
-		anchor = int(request.args.get('anchor'))
-		change = int(request.args.get('change'))
-		change_val = int(request.args.get('change_val'))
+		id_list = request.args.get('id_list').split(',')
+		id_list = [int(x) for x in id_list]
 
-		changes = get_change_samples("pre_data1.csv","final_data_file.csv",8,-1)
-		testing = prep_for_D3_global("pre_data1.csv","final_data_file.csv", changes, bins_centred, X_pos_array,trans_dict)
+		mini_graph_arr = prep_for_D3_global("pre_data2.csv","final_data_file.csv", id_list, bins_centred, X_pos_array, trans_dict)
 
 		## Parse values into python dictionary
-		ret_string = json.dumps(testing[:13])
+		ret_string = [mini_graph_arr, id_list]
+		ret_string = json.dumps(ret_string)
 
 		return ret_string
 
@@ -213,7 +212,7 @@ def handle_request_ft():
 		# print(ft_list)
 		# FUNCTION TO GENERATE LIST OF COMBINATION AND RANK THEM
 
-		combinations = combination_finder("pre_data1.csv",ft_list,algorithm)
+		combinations = combination_finder("pre_data2.csv",ft_list,algorithm)
 
 		#textData, squareData = anchor_finder("pre_data1.csv","final_data_file.csv",[1,4])
 
@@ -221,13 +220,14 @@ def handle_request_ft():
 		if not algorithm:
 			print("changes")
 			for combi in combinations[:15]:
-				ret_arr.append(big_scraper("pre_data1.csv", combi))
+				ret_arr.append(changes_generator("pre_data2.csv", combi))
 		else:
 			print("keyfts")
 			for combi in combinations[:15]:
 				print(combi)
-				names, squares = anchor_finder("pre_data1.csv","final_data_file.csv", combi)
-				ret_arr.append([names,squares])
+				names, good_squares, bad_squares, good_samples, bad_samples = anchor_generator("pre_data2.csv","final_data_file.csv", combi)
+				ret_arr.append([names, good_squares, bad_squares, good_samples, bad_samples])
+
 
 		## Parse values into python dictionary
 		ret_string = json.dumps(ret_arr)

@@ -1,7 +1,6 @@
-function draw_all_anchs(textData,totalData, limit, elemn) {
+function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
 
-    const horizontal_limit = 14;
-
+    const horizontal_limit = limit/2;
     
     const good_col = "#1b9e77",
           bad_col = "#d95f02";
@@ -26,11 +25,12 @@ function draw_all_anchs(textData,totalData, limit, elemn) {
 
           
     var width = 420 - margin.right - margin.left,
-        height = 110 - margin.top - margin.bottom;
+        height = 80 - margin.top - margin.bottom;
 
     var svg = d3.select(elemn)
         .append("svg")
         .attr("class", "middle-svg")
+        .attr("id", "middle-section-"+idx.toString())
         .attr("width",width + margin.right + margin.left)
         .attr("height",height + margin.top + margin.bottom)
             .append("g")
@@ -73,27 +73,33 @@ function draw_all_anchs(textData,totalData, limit, elemn) {
     }
     
     svg = svg.append("g")
-            .attr("transform","translate(" + (text_space+text_feat+5) + ",0)");
+            .attr("transform","translate(" + (text_space+text_feat+5) + ",0)")
+
     
       
     var good_row_count = 0,
         bad_row_count = 0;
     
-    y2_shift = 2*(sq_height + y_sep)+5;
+    if (goodData.length == 0){y2_shift = 0;}
+    else {y2_shift = 2*(sq_height + y_sep)+5;}
     
-    if (totalData.length <= limit) {limit = totalData.length;}
+    var row_cap = 2;
+    var drawn_idx = 0;
+    for (indx = 0; indx < goodData.length; ++indx){        
+        var single_square = goodData[indx];
 
-    for (indx = 0; indx < limit; ++indx){
-        var single_square = totalData[indx];
-        
-        if (single_square.per > 0.5){
-            
-            if (good_row_count == horizontal_limit) {
-                x1_shift = 0;
-                y1_shift += (sq_height + y_sep);}
-            
-            var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x1_shift + ',' + y1_shift +')');
+        if (good_row_count == horizontal_limit) {
+            row_cap -= 1
+            good_row_count = 0;
+            x1_shift = 0;
+            y1_shift += (sq_height + y_sep);}
+
+        if (row_cap == 0) {break;}
+
+
+        var shifted_svg = svg.append('g')
+                .attr("transform","translate(" + x1_shift + ',' + y1_shift +')')
+                .attr("class", "mini-square-good-"+drawn_idx.toString());
             
             
             shifted_svg.append("rect")
@@ -118,44 +124,52 @@ function draw_all_anchs(textData,totalData, limit, elemn) {
             
             x1_shift += sq_width + x_sep;
             good_row_count += 1;
+            drawn_idx += 1;
         }
         
-        else if (single_square.per <= 0.5){
-            
-            if (bad_row_count == horizontal_limit) {
-                y2_shift += (sq_height + y_sep);
-                x2_shift = 0;}
-            
-            
-            var shifted_svg = svg.append('g')
-                    .attr("transform","translate(" + x2_shift + ',' + y2_shift +')');  
-            
-            shifted_svg.append('g').append("rect")
-                .attr("id","smallsquare-"+single_square.id)
-                .attr('x',0)
-                .attr('y',0)
-                .attr("height",sq_height)
-                .attr("width",sq_width)
-                .attr("opacity",((single_square.per*-2)+1))
-                .attr("fill",bad_col);
-            
-            var percent_string = Math.round(single_square.per*100).toString();
-            
-            shifted_svg.append('g').append("text")
-                .text(percent_string)
-                .attr("x",sq_width/2)
-                .attr("y",sq_height/2+3)
-                .attr("font-family", 'sans-serif')
-                .attr("font-size", '9px')
-                .attr("fill","white")
-                .attr("text-anchor",'middle');
-            
-            
-            x2_shift += sq_width + x_sep;
-            bad_row_count += 1;
-        }
+    
+    var row_cap = 2;
+    drawn_idx = 0;
+    for (indx = 0; indx < badData.length; ++indx){
+        
+        var single_square = badData[indx];
 
-        
+        if (bad_row_count == horizontal_limit) {
+            row_cap -= 1
+            bad_row_count = 0;
+            y2_shift += (sq_height + y_sep);
+            x2_shift = 0;}
+
+        if (row_cap == 0) {break;}
+
+        var shifted_svg = svg.append('g')
+                .attr("transform","translate(" + x2_shift + ',' + y2_shift +')')
+                .attr("class", "mini-square-bad-"+drawn_idx.toString());  
+
+        shifted_svg.append('g').append("rect")
+            .attr("id","smallsquare-"+single_square.id)
+            .attr('x',0)
+            .attr('y',0)
+            .attr("height",sq_height)
+            .attr("width",sq_width)
+            .attr("opacity",((single_square.per*-2)+1))
+            .attr("fill",bad_col);
+
+        var percent_string = Math.round(single_square.per*100).toString();
+
+        shifted_svg.append('g').append("text")
+            .text(percent_string)
+            .attr("x",sq_width/2)
+            .attr("y",sq_height/2+3)
+            .attr("font-family", 'sans-serif')
+            .attr("font-size", '9px')
+            .attr("fill","white")
+            .attr("text-anchor",'middle');
+
+
+        x2_shift += sq_width + x_sep;
+        bad_row_count += 1;
+        drawn_idx += 1;
     }
 }
 
@@ -191,5 +205,3 @@ function wrap(text, width) {
         }
     });
 }
-
-// draw_all_anchs(textData,squareData, 1000, "body")

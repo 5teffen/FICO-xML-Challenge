@@ -118,52 +118,13 @@
       // var light_shade = "#b1c4d1";
       var light_shade = "rgb(177, 196, 209)"
 
-      // Draw gliph for prediction category
-      function addSquare(elemn, category, size) {
-        var sqr = document.createElement("img");
-          if (category == "FN"){
-            sqr.src="/static/images/square2-min.jpg";
-          }
-          else if (category == "TN"){
-            sqr.src="/static/images/square4-min.jpg";
-          }
-          else if (category == "FP"){
-            sqr.src="/static/images/square1-min.jpg";
-          }
-          else if (category == "TP"){
-            sqr.src="/static/images/square3-min.jpg";
-          }
-          else if (category == "NA"){
-            sqr.src="/static/images/square5-min.jpg";
-          } 
-          sqr.height=size;
-          sqr.width=size;
-          sqr.id = "category-img";
-          sqr.style.margin = "0px 0px 0px 0px";
-          document.getElementById(elemn).append(sqr);
-      }
-
-      // Handles IDs from search bar
-      function formHandle(event) {
-        if (event.which == 13 || event.keyCode == 13){
-          makeRequest('form', 0);
-          return false;
-        }
-      }
-
-      // Handles checkbox for density plot
-      function checkHandle(event) {
-        makeRequest("check", 0);
-        return false;   
-      }
-
       var txtFile;
 
       // Get preprocessed csv file
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/pre_data1.csv");
+        txtFile.open("GET", "/static/data/pre_data2.csv");
         txtFile.send()
       }
       
@@ -183,19 +144,18 @@
       var httpRequest;
 
       // Right panel mini graphs
-      function makeRequest2(feature) {
+      function makeRequest2(elem) {
         httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
           alert('Giving up :( Cannot create an XMLHTTP instance');
           return false;
         }
 
-        var anch_col = 6;
-        var chg_col = 3;
-        var chg_val = 1;
+        var id_list = elem.id_list;
+        console.log(id_list);
         
         httpRequest.onreadystatechange = alertContents2;
-        httpRequest.open('GET', '/glob_feat?anchor='+anch_col.toString()+'&'+'change='+chg_col.toString()+'&'+'change_val='+chg_val.toString());
+        httpRequest.open('GET', '/glob_feat?id_list='+id_list);
         httpRequest.send();
         return false;
       }
@@ -269,12 +229,15 @@
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
             //Do stuff with the response
+            document.getElementById("right-part-div").innerHTML = '';
+
             var resp_arr = httpRequest.responseText;
             var miniData = [];
             miniData = JSON.parse(resp_arr);
-            draw_all_graphs(miniData);
+            draw_all_graphs(miniData[0], miniData[1]);
 
-            setTimeout(function(){document.getElementById("right-part").onclick = function() {redirect_to_instance()}}, 700);
+
+            // setTimeout(function(){document.getElementById("right-part").onclick = function() {redirect_to_instance()}}, 700);
 
             // document.getElementById("right-part").onclick = redirect_to_instance;
             // document.getElementById("right-part-div").onclick = redirect_to_instance; 
@@ -310,9 +273,7 @@
                 li.id = "middle-link-" + j.toString();
           
                 li_div.id = "middle-graph-" + j.toString();
-                // li_div.innerHTML = "MID GRAPH";
-                li.onclick = function () { makeRequest2(li.innerHTML); };
-                
+                // li_div.innerHTML = "MID GRAPH";                
 
                 li.append(li_div);
                 document.getElementById("combination-list").append(li);
@@ -323,10 +284,51 @@
                   curr_alg = "False";
                 }
                 if (curr_alg == "False") {
-                  draw_all_squares(middleData[j], 14, "#"+li_div.id);
+                  draw_all_squares(middleData[j][0], 14, "#"+li_div.id);
+                  for (k=0; k<document.getElementsByClassName("mini-square-0")[j].parentNode.childNodes.length; k++){
+                    var idxx = $(".mini-square-" + k.toString()).length;
+                    idxx = Math.max(0,idxx-1);
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].id_list = middleData[j][1][k].toString();
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].onclick = function () { makeRequest2(this, "chg"); };
+                  }
+                  
+                  
                 }
                 else {
-                  draw_all_anchs(middleData[j][0],middleData[j][1], 1000, "#"+li_div.id);
+                  draw_all_anchs(middleData[j][0], middleData[j][1], middleData[j][2], 30, "#"+li_div.id, j);
+                  document.getElementById("middle-section-"+j.toString()).id_list_good = middleData[j][3];
+                  document.getElementById("middle-section-"+j.toString()).id_list_bad = middleData[j][4];
+
+                  var tot_len = document.getElementsByClassName("mini-square-good-0")[j].parentNode.childNodes.length;
+                  var good_len = 0;
+                  var bad_len = 0;
+                  for (k=0; k<tot_len; k++){
+                    var pcnt = document.getElementsByClassName("mini-square-good-0")[j].parentNode.childNodes[k].className.baseVal.toString();
+                    // console.log(pcnt);
+                    if (pcnt.indexOf("good") > -1){
+                      good_len += 1;
+                    }
+                    else{
+                      bad_len += 1;
+                    }
+                  }
+
+                  if (typeof document.getElementsByClassName("mini-square-good-0")[j] != 'undefined'){
+                    for (k=0; k<good_len; k++){
+                      var idxx = $(".mini-square-good-" + k.toString()).length;
+                      idxx = Math.max(0,idxx-1);
+                      document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { makeRequest2(this, "anch"); };
+                    }
+                  }
+
+                  if (typeof document.getElementsByClassName("mini-square-bad-0")[j] != 'undefined'){
+                    for (k=0; k<bad_len; k++){
+                      var idxx = $(".mini-square-bad-" + k.toString()).length;
+                      idxx = Math.max(0,idxx-1);
+                      document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onclick = function () { makeRequest2(this, "anch"); };
+                    }
+                  }
+
                 }
                 var br = document.createElement("br");
                 document.getElementById("combination-list").append(br);
@@ -483,14 +485,14 @@
         document.getElementById("left-panel").append(reset);
       }
 
-      function redirect_to_instance() {
-        window.location.replace("http://localhost:5005/individual?sample=52");       
+      function redirect_to_instance(elem) {
+        var id_numb = elem.id.substring(11);
+        window.location.replace("http://localhost:5005/individual?sample="+id_numb.toString());       
       }
 
       function resetFeatures() {
 
         selected_fts = [-1];
-
         var curr_alg = "True";
 
         if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {

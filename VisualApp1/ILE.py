@@ -117,17 +117,25 @@ def perturb_row_feature(model, row, row_idx, feat_idx, current_bins, X_bin_pos, 
     if current_bin != 0:
         prev_value = mean_bins[feat_idx][int(X_bin_pos[row_idx][feat_idx]-1)]
     
-    # Check if in boundary and return the same row
+    # Set direction for boundary cases
     if direction == -1:
         if current_bin == 0:
             direction = 1
         elif current_bin == 9 or next_value == -1:
             direction = 0
+
+    # Check if in boundary and return the same row
     if direction == 1:
         if current_bin == 9 or next_value == -1:
             return (row, c_current_bins)
     elif direction == 0 and current_bin ==  0:
             return (row, c_current_bins)
+
+    # Does not allow for changes into or from last bin (outliers of more than 2 std devs)
+    if direction == 1 and current_bin == 8:
+        return (row, c_current_bins)
+    if direction == 0 and current_bin == 9:
+        return (row, c_current_bins)
     
     # Decide direction in special case
     if direction == -1:
@@ -202,7 +210,7 @@ def find_MSC (model, data, k_row, row_idx, X_bin_pos, mean_bins):
                 monotonicity_arr_c[i] = 1
     monotonicity_arr = np.copy(monotonicity_arr_c)
     
-    while percent_cond(improve, percent) and (features_moved == 1).sum() < 5 and max(times_moved) < 5:
+    while percent_cond(improve, percent) and (features_moved == 1).sum() < 5 and max(times_moved) < 4:
         new_percents = []
         pert_rows = []
         new_curr_bins = []
@@ -433,6 +441,7 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
             if np.round(percent,0) != np.round(pre_data[sample_id][1]):
                 similar_rows.append(sample_id)
 
+    print(similar_rows)
     return similar_rows
 
 
@@ -442,18 +451,15 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
 
 
 def sort_by_val(main, density):
-    # print("Original Data",main[:5], "\n")
     ordered_main = []
     ordered_density = []
 
-    # ordered_main = sorted(main, key = lambda k: main[k], reverse=True) 
+    ordered_main = sorted(main, key=itemgetter('scl_val'), reverse=True) 
     keySort = sorted(range(len(main)), key = lambda k: main[k]["scl_val"], reverse=True)
 
     for key in keySort:
-        ordered_main.append(main[key])
         ordered_density.append(density[key])
 
-    # print("New Data",ordered_main[:5], "\n")
     return ordered_main, ordered_density
 
 
@@ -482,6 +488,6 @@ def sort_by_val(main, density):
 
 
 # transformer = sample_transf(X_orig)
-# for i_sample in range(200,220):
-#     change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[i_sample], sample, X_pos_array, bins_centred)
-#     similar_ids = detect_similarities("pre_data1.csv","final_data_file.csv", X[i_sample] ,change_row, bins_centred, percent)
+# # for i_sample in range(200,220):
+# #     change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[i_sample], sample, X_pos_array, bins_centred)
+# #     similar_ids = detect_similarities("pre_data1.csv","final_data_file.csv", X[i_sample] ,change_row, bins_centred, percent)

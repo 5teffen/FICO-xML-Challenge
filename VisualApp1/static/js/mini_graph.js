@@ -1,5 +1,5 @@
 
-function draw_mini_graph(testData, svg, width, height, shift){
+function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
     
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
@@ -29,7 +29,10 @@ function draw_mini_graph(testData, svg, width, height, shift){
             .rangeRound([height, 0]);
 
     // -- Drawing background rectangles -- 
-    svg.append("g").selectAll("rect")
+    svg.append("g")
+        .attr("id", "mini-graph-"+mini_idx.toString())
+        .attr("onclick", "redirect_to_instance(this)")
+        .selectAll("rect")
         .data(testData)
         .enter()
         .append("rect")
@@ -120,7 +123,7 @@ function draw_mini_graph(testData, svg, width, height, shift){
         .attr("fill", "none");
 }
 
-function draw_all_graphs(totalData,allResults){
+function draw_all_graphs(totalData, mini_indexes){
     var shift = 0
     var separation = 10
     
@@ -146,7 +149,7 @@ function draw_all_graphs(totalData,allResults){
     
     for (i = 0; i < totalData.length; ++i){
         dataPoint = totalData[i];
-        draw_mini_graph(dataPoint, svg, width, height, shift);
+        draw_mini_graph(dataPoint, svg, width, height, shift, mini_indexes[i]);
         
         shift += (height + separation);
     }
