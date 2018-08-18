@@ -43,6 +43,32 @@ function draw_single_graph(testData, svg, width, height, idx){
         // .style("fill","#A9A9A9");
 
 
+    // --- Add individual counts with text --- 
+
+    // svg.append('g').append("text")
+    // .text((testData[0].number_of).toString())
+    // .attr("x",(xScale.bandwidth()*testData.length)/2)
+    // .attr("y",yScale(0))
+    // .attr("text-anchor",'middle')
+    // .attr("font-family", 'sans-serif')
+    // .attr("font-size", '10px')
+    // .attr("font-weight",'bold')
+    // .attr("opacity",1)
+    // .attr("fill","white");
+
+    // svg.append('g').append("text")
+    // .text((testData[0].number_of).toString())
+    // .attr("x",(xScale.bandwidth()*testData.length)/2)
+    // .attr("y",yScale(0))
+    // .attr("text-anchor",'middle')
+    // .attr("font-family", 'sans-serif')
+    // .attr("font-size", '10px')
+    // .attr("font-weight",'bold')
+    // .attr("opacity",0.8)
+    // .attr("fill","black");
+
+
+
 
     // -- Drawing Change Box -- 
     
@@ -98,7 +124,7 @@ function draw_single_graph(testData, svg, width, height, idx){
 function draw_all_squares(totalData, limit, elemn) {
 
     // const horizontal_limit = limit/2;
-    const horizontal_limit = 7;
+    const horizontal_limit = 6;
     
     var x1_shift = 0,
         x2_shift = 0,
@@ -113,14 +139,24 @@ function draw_all_squares(totalData, limit, elemn) {
 
     const margin = {
             top: 0, 
-            right: 0,
+            right: 10,
             bottom: 0, 
             left: 0
         };
 
-          
-    var width = 420 - margin.right - margin.left,
-        height = sq_height*(Math.ceil(limit/horizontal_limit)) + 6 - margin.top - margin.bottom;
+
+
+    // --- Count bar --- 
+    const count_bar_w = 50,
+          count_bar_h = 25;
+
+    countScale = d3.scaleLinear()
+        .domain([0,1])
+        .rangeRound([0,count_bar_w+100]);
+    
+    var width = 440 - margin.right - margin.left,
+        height = 80 - margin.top - margin.bottom;
+        // height = sq_height*(Math.ceil(limit/horizontal_limit)) + 6 - margin.top - margin.bottom;
 
     var svg = d3.select(elemn)
         .append("svg")
@@ -162,10 +198,43 @@ function draw_all_squares(totalData, limit, elemn) {
         else {text_shift += 15}
     }
     
+    // --- Count Bar Drawing ---
+    console.log(countScale(totalData[0][0].total_ratio))
+    console.log(totalData[0][0].total_ratio)
+    svg.append('g').append("rect")
+        .attr('x',width-count_bar_w)
+        .attr('y',height/2-count_bar_h/2)
+        .attr('height',count_bar_h)
+        .attr('width',countScale(totalData[0][0].total_ratio))
+        .attr("fill","#A9A9A9");
+
+    svg.append('g').append("line")
+        .attr('x1',width-count_bar_w)
+        .attr('x2',width-count_bar_w)
+        .attr('y1',height/2 - 22)
+        .attr('y2',height/2 + 22)
+        .attr("stroke-width",2)
+        .attr("opacity",0.5)
+        .attr("stroke","black");
+
+    svg.append('g').append("text")
+        .text((totalData[0][0].total_no).toString())
+        // .attr('x',width-count_bar_w+countScale(totalData[0][0].total_ratio))
+        .attr('x',width-count_bar_w+5)
+        .attr('y',height/2+6)
+        .attr("text-anchor","start")
+        // .attr("text-anchor",function(){
+        //     if (countScale(totalData[0][0].total_ratio) < 20) {return "start";}
+        //     else {return "end";}})
+        .attr("font-family", 'sans-serif')
+        .attr("font-size", '12px')
+        .attr("font-weight",'bold')
+        .attr("opacity",0.7)
+        .attr("fill","black");
+
+
     svg = svg.append("g")
             .attr("transform","translate(" + (text_space+text_feat+5) + ",0)");
-    
-    
     
     var row1_count = 0,
         row2_count = 0
@@ -195,8 +264,7 @@ function draw_all_squares(totalData, limit, elemn) {
             drawn_idx+=1;
             x2_shift += sq_width + x_sep;
             row2_count += 1;
-        }
-        
+        }   
     }
 }
 

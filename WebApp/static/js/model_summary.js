@@ -25,10 +25,10 @@ function draw_summary(elem) {
         .attr("x",centre)
         .attr("y",50)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
-//        .attr("font-weight", "bold")
+        .attr("font-family", "Open Sans")
+        .attr("font-weight", 100)
         .attr("font-size", '22px')
-        .attr("fill","white");
+        .attr("fill","black");
     
     
     svg.append('g').append("text")
@@ -37,9 +37,10 @@ function draw_summary(elem) {
         .attr("x",centre)
         .attr("y",80)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family",  "Open Sans")
+        .attr("font-weight", 100)
         .attr("font-size", '16px')
-        .attr("fill","white");
+        .attr("fill","black");
     
 
         svg.append('g').append("text")
@@ -47,9 +48,10 @@ function draw_summary(elem) {
         .attr("x",centre)
         .attr("y",100)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family",  "Open Sans")
+        .attr("font-weight", 100)
         .attr("font-size", '16px')
-        .attr("fill","white");
+        .attr("fill","black");
     
     
     svg.append('g').append("text")
@@ -57,9 +59,10 @@ function draw_summary(elem) {
         .attr("x",centre)
         .attr("y",140)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
+        .attr("font-weight", 100)
         .attr("font-size", '16px')
-        .attr("fill","white");
+        .attr("fill","black");
     
 
     svg.append('g').append("rect")
@@ -96,8 +99,9 @@ function draw_summary(elem) {
         .attr("x",centre-23)
         .attr("y",180)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '14px')
+        .attr("font-weight", 100)
         .attr("fill","white");
     
         
@@ -106,8 +110,9 @@ function draw_summary(elem) {
         .attr("x",centre+22)
         .attr("y",180)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '14px')
+        .attr("font-weight", 100)
         .attr("fill","white");
 
     
@@ -139,12 +144,13 @@ function draw_summary(elem) {
     
     
         svg.append('g').append("text")
-        .text("2041")
+        .text("1453")
         .attr("x",centre-23)
         .attr("y",212)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '14px')
+        .attr("font-weight", 100)
         .attr("fill","white");
     
         
@@ -153,8 +159,9 @@ function draw_summary(elem) {
         .attr("x",centre+22)
         .attr("y",212)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '14px')
+        .attr("font-weight", 100)
         .attr("fill","white");
     
 
@@ -164,9 +171,10 @@ function draw_summary(elem) {
         .attr("x",centre)
         .attr("y",300)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '17px')
-        .attr("fill","white");
+        .attr("font-weight", 100)
+        .attr("fill","black");
     
     
     svg.append('g').append("text")
@@ -174,20 +182,22 @@ function draw_summary(elem) {
         .attr("x",centre)
         .attr("y",330)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '15px')
-        .attr("fill","white");
+        .attr("font-weight", 100)
+        .attr("fill","black");
     
     
     
     svg.append('g').append("text")
-        .text("- Changes: 3964")
+        .text("- Changes: 2826")
         .attr("x",centre)
         .attr("y",350)
         .attr("text-anchor","middle")
-        .attr("font-family", "sans-serif")
+        .attr("font-family", "Open Sans")
         .attr("font-size", '15px')
-        .attr("fill","white");
+        .attr("font-weight", 100)
+        .attr("fill","black");
     
     
     

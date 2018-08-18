@@ -224,6 +224,8 @@ def my_combinations(target,data,limit):
 
 def combination_finder(pre_proc_file,cols_lst,anchs):
 	# --- Finds all the combinations with the desired columns --- 
+
+	print(cols_lst)
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_combinations = {}
 
@@ -282,6 +284,8 @@ def changes_generator(pre_proc_file,desired_cols):
 	# --- Generates the list of lists needed for D3 visualisation ---
 	# --- Also outputs list of sample lists needed for global vis --- 
 
+	total_change_no = 2826
+
 	pre_data = pd.read_csv(pre_proc_file).values
 
 	global_samples = []
@@ -331,6 +335,9 @@ def changes_generator(pre_proc_file,desired_cols):
 	all_per = np.array(all_per)
 	all_per = all_per.reshape((all_per.shape[0],1))
 
+	print("------ Global Samples -----")
+	print(global_samples)
+
 	global_samples = np.array(global_samples)
 	global_samples = global_samples.reshape((global_samples.shape[0],1))
 
@@ -367,6 +374,9 @@ def changes_generator(pre_proc_file,desired_cols):
 			result["label"] = "Ft." + str(n+1)
 			result["inc_change"] = int(single_change[n])
 			result["occ"] = float(np.round((all_counts[i]/total_count),2))
+			result["number_of"] = float(np.round((all_counts[i])))
+			result["total_ratio"] = float(np.round((total_count/total_change_no),2))
+			result["total_no"] = float(np.round((total_count)))
 			result["per"] = float(all_per[i])
 			result["id_list"] = global_samples[i]
 
@@ -433,7 +443,7 @@ def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 	# -- Creating Labels Dictionary -- 
 	for col_ind in range(len(anchs_lst)):
 		one_dict = {}
-		one_dict["name"] = names[col_ind]
+		one_dict["name"] = names[anchs_lst[col_ind]]
 		one_dict["label"] = col_ind + 1
 		names_dicts.append(one_dict)
 
@@ -544,15 +554,18 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 
 # model_overview("pre_data1.csv")
 
-# vals = pd.read_csv("final_data_file.csv",header=None).values
+# vals = pd.read_csv("static/data/final_data_file.csv",header=None).values
 # X = vals[:,1:]
 # y = vals[:,0]
 
-# X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
+# # X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
 
-# no_samples, no_features = X.shape
+# # no_samples, no_features = X.shape
 
-# names, good_squares, bad_squares, good_samp, bad_samp = anchor_generator("pre_data1.csv","final_data_file.csv",[3,21])
+# names, good_squares, bad_squares, good_samp, bad_samp = anchor_generator("static/data/pre_data.csv","static/data/final_data_file.csv",[3,21])
+
+# print(good_squares)
+# print(names)
 
 # combinations = combination_finder("pre_data1.csv",[4,17,21],False)
 # all_results = changes_generator("pre_data1.csv",combinations[1])

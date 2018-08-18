@@ -65,7 +65,7 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
             .attr("text-anchor",'start');
         
         // Accounts for the wraping of features
-        if (name_string.length > 20){
+        if (name_string.length >= 20){
             text_shift += 25
         }
         else {text_shift += 15}
