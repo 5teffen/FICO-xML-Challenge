@@ -1,8 +1,5 @@
 function draw_graph(testData, densityData, result){
 
-    console.log(testData)
-    console.log(densityData)
-
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
 
@@ -147,7 +144,6 @@ function draw_graph(testData, densityData, result){
             .attr("stop-color", function(d) { return d; });
 
         
-        console.log("Getting Called");
         var overlap = yScale(0.1)-yScale(0.2);
 
         for (ind=0 ; ind < data.length; ind++) {
@@ -276,7 +272,7 @@ function draw_graph(testData, densityData, result){
         .text(function(d){return d.change;})
         .attr("x", function(d){return xScale(d.name) + xScale.bandwidth()/2})
         .attr("y", function(d){
-            if (d.change >= d.val){
+            if (d.scl_change > d.scl_val){
                 return yScale(d.scl_val+d.incr*0.10)-5;
             }
             else {
@@ -292,58 +288,7 @@ function draw_graph(testData, densityData, result){
             else {return "None"}})
         .attr("text-anchor",'middle');
 
-    
-    // -- Handling the special case --
-    svg.append("g")
-        .selectAll("rect")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("rect")
-        .attr("class","special")
-        .attr('x',function(d) {return xScale(d.name)+ xScale.bandwidth()*0.35-1;})
-        .attr('y',function(d) {return yScale(outlier);})
-        .attr("height",function(d){return yScale(1)-yScale(outlier)+1;})
-        .attr("width",xScale.bandwidth()*0.3+2)
-        .attr("fill",the_colour)
-        .attr("stroke-width",2)
-        .style("stroke",function(d){
-            if(d.anch == 1){
-                if (result == 0){return "#f5e0d4";}
-                else {return "#daebe4";}
-            }
-            else {return "white";}
-        });
 
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("circle")
-        .attr("r",1.5)
-        .attr("cy",function(d) {return yScale(outlier-padding_top/8);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill","white");
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("circle")
-        .attr("r",1.5)
-        .attr("cy",function(d) {return yScale(outlier-padding_top/4);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill","white");
-
-    svg.append("g")
-        .selectAll("circle")
-        .data(testData.filter(function(d){return (d.scl_val > 1)&&(d.scl_val != d.scl_change);}))
-        .enter()
-        .append("circle")
-        .attr("r",1.5)
-        .attr("cy",function(d) {return yScale(outlier-padding_top*3/8);})
-        .attr("cx",function(d) {return xScale(d.name)+xScale.bandwidth()*0.5;})
-        .attr("fill","white");
-    
 
     // -- Drawing and styling the AXIS
     
@@ -367,8 +312,8 @@ function draw_graph(testData, densityData, result){
         .enter()
         .append("line")
         .attr("class","line_lvl")
-        .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.25})
-        .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.75})
+        .attr("x1",function(d){return xScale(d.name) + xScale.bandwidth()*0.20})
+        .attr("x2",function(d){return xScale(d.name) + xScale.bandwidth()*0.80})
         .attr("y1",function(d){
             if (d.scl_val > 1){
                 return yScale(outlier)-1}
@@ -382,8 +327,8 @@ function draw_graph(testData, densityData, result){
                 return yScale(d.scl_val)
             }})
         .attr("stroke", "black")
-        .attr("stroke-width", 4)
-        .attr("stroke-linecap","round")
+        .attr("stroke-width", 2.2)
+//        .attr("stroke-linecap","round")
         .attr("fill", "none");
 
 
@@ -401,7 +346,7 @@ function draw_graph(testData, densityData, result){
                 return yScale(outlier)-4;
             }
 
-            if (d.change >= d.val){
+            if (d.scl_change >= d.scl_val){
                 return yScale(d.scl_val)+12;
             }
 
