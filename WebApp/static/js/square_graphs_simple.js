@@ -199,8 +199,6 @@ function draw_all_squares(totalData, limit, elemn) {
     }
     
     // --- Count Bar Drawing ---
-    console.log(countScale(totalData[0][0].total_ratio))
-    console.log(totalData[0][0].total_ratio)
     svg.append('g').append("rect")
         .attr('x',width-count_bar_w)
         .attr('y',height/2-count_bar_h/2)

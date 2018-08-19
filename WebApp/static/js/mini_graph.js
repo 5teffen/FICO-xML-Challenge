@@ -1,7 +1,6 @@
 
 function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
 
-    console.log('Drawing');
     
     var good_col = "#1b9e77",
         bad_col = "#d95f02";
@@ -69,7 +68,6 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
 
 
     // -- Drawing Change Box -- 
-
     svg.append("g")
         .selectAll("rect")
         .data(testData)
@@ -87,9 +85,7 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
             else {return yScale(d.scl_change)+shift;}
             })
         .attr("height",function(d){
-            if (d.scl_val > 1){
-                return yScale(d.scl_change)-yScale(1);}
-            else if (d.scl_val > d.scl_change){
+            if (d.scl_val > d.scl_change){
                 return yScale(d.scl_change)-yScale(d.scl_val);
             }
             else if (d.scl_val == d.scl_change) {return 0;}
@@ -136,7 +132,7 @@ function draw_all_graphs(totalData, mini_indexes){
             left: 5
         },
         
-    width = 400 - margin.right - margin.left,
+    width = 300 - margin.right - margin.left,
     height = (40 - margin.top - margin.bottom),
     totalHeight = (height+separation)*totalData.length;
     
