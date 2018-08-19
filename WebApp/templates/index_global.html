@@ -292,6 +292,7 @@
             var resp_arr = httpRequest.responseText;
             if (resp_arr == ""){
               document.getElementById("middle-panel").innerHTML = "";
+              document.getElementById("right-panel").innerHTML = "";
             }
             else{
 
@@ -299,6 +300,7 @@
               middleData = JSON.parse(resp_arr);
 
               document.getElementById("middle-panel").innerHTML = "";
+              document.getElementById("right-panel").innerHTML = "";
               var table2 = document.createElement("table");     
               table2.id = "feature-table2";
 
