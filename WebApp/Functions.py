@@ -326,34 +326,24 @@ def changes_generator(pre_proc_file,desired_cols):
 	if (all_changes == []):
 		return None
 
-	# -- Sorting Changes by Count-- 
-	all_changes = np.array(all_changes)
+	# --- Sorting by counts ---
+	sorted_changes = []
+	sorted_counts = []
+	sorted_per = []	
+	sorted_global = []
 
-	all_counts = np.array(all_counts)
-	all_counts = all_counts.reshape((all_counts.shape[0],1))
+	keySort = np.argsort(all_counts)[::-1]
 
-	all_per = np.array(all_per)
-	all_per = all_per.reshape((all_per.shape[0],1))
+	for key in keySort:
+		sorted_changes.append(all_changes[key])
+		sorted_counts.append(all_counts[key])
+		sorted_per.append(all_per[key])
+		sorted_global.append(global_samples[key])
 
-	print("------ Global Samples -----")
-	print(global_samples)
-
-	global_samples = np.array(global_samples)
-	global_samples = global_samples.reshape((global_samples.shape[0],1))
-
-	# -- Combine all the columns for effective sort 
-	
-	sort_array = np.append(all_counts,all_per,axis=1)
-	sort_array = np.append(sort_array,global_samples,axis=1)
-	sort_array = np.append(sort_array,all_changes,axis=1)
-
-	sort_array = sort_array[(-sort_array[:,0]).argsort()]
-
-	all_counts = sort_array[:,0].flatten()
-	all_per = sort_array[:,1]
-	global_samples = sort_array[:,2]
-	all_changes = sort_array[:,3:]
-
+	all_changes = sorted_changes
+	all_counts = sorted_counts
+	all_per	= sorted_per
+	global_samples = sorted_global
 
 	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
 		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
@@ -364,11 +354,12 @@ def changes_generator(pre_proc_file,desired_cols):
 
 	total_count = np.sum(all_counts)
 	all_dicts = []
-	for i in range(all_counts.shape[0]):
+	# for i in range(all_counts.shape[0]):
+	for i in range(len(all_counts)):
 		single_dicts = []
 		single_change = all_changes[i]
 
-		for n in range(single_change.shape[0]):
+		for n in range(len(single_change)):
 			result = {}
 			result["name"] = names[desired_cols[n]]
 			result["label"] = "Ft." + str(n+1)
@@ -385,8 +376,8 @@ def changes_generator(pre_proc_file,desired_cols):
 		all_dicts.append(single_dicts)
 
 	global_samples = list(global_samples)
-
-	# print(global_samples)
+	print("--- Global ---")
+	print(global_samples)
 	return [all_dicts, global_samples]
 	# return all_dicts
 
@@ -568,7 +559,7 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 # print(names)
 
 # combinations = combination_finder("pre_data1.csv",[4,17,21],False)
-# all_results = changes_generator("pre_data1.csv",combinations[1])
+# all_results = changes_generator("static/data/pre_data.csv",[3, 7, 8])
 
 
 # count_total = occurance_counter("pre_data1.csv")
