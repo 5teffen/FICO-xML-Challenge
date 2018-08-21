@@ -101,7 +101,7 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
                 .attr("transform","translate(" + x1_shift + ',' + y1_shift +')')
                 .attr("class", "mini-square-good-"+drawn_idx.toString());
             
-            
+            // --- FOR HOVERING ---
             shifted_svg.append("rect")
                 .attr("id","smallsquare-"+single_square.id)
                 .attr('x',0)
@@ -109,7 +109,9 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
                 .attr("height",sq_height)
                 .attr("width",sq_width)
                 .attr("opacity",single_square.per*2-1)
-                .attr("fill",good_col);
+                .attr("fill",good_col)
+                .attr("stroke-width",0)
+                .attr("stroke","black");
             
             var percent_string = Math.round(single_square.per*100).toString();
             
@@ -146,6 +148,7 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
                 .attr("transform","translate(" + x2_shift + ',' + y2_shift +')')
                 .attr("class", "mini-square-bad-"+drawn_idx.toString());  
 
+        // --- FOR HOVERING ---
         shifted_svg.append('g').append("rect")
             .attr("id","smallsquare-"+single_square.id)
             .attr('x',0)
@@ -153,6 +156,8 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
             .attr("height",sq_height)
             .attr("width",sq_width)
             .attr("opacity",((single_square.per*-2)+1))
+            .attr("stroke-width",1.5)
+            .attr("stroke","black")
             .attr("fill",bad_col);
 
         var percent_string = Math.round(single_square.per*100).toString();

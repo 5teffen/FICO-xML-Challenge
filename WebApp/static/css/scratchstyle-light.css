@@ -795,7 +795,7 @@ table #model-display {
 #right-panel {
   margin-left: 15px;
   /*width: calc(100% - 300px);*/
-  width: 310px;
+  width: 400px;
   height: calc(100% - 100px);
   padding-top: 60px;
   /*background-color: darkgrey;*/

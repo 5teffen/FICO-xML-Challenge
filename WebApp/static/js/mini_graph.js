@@ -20,14 +20,35 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
     var padding_top = 0.1,
         padding_bottom = 0.1;
 
+     var ID_space = 30;
+
     // -- Adding scales based on canvas -- 
     var xScale = d3.scaleBand()
             .domain(testData.map(function(d){return d.name;}))
-            .rangeRound([0, width])
+            .rangeRound([0, width-ID_space])
             .paddingInner(separator),
         yScale = d3.scaleLinear()
             .domain([0-padding_bottom, 1+padding_top])
             .rangeRound([height, 0]);
+
+    // -- ID Drawing --
+
+
+    svg.append("g").append("text")
+        .text("ID # "+mini_idx.toString())
+        .attr("x",0)
+        .attr("y",shift+13)  
+        .attr("font-family", 'sans-serif')
+        .attr("font-size", '12px')
+        .attr("fill","#808080")
+        .attr("text-anchor",'start')
+            .call(wrap, ID_space+5 );
+
+
+    // svg = svg.append("g").attr("transform","translate(" + ID_space + ",0)");
+
+    svg = svg.append("g").attr("transform","translate("+ID_space.toString()+",0)");
+
 
     // -- Drawing background rectangles -- 
     svg.append("g")
@@ -57,7 +78,7 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
 
 
     // -- Drawing surrounding box -- 
-        svg.append("rect")
+    svg.append("rect")
         .attr("class","border")
         .attr("id", "border-"+mini_idx.toString())
         .attr('x',xScale(testData[0].name))
@@ -131,10 +152,10 @@ function draw_all_graphs(totalData, mini_indexes){
             top: 5, 
             right: 5, 
             bottom: 5, 
-            left: 5
+            left: 0
         },
         
-    width = 300 - margin.right - margin.left,
+    width = 400 - margin.right - margin.left,
     height = (40 - margin.top - margin.bottom),
     totalHeight = (height+separation)*totalData.length;
     
@@ -155,8 +176,36 @@ function draw_all_graphs(totalData, mini_indexes){
     }
 }
 
-// draw_all_graphs(totalData);
-
-//draw_mini_graph(dataPoint1, 0.7,0)
-
+function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            x = text.attr("x"),
+            y = text.attr("y"),
+            dy = 0, //parseFloat(text.attr("dy")),
+            tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+            }
+        }
+    });
+}
 
