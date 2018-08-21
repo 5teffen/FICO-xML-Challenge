@@ -10,7 +10,9 @@
     <link href="/static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
     <!-- D3.js and jQuery source -->
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- <script type="text/javascript" src="/static/js/d3.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script> -->
     <!-- SVG scripts -->
     <script type="text/javascript" src="/static/js/main_graph.js"></script>
     <script type="text/javascript" src="/static/js/model_summary.js"></script>
@@ -243,7 +245,6 @@
         }
         resetFeatures();
         makeGlobRequest();
-
       }
 
       // Right panel mini graphs
@@ -273,8 +274,12 @@
             tr.append(li);
             document.getElementById("feature-table3").append(tr);
 
-
             draw_all_graphs(miniData[0], miniData[1]);
+
+            for (k=0; k<document.getElementsByClassName("mini-graph").length; k++){
+              document.getElementsByClassName("mini-graph")[k].onmouseover = function() {borderStyleEnter(this)};
+              document.getElementsByClassName("mini-graph")[k].onmouseleave = function() {borderStyleLeave(this)};
+            }
             
           }
           else {
@@ -282,6 +287,19 @@
           }
         }
       }
+
+      // Right panel border
+      function borderStyleEnter (elem){
+        document.body.style.cursor = "pointer";
+        var idx = elem.id.substring(11);
+        document.getElementById("border-"+idx.toString()).style.stroke = "black";
+      }
+      function borderStyleLeave (elem){
+        document.body.style.cursor = "auto";
+        var idx = elem.id.substring(11);
+        document.getElementById("border-"+idx.toString()).style.stroke = "#A9A9A9";
+      }
+      
 
       // Middle panel graphs
       function alertContents3() {
@@ -335,7 +353,15 @@
                     var idxx = $(".mini-square-" + k.toString()).length;
                     idxx = Math.max(0,idxx-1);
                     document.getElementsByClassName("mini-square-" + k.toString())[idxx].id_list = middleData[j][1][k].toString();
-                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].onclick = function () { makeRequest2(this, "chg"); };
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].onclick = function () { 
+                      drawBorderClick(this);
+                      makeRequest2(this, "chg"); };
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].onmouseover = function() {
+                      hoverBorderEnter(this);
+                    };
+                    document.getElementsByClassName("mini-square-" + k.toString())[idxx].onmouseleave = function() {
+                      hoverBorderLeave(this);
+                    };
                   }
                   
                   
@@ -362,7 +388,15 @@
                     for (k=0; k<good_len; k++){
                       var idxx = $(".mini-square-good-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
-                      document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { makeRequest2(this, "anch"); };
+                      document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { 
+                        makeRequest2(this, "anch");
+                      };
+                      document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onmouseover = function() {
+                        hoverEnterAnch(this);
+                      };
+                      document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onmouseleave = function() {
+                        hoverLeaveAnch(this);
+                      };
                     }
                   }
 
@@ -370,7 +404,15 @@
                     for (k=0; k<bad_len; k++){
                       var idxx = $(".mini-square-bad-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
-                      document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onclick = function () { makeRequest2(this, "anch"); };
+                      document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onclick = function () { 
+                        makeRequest2(this, "anch");
+                      };
+                      document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onmouseover = function () { 
+                        hoverEnterAnch(this);
+                      };
+                      document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onmouseleave = function () { 
+                        hoverLeaveAnch(this);
+                      };
                     }
                   }
 
@@ -384,6 +426,52 @@
           }
         }
       }
+
+      // Style for middle panel squares
+      function drawBorderClick(elem) {
+        
+        if (document.getElementById("selected-border") != null){
+          document.getElementById("selected-border").style.strokeWidth = "0px";
+          document.getElementById("selected-border").id = "";
+        }
+        var border = elem.getElementsByClassName("border")[0];
+        border.style.stroke = "black";
+        border.style.strokeWidth = "1.5px";
+        border.id = "selected-border";
+      }
+      function hoverBorderEnter(elem){
+        document.body.style.cursor = "pointer";
+        var border = elem.getElementsByClassName("border")[0];
+        border.style.stroke = "black";
+        border.style.strokeWidth = "1.5px";
+      }
+      function hoverBorderLeave(elem){
+        document.body.style.cursor = "auto";
+        if (elem.getElementsByClassName("border")[0].id != "selected-border"){
+          var border = elem.getElementsByClassName("border")[0];
+          border.style.strokeWidth = "0px";
+        }
+      }
+
+      function hoverEnterAnch(elem){
+        document.body.style.cursor = "pointer";
+        var idx = elem.getElementsByTagName("rect")[0].id.substring(12);
+        console.log(idx);
+        console.log(document.getElementById("mini-graph-"+idx.toString()));
+        if (document.getElementById("mini-graph-"+idx.toString()) != null){
+          document.getElementById("border-"+idx.toString()).style.stroke = "black";
+        }
+      }
+      function hoverLeaveAnch(elem){
+        document.body.style.cursor = "auto";
+        console.log(idx);
+        var idx = elem.getElementsByTagName("rect")[0].id.substring(12);
+        console.log(idx);
+        if ( document.getElementById("mini-graph-"+idx.toString()) != null){
+          document.getElementById("border-"+idx.toString()).style.stroke = "#A9A9A9";
+        }
+      }
+
 
       // Left panel global
       function alertGlobContents() {
@@ -400,6 +488,8 @@
             var chgSort = totalData[1];
 
             document.getElementById("bar-div-header").innerHTML = '';
+            document.getElementById("middle-panel").innerHTML = "";
+            document.getElementById("right-panel").innerHTML = "";
 
             if (document.getElementById("chg-button").style.backgroundColor == dark_shade){
               draw_occurance_text("chg");
@@ -448,6 +538,7 @@
         }
       }
 
+      // Hovering over left panel elements
       function hoverStyleEnter(elem){
         if (elem.style.fontWeight != "bold"){
           elem.style.fontWeight = "bold";
@@ -560,11 +651,13 @@
         document.getElementById("left-panel").append(reset);
       }
 
+      // Link from global to local
       function redirect_to_instance(elem) {
         var id_numb = elem.id.substring(11);
         window.location.replace("http://localhost:5005/individual?sample="+id_numb.toString());       
       }
 
+      // Reset button
       function resetFeatures() {
 
         selected_fts = [-1];
@@ -581,6 +674,7 @@
         makeRequest3(selected_fts, curr_alg);
       }
 
+      // Select/deselect features in left panel
       function flip_feature(elemn) {
 
         var curr_alg = "True";
