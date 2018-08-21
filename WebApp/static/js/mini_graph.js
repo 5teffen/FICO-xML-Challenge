@@ -31,6 +31,7 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
 
     // -- Drawing background rectangles -- 
     svg.append("g")
+        .attr("class", "mini-graph")
         .attr("id", "mini-graph-"+mini_idx.toString())
         .attr("onclick", "redirect_to_instance(this)")
         .selectAll("rect")
@@ -58,6 +59,7 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
     // -- Drawing surrounding box -- 
         svg.append("rect")
         .attr("class","border")
+        .attr("id", "border-"+mini_idx.toString())
         .attr('x',xScale(testData[0].name))
         .attr('y',shift)
         .attr("height",function(d){return yScale(0-padding_bottom)})
