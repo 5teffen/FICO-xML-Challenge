@@ -443,6 +443,18 @@ table #model-display {
 /*bar blue: rgb(30,61,122)*/
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 /* ----------- GLOBAL EXPLANATIONS ----------- */
 
 .right-side-global {
@@ -457,6 +469,7 @@ table #model-display {
   overflow-y: hidden;
   text-align: center;
 }
+
 
 /*------------*/
 /* Left panel */
@@ -657,12 +670,18 @@ table #model-display {
 }
 
 
-/*-------------*/
-/* Right panel */
-/*-------------*/
+
+
+
+
+
+
+/*--------------*/
+/* Middle panel */
+/*--------------*/
 
 #middle-panel {
-  margin-left: 5px;
+  margin-left: 15px;
   /*width: calc(100% - 300px);*/
   width: 460px;
   height: calc(100% - 100px);
@@ -696,7 +715,7 @@ table #model-display {
 }
 
 #feature-table2::-webkit-scrollbar {
-  width: 4px;
+  width: 3.5px;
 }
 
 #feature-table2::-webkit-scrollbar-track {
@@ -764,12 +783,17 @@ table #model-display {
   text-align: center;
 }
 
-.border:hover {
-  stroke: black;
-}
+
+
+
+
+
+/*-------------*/
+/* Right panel */
+/*-------------*/
 
 #right-panel {
-  margin-left: 5px;
+  margin-left: 15px;
   /*width: calc(100% - 300px);*/
   width: 430px;
   height: calc(100% - 100px);
