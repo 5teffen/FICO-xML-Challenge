@@ -42,7 +42,7 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
         .attr("font-size", '12px')
         .attr("fill","#808080")
         .attr("text-anchor",'start')
-            .call(wrap, ID_space+5 );
+            .call(wrap, ID_space);
 
 
     // svg = svg.append("g").attr("transform","translate(" + ID_space + ",0)");
@@ -155,7 +155,7 @@ function draw_all_graphs(totalData, mini_indexes){
             left: 0
         },
         
-    width = 400 - margin.right - margin.left,
+    width = 390 - margin.right - margin.left,
     height = (40 - margin.top - margin.bottom),
     totalHeight = (height+separation)*totalData.length;
     
