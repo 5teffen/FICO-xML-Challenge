@@ -103,7 +103,7 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
             
             // --- FOR HOVERING ---
             shifted_svg.append("rect")
-                .attr("id","smallsquare-"+single_square.id)
+                .attr("class","smallsquare-"+single_square.id)
                 .attr('x',0)
                 .attr('y',0)
                 .attr("height",sq_height)
@@ -150,13 +150,13 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
 
         // --- FOR HOVERING ---
         shifted_svg.append('g').append("rect")
-            .attr("id","smallsquare-"+single_square.id)
+            .attr("class","smallsquare-"+single_square.id)
             .attr('x',0)
             .attr('y',0)
             .attr("height",sq_height)
             .attr("width",sq_width)
             .attr("opacity",((single_square.per*-2)+1))
-            .attr("stroke-width",1.5)
+            .attr("stroke-width",0)
             .attr("stroke","black")
             .attr("fill",bad_col);
 
