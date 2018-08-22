@@ -180,7 +180,10 @@ def handle_request_mini_graphs():
 	if request.method == 'GET':
 
 		id_list = request.args.get('id_list').split(',')
-		id_list = [int(x) for x in id_list]
+
+		# Cap number of minigraphs on right panel
+		sample_cap = min(len(id_list), 30)
+		id_list = [int(x) for x in id_list][:sample_cap]
 
 		mini_graph_arr = prep_for_D3_global("static/data/pre_data.csv","static/data/final_data_file.csv", id_list, bins_centred, X_pos_array, trans_dict)
 

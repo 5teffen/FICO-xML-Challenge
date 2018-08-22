@@ -140,6 +140,7 @@
         txtFile.send()
       }
       
+      // Parse csv
       var pre_array = [];
       function initContents() {
         if (txtFile.readyState === XMLHttpRequest.DONE) {
@@ -389,6 +390,7 @@
                       var idxx = $(".mini-square-good-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
                       document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { 
+                        drawBorderClickAnch(this);
                         makeRequest2(this, "anch");
                       };
                       document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onmouseover = function() {
@@ -405,6 +407,7 @@
                       var idxx = $(".mini-square-bad-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
                       document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onclick = function () { 
+                        drawBorderClickAnch(this);
                         makeRequest2(this, "anch");
                       };
                       document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onmouseover = function () { 
@@ -428,6 +431,7 @@
       }
 
       // Style for middle panel squares
+      // Changes
       function drawBorderClick(elem) {
         
         if (document.getElementById("selected-border") != null){
@@ -453,21 +457,36 @@
         }
       }
 
+      // Anchors
+      function drawBorderClickAnch(elem) {
+        
+        if (document.getElementById("selected-border") != null){
+          document.getElementById("selected-border").style.strokeWidth = "0px";
+          document.getElementById("selected-border").id = "";
+        }
+        var border = elem.getElementsByTagName("rect")[0];
+        border.style.stroke = "black";
+        border.style.strokeWidth = "1.5px";
+        border.id = "selected-border";
+      }
       function hoverEnterAnch(elem){
         document.body.style.cursor = "pointer";
-        var idx = elem.getElementsByTagName("rect")[0].id.substring(12);
-        console.log(idx);
-        console.log(document.getElementById("mini-graph-"+idx.toString()));
+        var border = elem.getElementsByTagName("rect")[0];
+        border.style.strokeWidth = "1.5px";
+        border.style.stroke = "black";
+        var idx = border.className.baseVal.substring(12);
         if (document.getElementById("mini-graph-"+idx.toString()) != null){
           document.getElementById("border-"+idx.toString()).style.stroke = "black";
         }
       }
       function hoverLeaveAnch(elem){
         document.body.style.cursor = "auto";
-        console.log(idx);
-        var idx = elem.getElementsByTagName("rect")[0].id.substring(12);
-        console.log(idx);
-        if ( document.getElementById("mini-graph-"+idx.toString()) != null){
+        var border = elem.getElementsByTagName("rect")[0];
+        if (border.id != "selected-border"){
+          border.style.strokeWidth = "0px";
+        }
+        var idx = border.className.baseVal.substring(12);
+        if (document.getElementById("mini-graph-"+idx.toString()) != null){
           document.getElementById("border-"+idx.toString()).style.stroke = "#A9A9A9";
         }
       }
