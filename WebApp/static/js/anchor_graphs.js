@@ -17,32 +17,32 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
           sq_width = 15;
 
     const margin = {
-            top: 0, 
+            top: 10, 
             right: 0,
-            bottom: 0, 
+            bottom: 10, 
             left: 0
         };
 
+
+    var text_shift = 0,
+        text_feat = 30,
+        text_space = 95;
           
-    var width = 420 - margin.right - margin.left,
-        height = 80 - margin.top - margin.bottom;
+    var width = 420 - margin.right - margin.left - text_space,
+        height = 100 - margin.top - margin.bottom;
 
     var svg = d3.select(elemn)
         .append("svg")
         .attr("class", "middle-svg")
         .attr("id", "middle-section-"+idx.toString())
-        .attr("width",width + margin.right + margin.left)
+        .attr("width",width + margin.right + margin.left + text_space)
         .attr("height",height + margin.top + margin.bottom)
             .append("g")
                 .attr("transform","translate(" + margin.left + ',' + margin.top +')');
     
-    var text_shift = 0,
-        text_feat = 30,
-        text_space = 95;
-    
     for (i = 0; i < textData.length; ++i){
         var name_string = (textData[i].name).toString();
-        var label_string = (textData[i].label).toString();
+        var label_string = "Ft." + (textData[i].label).toString();
         
         svg.append('g').append("text")
             .text(name_string)
@@ -74,7 +74,6 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
     
     svg = svg.append("g")
             .attr("transform","translate(" + (text_space+text_feat+5) + ",0)")
-
     
       
     var good_row_count = 0,
@@ -82,6 +81,29 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
     
     if (goodData.length == 0){y2_shift = 0;}
     else {y2_shift = 2*(sq_height + y_sep)+5;}
+
+
+    // -- select border --
+    // svg.append('g').append("rect")
+    //         .attr('x',-5)
+    //         .attr('y',-5)
+    //         .attr("height",height/2+5)
+    //         .attr("width",width-35)
+    //         .attr("fill","none")
+    //         .attr("stroke-opacity",0.8)
+    //         .attr("stroke-width",2)
+    //         .attr("stroke","#808080");
+
+
+    // svg.append('g').append("rect")
+    //         .attr('x',-5)
+    //         .attr('y',y2_shift-5)
+    //         .attr("height",height/2+5)
+    //         .attr("width",width-35)
+    //         .attr("fill","none")
+    //         .attr("stroke-opacity",0.8)
+    //         .attr("stroke-width",2)
+    //         .attr("stroke","#808080");
     
     var row_cap = 2;
     var drawn_idx = 0;
@@ -108,7 +130,7 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
                 .attr('y',0)
                 .attr("height",sq_height)
                 .attr("width",sq_width)
-                .attr("opacity",single_square.per*2-1)
+                .attr("fill-opacity",single_square.per*2-1)
                 .attr("fill",good_col)
                 .attr("stroke-width",0)
                 .attr("stroke","black");
@@ -155,7 +177,7 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
             .attr('y',0)
             .attr("height",sq_height)
             .attr("width",sq_width)
-            .attr("opacity",((single_square.per*-2)+1))
+            .attr("fill-opacity",((single_square.per*-2)+1))
             .attr("stroke-width",0)
             .attr("stroke","black")
             .attr("fill",bad_col);

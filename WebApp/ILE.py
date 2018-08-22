@@ -463,22 +463,23 @@ def sort_by_val(main, density):
     return ordered_main, ordered_density
 
 
-# vals = prepare_for_analysis("final_data_file.csv")
+# vals = prepare_for_analysis("static/data/final_data_file.csv")
 
-# X_orig = pd.read_csv("final_data_file.csv",header=None).values[:,1:]
+# X_orig = pd.read_csv("static/data/final_data_file.csv",header=None).values[:,1:]
 
 # X = vals[:,1:]
 # y = vals[:,0]
 
 # no_samples, no_features = X.shape
 
-# svm_model = SVM_model(None,"final_data_file.csv")
+# svm_model = SVM_model(None,"static/data/final_data_file.csv")
 # svm_model.train_model(0.001)
 # svm_model.test_model()
 
-# sample = 10 # NOTE THIS VALUE
+# # sample = 10 # NOTE THIS VALUE
 
 # bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
+# print(bins_centred)
 # change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
 
 # data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)

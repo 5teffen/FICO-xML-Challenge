@@ -32,8 +32,6 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
             .rangeRound([height, 0]);
 
     // -- ID Drawing --
-
-
     svg.append("g").append("text")
         .text("ID # "+mini_idx.toString())
         .attr("x",0)
@@ -100,9 +98,7 @@ function draw_mini_graph(testData, svg, width, height, shift, mini_idx){
         .attr("x",function(d){return xScale(d.name) + xScale.bandwidth()*0.3})
         .attr("width",function(d){return xScale.bandwidth()*0.4})
         .attr("y",function(d){
-            if (d.scl_val > 1){
-                return yScale(1)+shift}
-            else if (d.scl_val > d.scl_change){
+            if (d.scl_val > d.scl_change){
                 return yScale(d.scl_val)+shift;
             }
             else {return yScale(d.scl_change)+shift;}

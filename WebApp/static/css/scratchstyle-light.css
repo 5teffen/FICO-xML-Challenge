@@ -500,7 +500,7 @@ table #model-display {
 
 #left-panel {
   width: 270px;
-  height: calc(100% - 120px);
+  height: calc(100% - 100px);
   /*height: 80%;*/
   background-color: white;
   display: inline-block;
