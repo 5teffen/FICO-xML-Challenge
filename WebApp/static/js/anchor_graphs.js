@@ -84,26 +84,28 @@ function draw_all_anchs(textData, goodData, badData, limit, elemn, idx) {
 
 
     // -- select border --
-    // svg.append('g').append("rect")
-    //         .attr('x',-5)
-    //         .attr('y',-5)
-    //         .attr("height",height/2+5)
-    //         .attr("width",width-35)
-    //         .attr("fill","none")
-    //         .attr("stroke-opacity",0.8)
-    //         .attr("stroke-width",2)
-    //         .attr("stroke","#808080");
+    svg.append('g').append("rect")
+            .attr("class", "good-section-"+idx.toString())
+            .attr('x',-5)
+            .attr('y',-5)
+            .attr("height",height/2+5)
+            .attr("width",width-35)
+            .attr("fill","none")
+            .attr("stroke-opacity",0.8)
+            .attr("stroke-width",0)
+            .attr("stroke","#808080");
 
 
-    // svg.append('g').append("rect")
-    //         .attr('x',-5)
-    //         .attr('y',y2_shift-5)
-    //         .attr("height",height/2+5)
-    //         .attr("width",width-35)
-    //         .attr("fill","none")
-    //         .attr("stroke-opacity",0.8)
-    //         .attr("stroke-width",2)
-    //         .attr("stroke","#808080");
+    svg.append('g').append("rect")
+            .attr('x',-5)
+            .attr("class", "bad-section-"+idx.toString())
+            .attr('y',y2_shift-5)
+            .attr("height",height/2+5)
+            .attr("width",width-35)
+            .attr("fill","none")
+            .attr("stroke-opacity",0.8)
+            .attr("stroke-width",0)
+            .attr("stroke","#808080");
     
     var row_cap = 2;
     var drawn_idx = 0;

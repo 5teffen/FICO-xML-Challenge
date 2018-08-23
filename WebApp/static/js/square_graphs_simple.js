@@ -138,7 +138,7 @@ function draw_all_squares(totalData, limit, elemn) {
           sq_width = 35;
 
     const margin = {
-            top: 10, 
+            top: 0, 
             right: 10,
             bottom: 0, 
             left: 0
@@ -155,7 +155,7 @@ function draw_all_squares(totalData, limit, elemn) {
         .rangeRound([0,count_bar_w+100]);
     
     var width = 440 - margin.right - margin.left,
-        height = 100 - margin.top - margin.bottom;
+        height = 115 - margin.top - margin.bottom;
         // height = sq_height*(Math.ceil(limit/horizontal_limit)) + 6 - margin.top - margin.bottom;
 
     var svg = d3.select(elemn)
@@ -201,7 +201,7 @@ function draw_all_squares(totalData, limit, elemn) {
     // --- Count Bar Drawing ---
     svg.append('g').append("rect")
         .attr('x',width-count_bar_w)
-        .attr('y',height/2-10-count_bar_h/2)
+        .attr('y',height/2-count_bar_h/2)
         .attr('height',count_bar_h)
         .attr('width',countScale(totalData[0][0].total_ratio))
         .attr("fill","#A9A9A9");
@@ -209,8 +209,8 @@ function draw_all_squares(totalData, limit, elemn) {
     svg.append('g').append("line")
         .attr('x1',width-count_bar_w)
         .attr('x2',width-count_bar_w)
-        .attr('y1',height/2-10 - 22)
-        .attr('y2',height/2-10 + 22)
+        .attr('y1',height/2 - 22)
+        .attr('y2',height/2 + 22)
         .attr("stroke-width",2)
         .attr("opacity",0.5)
         .attr("stroke","black");
@@ -219,7 +219,7 @@ function draw_all_squares(totalData, limit, elemn) {
         .text((totalData[0][0].total_no).toString())
         // .attr('x',width-count_bar_w+countScale(totalData[0][0].total_ratio))
         .attr('x',width-count_bar_w+5)
-        .attr('y',height/2-10+6)
+        .attr('y',height/2+6)
         .attr("text-anchor","start")
         // .attr("text-anchor",function(){
         //     if (countScale(totalData[0][0].total_ratio) < 20) {return "start";}
