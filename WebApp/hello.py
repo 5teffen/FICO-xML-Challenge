@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from SVM_model import SVM_model
 from Functions import *
+from Text_Explanation import *
 
 np.random.seed(12345)
  
@@ -136,7 +137,12 @@ def handle_request():
 				for dct in dict_array:
 					ret_string += json.dumps(dct)
 					ret_string += "~"
-				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted, 'trans_sample': trans_sample})
+
+				text_exp = generate_text_explanation(good_percent, X[sample], change_row, change_vector , anchors)
+				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct,
+										  'category': category, 'predicted': predicted, 'trans_sample': trans_sample,
+										  'text_exp': text_exp})
+				
 				return ret_string
 
 
