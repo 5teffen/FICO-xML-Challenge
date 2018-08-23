@@ -380,10 +380,11 @@
                     if (pcnt.indexOf("good") > -1){
                       good_len += 1;
                     }
-                    else{
+                    else if (pcnt.indexOf("bad") > -1){
                       bad_len += 1;
                     }
                   }
+
 
                   if (typeof document.getElementsByClassName("mini-square-good-0")[j] != 'undefined'){
                     for (k=0; k<good_len; k++){
@@ -459,6 +460,19 @@
 
       // Anchors
       function drawBorderClickAnch(elem) {
+
+        var idx = elem.parentNode.childNodes[0].childNodes[0].className.baseVal.toString().substring(13);
+        var type = "good";
+        if (elem.className.baseVal.toString().indexOf("bad") > -1){
+          type = "bad";
+        }
+        console.log(idx);
+        if (document.getElementById("selected-section") != null){
+          document.getElementById("selected-section").style.strokeWidth = "0px";
+          document.getElementById("selected-section").id = "";
+        }
+        document.getElementsByClassName(type+"-section-"+idx.toString())[0].style.strokeWidth = "2px";
+        document.getElementsByClassName(type+"-section-"+idx.toString())[0].id = "selected-section";
         
         if (document.getElementById("selected-border") != null){
           document.getElementById("selected-border").style.strokeWidth = "0px";

@@ -160,7 +160,7 @@
           alert('Giving up :( Cannot create an XMLHTTP instance');
           return false;
         }
-        // document.getElementsByClassName("ind-header")[0].style.display = "none";
+        document.getElementsByClassName("txt-space")[0].innerHTML = "";
         if (source == 'form') {
           var s = document.getElementById("search-bar").value;
           document.getElementById("search-bar").value="";
@@ -240,6 +240,7 @@
             var correct = parseInt(resp['model_correct']);
             var category = resp['category'];
             var result = resp['predicted'];
+            var text_exp = resp['text_exp'];
             var disp_percent = good_percent;
             document.getElementById("id-display").innerHTML = "ID: " + index;
             document.getElementById("model-display").innerHTML = "";
@@ -261,6 +262,10 @@
               else {
                 draw_graph(testData, "no", result);
               }
+              document.getElementsByClassName("txt-space")[0].innerHTML = "";
+              var p_exp = document.createElement("p");
+              p_exp.innerHTML = text_exp;
+              document.getElementsByClassName("txt-space")[0].append(p_exp);
             }
           } else {
             alert('HttpRequest Error')
