@@ -62,7 +62,7 @@
         <div class="d3-space">
           <!-- D3 graphs -->
         </div>
-        <div class="txt-space">
+        <div id="txt-space">
           <!-- <input id="check-density" type="checkbox" name="density" value="yes" checked onchange="densityCheckHandle(event)" style="display: none;">
           <p id="check-density-text"></p>
           <br>
@@ -136,7 +136,7 @@
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/pre_data.csv");
+        txtFile.open("GET", "/static/data/pred_data_x.csv");
         txtFile.send()
       }
       
@@ -160,7 +160,7 @@
           alert('Giving up :( Cannot create an XMLHTTP instance');
           return false;
         }
-        document.getElementsByClassName("txt-space")[0].innerHTML = "";
+        document.getElementById("txt-space").innerHTML = "";
         if (source == 'form') {
           var s = document.getElementById("search-bar").value;
           document.getElementById("search-bar").value="";
@@ -174,7 +174,6 @@
 
         else if (source == "prop-button"){
           var s = document.getElementById("id-display").innerHTML.substring(4);
-          console.log("sorted");
         }
 
         var monot = "False";
@@ -251,6 +250,29 @@
             document.getElementsByClassName("cat-text")[0].innerHTML = category;
             document.getElementsByClassName("d3-space")[0].innerHTML = "";
 
+            // Text explanation
+            document.getElementById("txt-space").innerHTML = "";
+            var p_exp = document.createElement("p");
+            var line = "";
+            var start = 0;
+            var end = 0;
+            console.log(text_exp);
+
+            for (j=0; j<text_exp.length; j++){
+              if (text_exp[j] == "\n" || j==text_exp.length-1){
+                var p_exp = document.createElement("p");
+                end = j;
+                line = text_exp.substring(start,end);
+                p_exp.innerHTML = line;
+                var br = document.createElement("br");
+                if (line.length > 1){
+                  document.getElementById("txt-space").append(p_exp);
+                  document.getElementById("txt-space").append(br);
+                }
+                start = end+1;
+              }
+            }
+
             if (trans_sample == '-9') {
               document.getElementsByClassName("d3-space")[0].innerHTML = "SPECIAL CASE";
             }
@@ -262,10 +284,9 @@
               else {
                 draw_graph(testData, "no", result);
               }
-              document.getElementsByClassName("txt-space")[0].innerHTML = "";
-              var p_exp = document.createElement("p");
-              p_exp.innerHTML = text_exp;
-              document.getElementsByClassName("txt-space")[0].append(p_exp);
+
+              
+
             }
           } else {
             alert('HttpRequest Error')
@@ -431,8 +452,6 @@
       $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
 
 
-      // draw_percent_bar(.41);
-      // addSquare("container", "TP", 45);
 
     </script>
 
