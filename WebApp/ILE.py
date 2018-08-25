@@ -114,6 +114,8 @@ def perturb_row_feature(model, row, row_idx, feat_idx, current_bins, X_bin_pos, 
     
     if current_bin != 9:
         next_value = mean_bins[feat_idx][int(current_bin+1)]
+    if current_bin < 8:
+        n_next_value = mean_bins[feat_idx][int(current_bin+2)]
     if current_bin != 0:
         prev_value = mean_bins[feat_idx][int(X_bin_pos[row_idx][feat_idx]-1)]
     
@@ -131,11 +133,17 @@ def perturb_row_feature(model, row, row_idx, feat_idx, current_bins, X_bin_pos, 
     elif direction == 0 and current_bin ==  0:
             return (row, c_current_bins)
 
+
     # Does not allow for changes into or from last bin (outliers of more than 2 std devs)
     if direction == 1 and current_bin == 8:
         return (row, c_current_bins)
+    elif direction == 1 and n_next_value == -1:
+        return (row, c_current_bins)
     if direction == 0 and current_bin == 9:
         return (row, c_current_bins)
+    elif direction == 0 and next_value == -1:
+        return (row, c_current_bins)
+
     
     # Decide direction in special case
     if direction == -1:
@@ -463,23 +471,22 @@ def sort_by_val(main, density):
     return ordered_main, ordered_density
 
 
-# vals = prepare_for_analysis("static/data/final_data_file.csv")
+# vals = prepare_for_analysis("final_data_file.csv")
 
-# X_orig = pd.read_csv("static/data/final_data_file.csv",header=None).values[:,1:]
+# X_orig = pd.read_csv("final_data_file.csv",header=None).values[:,1:]
 
 # X = vals[:,1:]
 # y = vals[:,0]
 
 # no_samples, no_features = X.shape
 
-# svm_model = SVM_model(None,"static/data/final_data_file.csv")
+# svm_model = SVM_model(None,"final_data_file.csv")
 # svm_model.train_model(0.001)
 # svm_model.test_model()
 
-# # sample = 10 # NOTE THIS VALUE
+# sample = 10 # NOTE THIS VALUE
 
 # bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
-# print(bins_centred)
 # change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
 
 # data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)
