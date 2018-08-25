@@ -307,7 +307,7 @@ table #model-display {
   float: left;
 }
 .btn-td {
-  width: 236px;
+  width: 240px;
 }
 .check-group {
   display: inline-block;
@@ -342,7 +342,7 @@ table #model-display {
   background-color: white;
   /*background-color: Gainsboro;*/
   width: 100%;
-  height: 420px;
+  height: 360px;
   text-align:  center;
 }
 
@@ -380,28 +380,48 @@ table #model-display {
 /* Text space */
 /*------------*/
 
-.txt-space {
-  width: 100%;
-  height: 65.4px;
+#txt-space {
+  margin-left: 5%;
+  text-align: left;
+  width: 45%;
+  height: calc(100% - 530px);
   background-color: white;
+  font-size: 12px;
   font-family: "Source Sans Pro", Helvetica, sans-serif;
+  overflow-y: auto;
+}
+
+#txt-space p {
+  margin: 0px;
+}
+
+#txt-space::-webkit-scrollbar {
+  width: 4px;
+}
+
+#txt-space::-webkit-scrollbar-track {
+  background-color: gainsboro;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+  /*-webkit-border-radius: 10px;*/
+  /*border-radius: 10px;*/
+}
+
+#txt-space::-webkit-scrollbar-thumb {
+  background-color: #A9A9A9;
+  /*-webkit-border-radius: 10px;*/
+  /*border-radius: 10px;*/
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+#txt-space::-webkit-scrollbar-thumb:hover {
+  /*background-color: #13895F;*/
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
 #demo {
   background-color: white;
 }
 
-#check-density-text {
-  display: inline;
-}
-
-#check-monot-text {
-  display: inline;
-}
-
-#check-sort-text {
-  display: inline;
-}
 
 /*-----------------*/
 /* Loading content */
@@ -500,7 +520,7 @@ table #model-display {
 
 #left-panel {
   width: 270px;
-  height: calc(100% - 100px);
+  height: calc(100% - 120px);
   /*height: 80%;*/
   background-color: white;
   display: inline-block;
@@ -685,7 +705,7 @@ table #model-display {
   /*width: calc(100% - 300px);*/
   width: 460px;
   height: calc(100% - 100px);
-  padding-top: 60px;
+  padding-top: 72px;
   /*background-color: darkgrey;*/
   /*display: inline-block;*/
   display: none;
@@ -797,7 +817,7 @@ table #model-display {
   /*width: calc(100% - 300px);*/
   width: 400px;
   height: calc(100% - 100px);
-  padding-top: 60px;
+  padding-top: 72px;
   /*background-color: darkgrey;*/
   /*display: inline-block;*/
   display: none;

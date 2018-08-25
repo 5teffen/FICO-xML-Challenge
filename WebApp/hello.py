@@ -5,8 +5,12 @@ import pandas as pd
 import numpy as np
 from SVM_model import SVM_model
 from Functions import *
+from Text_Explanation import *
+from ILE import *
 
 np.random.seed(12345)
+
+
  
 # ------- Helper functions ------- #
 
@@ -50,8 +54,6 @@ def sample_transf ():
 
 # ------- Initialize model ------- #
 
-from ILE import instance_explanation, prepare_for_D3, divide_data_bins, scaling_data_density, sort_by_val
-
 vals = pd.read_csv("static/data/final_data_file.csv", header=None).values
 X = vals[:,1:]
 y = vals[:,0]
@@ -68,7 +70,7 @@ svm_model.test_model()
 bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
 dict_array_orig = scaling_data_density(X_no_9, bins_centred, False)
 dict_array_monot = scaling_data_density(X_no_9, bins_centred, True)
-count_total = occurance_counter("static/data/pre_data.csv")
+count_total = occurance_counter("static/data/pred_data_x.csv")
 sample_transf()
 
 
@@ -136,7 +138,12 @@ def handle_request():
 				for dct in dict_array:
 					ret_string += json.dumps(dct)
 					ret_string += "~"
-				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct, 'category': category, 'predicted': predicted, 'trans_sample': trans_sample})
+
+				text_exp = generate_text_explanation(good_percent, X[sample], change_row, change_vector , anchors)
+				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct,
+										  'category': category, 'predicted': predicted, 'trans_sample': trans_sample,
+										  'text_exp': text_exp})
+				
 				return ret_string
 
 
@@ -185,7 +192,7 @@ def handle_request_mini_graphs():
 		sample_cap = min(len(id_list), 30)
 		id_list = [int(x) for x in id_list][:sample_cap]
 
-		mini_graph_arr = prep_for_D3_global("static/data/pre_data.csv","static/data/final_data_file.csv", id_list, bins_centred, X_pos_array, trans_dict)
+		mini_graph_arr = prep_for_D3_global("static/data/pred_data_x.csv","static/data/final_data_file.csv", id_list, bins_centred, X_pos_array, trans_dict)
 
 		## Parse values into python dictionary
 		ret_string = [mini_graph_arr, id_list]
@@ -215,20 +222,20 @@ def handle_request_ft():
 		# print(ft_list)
 		# FUNCTION TO GENERATE LIST OF COMBINATION AND RANK THEM
 
-		combinations = combination_finder("static/data/pre_data.csv",ft_list,algorithm)
+		combinations = combination_finder("static/data/pred_data_x.csv",ft_list,algorithm)
 
-		#textData, squareData = anchor_finder("pre_data1.csv","final_data_file.csv",[1,4])
+		#textData, squareData = anchor_finder("pred_data_x1.csv","final_data_file.csv",[1,4])
 
 		ret_arr = []
 		if not algorithm:
 			print("changes")
 			for combi in combinations[:15]:
-				ret_arr.append(changes_generator("static/data/pre_data.csv", combi))
+				ret_arr.append(changes_generator("static/data/pred_data_x.csv", combi))
 		else:
 			print("keyfts")
 			for combi in combinations[:15]:
 				print(combi)
-				names, good_squares, bad_squares, good_samples, bad_samples = anchor_generator("static/data/pre_data.csv","static/data/final_data_file.csv", combi)
+				names, good_squares, bad_squares, good_samples, bad_samples = anchor_generator("static/data/pred_data_x.csv","static/data/final_data_file.csv", combi)
 				ret_arr.append([names, good_squares, bad_squares, good_samples, bad_samples])
 
 
