@@ -7,16 +7,16 @@
     <meta name="author" content="NYU UGR Team">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-    <link href="/static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
+    <link href="static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/js/d3.min.js"></script> -->
+    <!-- <script type="text/javascript" src="static/js/d3.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script> -->
+    <!-- <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script> -->
     <!-- SVG scripts -->
     <!-- SVG scripts -->
-    <script type="text/javascript" src="/static/js/main_graph.js"></script>
-    <script type="text/javascript" src="/static/js/percentage_bar.js"></script>
-    <script type="text/javascript" src="/static/js/squares.js"></script>
+    <script type="text/javascript" src="static/js/main_graph.js"></script>
+    <script type="text/javascript" src="static/js/percentage_bar.js"></script>
+    <script type="text/javascript" src="static/js/squares.js"></script>
   </head>
 
   <body>
@@ -27,8 +27,8 @@
         </header>
         <nav class="left-nav">
           <ul>
-            <li><a href="/global">GLOBAL EXPLANATION</a></li>
-            <li><a href="/individual">LOCAL EXPLANATIONS</a></li>
+            <li><a href="global">GLOBAL EXPLANATION</a></li>
+            <li><a href="individual">LOCAL EXPLANATIONS</a></li>
           </ul>
         </nav>
         <!-- Search box -->
@@ -89,19 +89,19 @@
       function addSquare(elemn, category, size) {
         var sqr = document.createElement("img");
           if (category == "FN"){
-            sqr.src="/static/images/square2-min.jpg";
+            sqr.src="static/images/square2-min.jpg";
           }
           else if (category == "TN"){
-            sqr.src="/static/images/square4-min.jpg";
+            sqr.src="static/images/square4-min.jpg";
           }
           else if (category == "FP"){
-            sqr.src="/static/images/square1-min.jpg";
+            sqr.src="static/images/square1-min.jpg";
           }
           else if (category == "TP"){
-            sqr.src="/static/images/square3-min.jpg";
+            sqr.src="static/images/square3-min.jpg";
           }
           else if (category == "NA"){
-            sqr.src="/static/images/square5-min.jpg";
+            sqr.src="static/images/square5-min.jpg";
           } 
           sqr.height=size;
           sqr.width=size;
@@ -136,7 +136,7 @@
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/pred_data_x.csv");
+        txtFile.open("GET", "static/data/pred_data_x.csv");
         txtFile.send()
       }
       
@@ -186,7 +186,7 @@
         }
         
         httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', '/instance?sample='+s+'&monot='+monot+'&sort='+sort);
+        httpRequest.open('GET', 'instance?sample='+s+'&monot='+monot+'&sort='+sort);
         httpRequest.send();
         return false;
       }
@@ -346,19 +346,19 @@
 
           var sqr = document.createElement("img");
           if (pre_array[i][2].trim() == "FN"){
-            sqr.src="/static/images/square2-min.jpg";
+            sqr.src="static/images/square2-min.jpg";
           }
           else if (pre_array[i][2].trim() == "TN"){
-            sqr.src="/static/images/square4-min.jpg";
+            sqr.src="static/images/square4-min.jpg";
           }
           else if (pre_array[i][2].trim() == "FP"){
-            sqr.src="/static/images/square1-min.jpg";
+            sqr.src="static/images/square1-min.jpg";
           }
           else if (pre_array[i][2].trim() == "TP"){
-            sqr.src="/static/images/square3-min.jpg";
+            sqr.src="static/images/square3-min.jpg";
           } 
           else if (pre_array[i][2].trim() == "NA"){
-            sqr.src="/static/images/square5-min.jpg";
+            sqr.src="static/images/square5-min.jpg";
           } 
           sqr.height="15";
           sqr.width="15";
