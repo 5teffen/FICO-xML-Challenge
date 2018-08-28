@@ -1,5 +1,14 @@
 function draw_summary(elem) {
 
+
+    const tp = "3282",
+          fp = "1220",
+          tn = "3916",
+          fn = "1453";
+
+    const anch_c = "7468",
+          changes_c = "3114";
+
     var svg = d3.select(elem).append("svg")
             .attr("width",250)
             .attr("height",500)
@@ -95,7 +104,7 @@ function draw_summary(elem) {
         .attr("fill", 'url(#diagonalHatch)');
     
     svg.append('g').append("text")
-        .text("3282")
+        .text(tp)
         .attr("x",centre-23)
         .attr("y",180)
         .attr("text-anchor","middle")
@@ -106,7 +115,7 @@ function draw_summary(elem) {
     
         
     svg.append('g').append("text")
-        .text("1220")
+        .text(fp)
         .attr("x",centre+22)
         .attr("y",180)
         .attr("text-anchor","middle")
@@ -144,7 +153,7 @@ function draw_summary(elem) {
     
     
         svg.append('g').append("text")
-        .text("1453")
+        .text(fn)
         .attr("x",centre-23)
         .attr("y",212)
         .attr("text-anchor","middle")
@@ -155,7 +164,7 @@ function draw_summary(elem) {
     
         
     svg.append('g').append("text")
-        .text("3916")
+        .text(tn)
         .attr("x",centre+22)
         .attr("y",212)
         .attr("text-anchor","middle")
@@ -178,7 +187,7 @@ function draw_summary(elem) {
     
     
     svg.append('g').append("text")
-        .text("- Key Features: 7468")
+        .text("- Key Features: " + anch_c)
         .attr("x",centre)
         .attr("y",330)
         .attr("text-anchor","middle")
@@ -190,7 +199,7 @@ function draw_summary(elem) {
     
     
     svg.append('g').append("text")
-        .text("- Changes: 2826")
+        .text("- Changes: " + changes_c)
         .attr("x",centre)
         .attr("y",350)
         .attr("text-anchor","middle")
