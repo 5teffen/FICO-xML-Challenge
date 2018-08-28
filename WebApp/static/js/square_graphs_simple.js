@@ -197,11 +197,13 @@ function draw_all_squares(totalData, limit, elemn) {
         }
         else {text_shift += 15}
     }
+
+    var modifier = 20;
     
     // --- Count Bar Drawing ---
     svg.append('g').append("rect")
         .attr('x',width-count_bar_w)
-        .attr('y',height/2-count_bar_h/2)
+        .attr('y',height/2-count_bar_h/2-modifier)
         .attr('height',count_bar_h)
         .attr('width',countScale(totalData[0][0].total_ratio))
         .attr("fill","#A9A9A9");
@@ -209,8 +211,8 @@ function draw_all_squares(totalData, limit, elemn) {
     svg.append('g').append("line")
         .attr('x1',width-count_bar_w)
         .attr('x2',width-count_bar_w)
-        .attr('y1',height/2 - 22)
-        .attr('y2',height/2 + 22)
+        .attr('y1',height/2 - 22-modifier)
+        .attr('y2',height/2 + 22-modifier)
         .attr("stroke-width",2)
         .attr("opacity",0.5)
         .attr("stroke","black");

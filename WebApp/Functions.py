@@ -204,7 +204,9 @@ def occurance_counter(pre_proc_file):
 					count_array[col][2] += 1
 				else:
 					count_array[col][3] += 1
-	ratio_array = count_array/total				
+	
+	ratio_array = count_array				
+	# ratio_array = count_array/total			
 	# for i in range(ratio_array.shape[1]):
 	# 	ratio_array
 	return ratio_array
