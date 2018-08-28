@@ -7,16 +7,16 @@
     <meta name="author" content="NYU UGR Team">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-    <link href="/static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
+    <link href="static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/js/d3.min.js"></script> -->
+    <!-- <script type="text/javascript" src="static/js/d3.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script> -->
+    <!-- <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script> -->
     <!-- SVG scripts -->
     <!-- SVG scripts -->
-    <script type="text/javascript" src="/static/js/main_graph.js"></script>
-    <script type="text/javascript" src="/static/js/percentage_bar.js"></script>
-    <script type="text/javascript" src="/static/js/squares.js"></script>
+    <script type="text/javascript" src="static/js/main_graph.js"></script>
+    <script type="text/javascript" src="static/js/percentage_bar.js"></script>
+    <script type="text/javascript" src="static/js/squares.js"></script>
   </head>
 
   <body>
@@ -27,8 +27,8 @@
         </header>
         <nav class="left-nav">
           <ul>
-            <li><a href="/global">GLOBAL EXPLANATION</a></li>
-            <li><a href="/individual">LOCAL EXPLANATIONS</a></li>
+            <li><a href="global">GLOBAL EXPLANATION</a></li>
+            <li><a href="individual">LOCAL EXPLANATIONS</a></li>
           </ul>
         </nav>
         <!-- Search box -->
@@ -62,16 +62,12 @@
         <div class="d3-space">
           <!-- D3 graphs -->
         </div>
-        <div id="txt-space">
-          <!-- <input id="check-density" type="checkbox" name="density" value="yes" checked onchange="densityCheckHandle(event)" style="display: none;">
-          <p id="check-density-text"></p>
-          <br>
-          <input id="check-monot" type="checkbox" name="monotonicity" value="no" onchange="monotCheckHandle(event)" style="display: none;">
-          <p id="check-monot-text"></p>
-          <br>
-          <input id="check-sort" type="checkbox" name="sort" value="no" onchange="sortCheckHandle(event)" style="display: none;">
-          <p id="check-sort-text"></p>
-          <br> -->
+          <div id="txt-space-key">
+          </div>
+          <div id="txt-space-chg">
+          </div>
+          <div id="similar-samples">
+          </div>
           <!-- Text explanation -->
 
         </div>
@@ -89,19 +85,19 @@
       function addSquare(elemn, category, size) {
         var sqr = document.createElement("img");
           if (category == "FN"){
-            sqr.src="/static/images/square2-min.jpg";
+            sqr.src="static/images/square2-min.jpg";
           }
           else if (category == "TN"){
-            sqr.src="/static/images/square4-min.jpg";
+            sqr.src="static/images/square4-min.jpg";
           }
           else if (category == "FP"){
-            sqr.src="/static/images/square1-min.jpg";
+            sqr.src="static/images/square1-min.jpg";
           }
           else if (category == "TP"){
-            sqr.src="/static/images/square3-min.jpg";
+            sqr.src="static/images/square3-min.jpg";
           }
           else if (category == "NA"){
-            sqr.src="/static/images/square5-min.jpg";
+            sqr.src="static/images/square5-min.jpg";
           } 
           sqr.height=size;
           sqr.width=size;
@@ -136,7 +132,7 @@
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/pred_data_x.csv");
+        txtFile.open("GET", "static/data/pred_data_x.csv");
         txtFile.send()
       }
       
@@ -160,7 +156,9 @@
           alert('Giving up :( Cannot create an XMLHTTP instance');
           return false;
         }
-        document.getElementById("txt-space").innerHTML = "";
+        document.getElementById("txt-space-key").innerHTML = "";
+        document.getElementById("txt-space-chg").innerHTML = "";
+        document.getElementById("similar-samples").innerHTML = "";
         if (source == 'form') {
           var s = document.getElementById("search-bar").value;
           document.getElementById("search-bar").value="";
@@ -186,7 +184,7 @@
         }
         
         httpRequest.onreadystatechange = alertContents;
-        httpRequest.open('GET', '/instance?sample='+s+'&monot='+monot+'&sort='+sort);
+        httpRequest.open('GET', 'instance?sample='+s+'&monot='+monot+'&sort='+sort);
         httpRequest.send();
         return false;
       }
@@ -240,6 +238,7 @@
             var category = resp['category'];
             var result = resp['predicted'];
             var text_exp = resp['text_exp'];
+            var similar_ids = resp['similar_ids'];
             var disp_percent = good_percent;
             document.getElementById("id-display").innerHTML = "ID: " + index;
             document.getElementById("model-display").innerHTML = "";
@@ -251,26 +250,65 @@
             document.getElementsByClassName("d3-space")[0].innerHTML = "";
 
             // Text explanation
-            document.getElementById("txt-space").innerHTML = "";
+            document.getElementById("txt-space-key").innerHTML = "";
+            document.getElementById("txt-space-chg").innerHTML = "";
+            document.getElementById("similar-samples").innerHTML = "";
             var p_exp = document.createElement("p");
             var line = "";
             var start = 0;
             var end = 0;
-            console.log(text_exp);
+            var change_good = text_exp.indexOf("Suggested Changes");
+            var change_bad = text_exp.indexOf("Warnings");
+            var keys = text_exp.indexOf("Key Features");
+            start = text_exp.indexOf("\n");
+            var line_1 = text_exp.substring(0, start);
 
-            for (j=0; j<text_exp.length; j++){
+            document.getElementsByClassName("ind-text")[0].innerHTML = line_1;
+
+            for (j=text_exp.indexOf("\n")+1; j<text_exp.length; j++){
               if (text_exp[j] == "\n" || j==text_exp.length-1){
                 var p_exp = document.createElement("p");
                 end = j;
-                line = text_exp.substring(start,end);
+                line = text_exp.substring(start,end+1);
                 p_exp.innerHTML = line;
-                var br = document.createElement("br");
-                if (line.length > 1){
-                  document.getElementById("txt-space").append(p_exp);
-                  document.getElementById("txt-space").append(br);
+                
+                if (line.indexOf("Suggested Changes")>-1 || line.indexOf("Warnings")>-1 || line.indexOf("Key Features")>-1){
+                  p_exp.style.fontWeight = "bold";
+                  p_exp.style.fontSize = "13px";
+                }
+                if (line.indexOf(":")>-1){
+                  p_exp.style.marginBottom = "5px";
+                }
+
+                if (line.length > 1 && change_good == -1 && change_bad == -1){
+                  document.getElementById("txt-space-key").append(p_exp);
+                  // document.getElementById("txt-space").append(br);
+                }
+                else if (line.length > 1 && keys == -1){
+                  document.getElementById("txt-space-chg").append(p_exp);
+                  // document.getElementById("txt-space").append(br);
+                }
+                else if (line.length > 1 && j<Math.max(change_good, change_bad)){
+                  document.getElementById("txt-space-key").append(p_exp);
+                  // document.getElementById("txt-space").append(br);
+                }
+                else if (line.length > 1 && j>=Math.max(change_good, change_bad)){
+                  document.getElementById("txt-space-chg").append(p_exp);
+                  // document.getElementById("txt-space").append(br);
                 }
                 start = end+1;
               }
+            }
+
+            if (similar_ids.length > 0){
+              var sim_h = document.createElement("p");
+              sim_h.style.fontSize = "13px";
+              sim_h.style.fontWeight = "bold";
+              sim_h.innerHTML = "Similar instances";
+              var sim_p = document.createElement("p");
+              sim_p.innerHTML = similar_ids;
+              document.getElementById("similar-samples").append(sim_h);
+              document.getElementById("similar-samples").append(sim_p);
             }
 
             if (trans_sample == '-9') {
@@ -306,7 +344,6 @@
         callback3();
 
         callback4();
-
       }
 
       function add_loader() {
@@ -346,19 +383,19 @@
 
           var sqr = document.createElement("img");
           if (pre_array[i][2].trim() == "FN"){
-            sqr.src="/static/images/square2-min.jpg";
+            sqr.src="static/images/square2-min.jpg";
           }
           else if (pre_array[i][2].trim() == "TN"){
-            sqr.src="/static/images/square4-min.jpg";
+            sqr.src="static/images/square4-min.jpg";
           }
           else if (pre_array[i][2].trim() == "FP"){
-            sqr.src="/static/images/square1-min.jpg";
+            sqr.src="static/images/square1-min.jpg";
           }
           else if (pre_array[i][2].trim() == "TP"){
-            sqr.src="/static/images/square3-min.jpg";
+            sqr.src="static/images/square3-min.jpg";
           } 
           else if (pre_array[i][2].trim() == "NA"){
-            sqr.src="/static/images/square5-min.jpg";
+            sqr.src="static/images/square5-min.jpg";
           } 
           sqr.height="15";
           sqr.width="15";
@@ -396,7 +433,7 @@
         var ind_text = document.createElement("td");
         ind_text.className = "ind-text";
         console.log("ADSGAS");
-        ind_text.innerHTML = "WARNINGS";
+        ind_text.innerHTML = "";
 
         var btn_td = document.createElement("td");
         btn_td.className = "btn-td";
