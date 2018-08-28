@@ -140,9 +140,11 @@ def handle_request():
 					ret_string += "~"
 
 				text_exp = generate_text_explanation(good_percent, X[sample], change_row, change_vector , anchors)
+				similar_ids = detect_similarities("static/data/pred_data_x.csv","static/data/final_data_file.csv", X[sample], change_row, bins_centred, good_percent)
+				similar_ids = similar_ids[:min(len(similar_ids),10)]
 				ret_string += json.dumps({'sample': sample+1, 'good_percent': good_percent, 'model_correct': model_correct,
 										  'category': category, 'predicted': predicted, 'trans_sample': trans_sample,
-										  'text_exp': text_exp})
+										  'text_exp': text_exp, 'similar_ids': similar_ids})
 				
 				return ret_string
 

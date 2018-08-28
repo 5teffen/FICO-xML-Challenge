@@ -412,11 +412,11 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
 
     similar_rows = []
 
-    if (change_row is None):
+    if (changed_row is None):
         original = sample_vec
 
     else:
-        original = change_row
+        original = changed_row
 
 
 
