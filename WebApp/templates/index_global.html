@@ -125,10 +125,10 @@
 
       var selected_fts = [];
 
-      // var dark_shade = "#727f87";
-      var dark_shade = "rgb(126, 140, 149)";
+      // var dark_shade = "#727f87"; rgb(126, 140, 149)
+      var dark_shade = "rgb(177, 196, 209)";
       // var light_shade = "#b1c4d1";
-      var light_shade = "rgb(177, 196, 209)"
+      var light_shade = "white";
 
       var txtFile;
 
@@ -391,8 +391,9 @@
                       var idxx = $(".mini-square-good-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
                       document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { 
-                        drawBorderClickAnch(this);
                         makeRequest2(this, "anch");
+                        drawBorderClickAnch(this);
+                        
                       };
                       document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onmouseover = function() {
                         hoverEnterAnch(this);
@@ -408,8 +409,9 @@
                       var idxx = $(".mini-square-bad-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
                       document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onclick = function () { 
-                        drawBorderClickAnch(this);
                         makeRequest2(this, "anch");
+                        drawBorderClickAnch(this);
+                        
                       };
                       document.getElementsByClassName("mini-square-bad-"+k.toString())[idxx].onmouseover = function () { 
                         hoverEnterAnch(this);
@@ -466,7 +468,7 @@
         if (elem.className.baseVal.toString().indexOf("bad") > -1){
           type = "bad";
         }
-        console.log(idx);
+
         if (document.getElementById("selected-section") != null){
           document.getElementById("selected-section").style.strokeWidth = "0px";
           document.getElementById("selected-section").id = "";
@@ -482,6 +484,23 @@
         border.style.stroke = "black";
         border.style.strokeWidth = "1.5px";
         border.id = "selected-border";
+
+        // var idx = elem.childNodes[0].childNodes[0].className.baseVal.toString().substring(12);
+        // console.log(idx);
+
+        // if (document.getElementById("mini-graph-"+idx.toString()) != null){
+        //   console.log("here");
+        //   // if (document.getElementById("border-selected") != null){
+        //   //   document.getElementById("border-selected").style.stroke = "black";
+        //   //   var restore_id = document.getElementById("border-selected").parentNode.id.toString().substring(11);
+        //   //   document.getElementById("border-selected").id = "border-" + restore_id;
+        //   // }
+        //   var bord = document.getElementById("border-"+idx.toString());
+        //   console.log(bord);
+        //   bord.style.stroke = "black";
+        //   document.getElementById("border-"+idx.toString()).id = "border-selected";
+        // }
+
       }
       function hoverEnterAnch(elem){
         document.body.style.cursor = "pointer";
@@ -529,7 +548,7 @@
               for (i=0; i<23; i++){
                 document.getElementById("ft-div-" + i.toString()).innerHTML = '';
                 document.getElementById("monot-" + i.toString()).innerHTML = '';
-                draw_occurance_bar(barData[chgSort[i]][2],barData[chgSort[i]][3],i);
+                draw_occurance_bar(false,barData[chgSort[i]][2],barData[chgSort[i]][3],i);
                 draw_dir(monot_arr[chgSort[i]], i);
                 document.getElementById("bar-div-header").style.marginRight = "5px";
                 document.getElementById("feat-" + i.toString()).innerHTML = ft_names[chgSort[i]];
@@ -543,7 +562,7 @@
               for (i=0; i<23; i++){
                 document.getElementById("ft-div-" + i.toString()).innerHTML = '';
                 document.getElementById("monot-" + i.toString()).innerHTML = '';
-                draw_occurance_bar(barData[keySort[i]][0],barData[keySort[i]][1],i);
+                draw_occurance_bar(true,barData[keySort[i]][0],barData[keySort[i]][1],i);
                 draw_dir(monot_arr[keySort[i]], i);
                 document.getElementById("bar-div-header").style.marginRight = "16px";
                 document.getElementById("feat-" + i.toString()).innerHTML = ft_names[keySort[i]];

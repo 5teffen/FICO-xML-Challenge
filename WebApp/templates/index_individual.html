@@ -76,10 +76,10 @@
 
     <script>
 
-      // var dark_shade = "#727f87";
-      var dark_shade = "rgb(126, 140, 149)";
+      // var dark_shade = "#727f87"; rgb(126, 140, 149)
+      var dark_shade = "rgb(177, 196, 209)";
       // var light_shade = "#b1c4d1";
-      var light_shade = "rgb(177, 196, 209)"
+      var light_shade = "white";
 
     
       function addSquare(elemn, category, size) {
@@ -169,9 +169,11 @@
         else if (source == "global") {
           var s = sample.toString();
         }
-
         else if (source == "prop-button"){
           var s = document.getElementById("id-display").innerHTML.substring(4);
+        }
+        else if (source == "similar"){
+          var s = sample.innerHTML;
         }
 
         var monot = "False";
@@ -304,11 +306,18 @@
               var sim_h = document.createElement("p");
               sim_h.style.fontSize = "13px";
               sim_h.style.fontWeight = "bold";
-              sim_h.innerHTML = "Similar instances";
-              var sim_p = document.createElement("p");
-              sim_p.innerHTML = similar_ids;
+              sim_h.innerHTML = "Similar instances:";
               document.getElementById("similar-samples").append(sim_h);
-              document.getElementById("similar-samples").append(sim_p);
+
+              console.log(similar_ids);
+              for (j=0; j<similar_ids.length; j++){
+                  var sim_p = document.createElement("a");
+                  line = similar_ids[j];
+                  sim_p.innerHTML = line;
+                  sim_p.onclick = function () { makeRequest('similar', this); };
+                  document.getElementById("similar-samples").append(sim_p);
+              }
+            
             }
 
             if (trans_sample == '-9') {
