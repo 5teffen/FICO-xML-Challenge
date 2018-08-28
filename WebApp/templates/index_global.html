@@ -7,22 +7,22 @@
     <meta name="author" content="NYU UGR Team">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-    <link href="/static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
+    <link href="static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
     <!-- D3.js and jQuery source -->
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/js/d3.min.js"></script> -->
+    <!-- <script type="text/javascript" src="static/js/d3.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/js/jquery-3.3.1.min.js"></script> -->
+    <!-- <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script> -->
     <!-- SVG scripts -->
-    <script type="text/javascript" src="/static/js/main_graph.js"></script>
-    <script type="text/javascript" src="/static/js/model_summary.js"></script>
-    <script type="text/javascript" src="/static/js/direction_signs.js"></script>
-    <script type="text/javascript" src="/static/js/anchor_graphs.js"></script>
-    <script type="text/javascript" src="/static/js/square_graphs_simple.js"></script>
-    <script type="text/javascript" src="/static/js/occ_bar.js"></script>
-    <script type="text/javascript" src="/static/js/mini_graph.js"></script>
-    <script type="text/javascript" src="/static/js/percentage_bar.js"></script>
-    <script type="text/javascript" src="/static/js/squares.js"></script>
+    <script type="text/javascript" src="static/js/main_graph.js"></script>
+    <script type="text/javascript" src="static/js/model_summary.js"></script>
+    <script type="text/javascript" src="static/js/direction_signs.js"></script>
+    <script type="text/javascript" src="static/js/anchor_graphs.js"></script>
+    <script type="text/javascript" src="static/js/square_graphs_simple.js"></script>
+    <script type="text/javascript" src="static/js/occ_bar.js"></script>
+    <script type="text/javascript" src="static/js/mini_graph.js"></script>
+    <script type="text/javascript" src="static/js/percentage_bar.js"></script>
+    <script type="text/javascript" src="static/js/squares.js"></script>
   </head>
 
   <body>
@@ -34,11 +34,11 @@
         <nav class="left-nav">
           <ul>
             <li>
-              <a href="/global">
+              <a href="global">
                 GLOBAL EXPLANATION
               </a>
              </li>
-            <li><a href="/individual">LOCAL EXPLANATIONS</a></li>
+            <li><a href="individual">LOCAL EXPLANATIONS</a></li>
           </ul>
         </nav>
 
@@ -136,7 +136,7 @@
       function fetch_csv(){
         txtFile = new XMLHttpRequest();
         txtFile.onreadystatechange = initContents;
-        txtFile.open("GET", "/static/data/pred_data_x.csv");
+        txtFile.open("GET", "static/data/pred_data_x.csv");
         txtFile.send()
       }
       
@@ -180,7 +180,7 @@
         }
 
         httpRequest.onreadystatechange = alertContents2;
-        httpRequest.open('GET', '/glob_feat?id_list='+id_list);
+        httpRequest.open('GET', 'glob_feat?id_list='+id_list);
         httpRequest.send();
         return false;
       }
@@ -212,7 +212,7 @@
         console.log(req_arr);
         
         httpRequest.onreadystatechange = alertContents3;
-        httpRequest.open('GET', '/first_panel?features=['+req_arr+']&algorithm='+algo);
+        httpRequest.open('GET', 'first_panel?features=['+req_arr+']&algorithm='+algo);
         httpRequest.send();
         return false;
       }
@@ -226,7 +226,7 @@
         }
         
         httpRequest.onreadystatechange = alertGlobContents;
-        httpRequest.open('GET', '/glob_req');
+        httpRequest.open('GET', 'glob_req');
         httpRequest.send();
         return false;
       }
