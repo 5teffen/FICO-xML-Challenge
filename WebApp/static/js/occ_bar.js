@@ -1,5 +1,4 @@
-function draw_occurance_bar(good,bad,ft_index) {
-
+function draw_occurance_bar(anchs,good,bad,ft_index) {
 
     var bar_width = 40,
         bar_height = 8;
@@ -12,9 +11,14 @@ function draw_occurance_bar(good,bad,ft_index) {
     
     var x_buffer = 2+text_space,
         y_buffer = 2;
+
+    // var anch = false;
     
+    if (anch == true) {var max = 5000;}
+    else {var max = 2000;}
+
     var xScale = d3.scaleLinear()
-            .domain([0, 1])
+            .domain([0,max])
             .rangeRound([0, bar_width]);
 
     var good_col = "#1b9e77",
@@ -33,19 +37,31 @@ function draw_occurance_bar(good,bad,ft_index) {
     // Drawing the frame
     
     var sep = 1;
-    var border = 0.7;
+    var border = 1.5;
     
-    svg.append('g').append("rect")
-        .attr("height",bar_height+sep*2)
-        .attr("width",bar_width+border)
-        .style("fill","None")
-        .style("stroke-width",border)
-        .style("opacity",0.7)
-        .style("stroke","black");
+    // svg.append('g').append("line")
+    //     .attr("y1",0)
+    //     .attr("x1",0)
+    //     .attr("y2",bar_height+sep*2)
+    //     .attr("x2",0)
+    //     .attr("stroke-width",border)
+    //     .attr("opacity",0.7)
+    //     .attr("stroke","black");
     
     var svg_up = svg.append("g")
                      .attr("transform","translate(" + border + ',' + sep +')');
 
+    // To ensure something is visible
+    if (anch == true){
+        if (good+bad < 100) 
+            if (good > bad && good != 0) {good = 70;}
+            else if (bad != 0) {bad = 70;}   
+    }
+    else {
+        if (good+bad < 40) 
+            if (good > bad && good != 0) {good = 28;}
+            else if (bad != 0) {bad = 28;}   
+    }
     // Drawing the anch good recangle
     svg_up.append('g').append("rect")
         .attr("height",bar_height)
