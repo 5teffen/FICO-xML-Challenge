@@ -1,4 +1,4 @@
-function draw_occurance_bar(anchs,good,bad,ft_index) {
+function draw_occurance_bar(anch,good,bad,ft_index) {
 
     var bar_width = 40,
         bar_height = 8;
