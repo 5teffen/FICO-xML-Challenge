@@ -41,24 +41,26 @@
       </div>
       
       <div class="right-side" id="demo">
-        <table class="right-header">
-          <tr>
-              <td id="id-display">
-                <!-- ID: 100 -->
-              </td>
-              <td id="category-display">
-                <div id="container">
-                  <div class="cat-text"></div>
-                  <img id="category-img">
-                </div>
-              </td>
-              <!-- <td id="category-text">TP</td> -->
-              <td id="space"></td>
-              <td id="model-display">
-                <!-- Model Prediction: 61% -->
-              </td>
-          </tr>
-        </table>
+        <div id = "header-container">
+          <table class="right-header" align="center">
+            <tr>
+                <td id="id-display">
+                  <!-- ID: 100 -->
+                </td>
+                <td id="category-display">
+                  <div id="container">
+                    <div class="cat-text"></div>
+                    <img id="category-img">
+                  </div>
+                </td>
+                <!-- <td id="category-text">TP</td> -->
+                <td id="space"></td>
+                <td id="model-display">
+                  <!-- Model Prediction: 61% -->
+                </td>
+            </tr>
+          </table>
+        </div>
         <div class="d3-space">
           <!-- D3 graphs -->
         </div>
@@ -345,12 +347,11 @@
 
         callback0();
 
-        // setTimeout(function(){ alert("Hello"); }, 3000);
-        setTimeout(function(){ callback1();
+        setTimeout(function(){ callback1();}, 50);
 
-        callback2(); }, 50);
+        setTimeout(function(){ callback2();}, 100);
 
-        callback3();
+        setTimeout(function(){ callback3();}, 50);
 
         callback4();
       }
@@ -388,7 +389,8 @@
       }
 
       function add_images() {
-        for (var i = 1; i < pre_array.length; i++) {
+
+        for (var i = 1; i < pre_array.length-2; i++) {
 
           var sqr = document.createElement("img");
           if (pre_array[i][2].trim() == "FN"){
@@ -441,7 +443,6 @@
 
         var ind_text = document.createElement("td");
         ind_text.className = "ind-text";
-        console.log("ADSGAS");
         ind_text.innerHTML = "";
 
         var btn_td = document.createElement("td");
