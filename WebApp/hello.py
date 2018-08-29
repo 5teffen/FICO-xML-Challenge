@@ -226,19 +226,20 @@ def handle_request_ft():
 
 		combinations = combination_finder("static/data/pred_data_x.csv",ft_list,algorithm)
 
-		#textData, squareData = anchor_finder("pred_data_x1.csv","final_data_file.csv",[1,4])
+		print(combinations)
 
 		ret_arr = []
 		if not algorithm:
 			print("changes")
-			for combi in combinations[:15]:
+			for combi in combinations[:min(15,len(combinations))]:
 				ret_arr.append(changes_generator("static/data/pred_data_x.csv", combi))
 		else:
 			print("keyfts")
-			for combi in combinations[:15]:
+			for combi in combinations[:min(15,len(combinations))]:
 				print(combi)
-				names, good_squares, bad_squares, good_samples, bad_samples = anchor_generator("static/data/pred_data_x.csv","static/data/final_data_file.csv", combi)
-				ret_arr.append([names, good_squares, bad_squares, good_samples, bad_samples])
+				# names, good_squares, bad_squares, good_samples, bad_samples = anchor_generator("static/data/pred_data_x.csv","static/data/final_data_file.csv", combi)
+				# ret_arr.append([names, good_squares, bad_squares, good_samples, bad_samples])
+				ret_arr.append(anchor_generator("static/data/pred_data_x.csv","static/data/final_data_file.csv", combi))
 
 
 		## Parse values into python dictionary
@@ -253,4 +254,5 @@ def handle_request_ft():
 if __name__ == '__main__':
 
 	np.random.seed(12345)
+
 	app.run(port=5005, host="0.0.0.0", debug=True)
