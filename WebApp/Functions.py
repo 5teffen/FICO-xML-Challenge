@@ -347,12 +347,29 @@ def changes_generator(pre_proc_file,desired_cols):
 	all_per	= sorted_per
 	global_samples = sorted_global
 
-	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
-		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
-		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
-		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
-		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
-		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
+	names = ["External Risk Estimate", 
+                      "Months Since Oldest Trade Open",
+                      "Months Since Last Trade Open",
+                      "Average Months in File",
+                      "Satisfactory Trades",
+                      "Trades 60+ Ever",
+                      "Trades 90+ Ever",
+                      "% Trades Never Delq.",
+                      "Months Since Last Delq.",
+                      "Max Delq. Last 12M",
+                      "Max Delq. Ever",
+                      "Total Trades",
+                      "Trades Open Last 12M",
+                      "% Installment Trades",
+                      "Months Since Most Recent Inq",
+                      "Inq Last 6 Months",
+                      "Inq Last 6 Months exl. 7 days",
+                      "Revolving Burden",
+                      "Installment Burden",
+                      "Revolving Trades w/ Balance:",
+                      "Installment Trades w/ Balance",
+                      "Bank Trades w/ High Utilization Ratio",
+                      "% Trades w/ Balance"]
 
 	total_count = np.sum(all_counts)
 	all_dicts = []
@@ -424,12 +441,29 @@ def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 		bad_ones = bad_ones[bad_ones[:,1].argsort()]
 
 
-	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
-		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
-		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
-		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
-		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
-		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
+	names = ["External Risk Estimate", 
+                      "Months Since Oldest Trade Open",
+                      "Months Since Last Trade Open",
+                      "Average Months in File",
+                      "Satisfactory Trades",
+                      "Trades 60+ Ever",
+                      "Trades 90+ Ever",
+                      "% Trades Never Delq.",
+                      "Months Since Last Delq.",
+                      "Max Delq. Last 12M",
+                      "Max Delq. Ever",
+                      "Total Trades",
+                      "Trades Open Last 12M",
+                      "% Installment Trades",
+                      "Months Since Most Recent Inq",
+                      "Inq Last 6 Months",
+                      "Inq Last 6 Months exl. 7 days",
+                      "Revolving Burden",
+                      "Installment Burden",
+                      "Revolving Trades w/ Balance:",
+                      "Installment Trades w/ Balance",
+                      "Bank Trades w/ High Utilization Ratio",
+                      "% Trades w/ Balance"]
 	
 
 	names_dicts = []
@@ -471,12 +505,29 @@ def anchor_generator(pre_proc_file, all_data_file, anchs_lst):
 
 def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,positions,transform):
 
-	names = ["External Risk Estimate","Months Since Oldest Trade Open","Months Since Last Trade Open"
-		,"Average Months in File","Satisfactory Trades","Trades 60+ Ever","Trades 90+ Ever"
-		,"% Trades Never Delq.","Months Since Last Delq.","Max Delq. Last 12M","Max Delq. Ever","Total Trades"
-		,"Trades Open Last 12M","% Installment Trades", "Months Since Most Recent Inq","Inq Last 6 Months"
-		,"Inq Last 6 Months exl. 7 days", "Revolving Burden","Installment Burden","Revolving Trades w/ Balance"
-		,"Installment Trades w/ Balance","Bank Trades w/ High Utilization Ratio","% trades with balance"]
+	names = ["External Risk Estimate", 
+                      "Months Since Oldest Trade Open",
+                      "Months Since Last Trade Open",
+                      "Average Months in File",
+                      "Satisfactory Trades",
+                      "Trades 60+ Ever",
+                      "Trades 90+ Ever",
+                      "% Trades Never Delq.",
+                      "Months Since Last Delq.",
+                      "Max Delq. Last 12M",
+                      "Max Delq. Ever",
+                      "Total Trades",
+                      "Trades Open Last 12M",
+                      "% Installment Trades",
+                      "Months Since Most Recent Inq",
+                      "Inq Last 6 Months",
+                      "Inq Last 6 Months exl. 7 days",
+                      "Revolving Burden",
+                      "Installment Burden",
+                      "Revolving Trades w/ Balance:",
+                      "Installment Trades w/ Balance",
+                      "Bank Trades w/ High Utilization Ratio",
+                      "% Trades w/ Balance"]
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_data = pd.read_csv(all_data_file,header=None).values[:,1:]
 

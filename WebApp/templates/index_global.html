@@ -100,28 +100,28 @@
     <script>
     
       var ft_names = ["External Risk Estimate", 
-                        "Months Since Oldest Trade Open",
-                        "Months Since Last Trade Open",
-                        "Average Months in File",
-                        "Satisfactory Trades",
-                        "Trades 60+ Ever",
-                        "Trades 90+ Ever",
-                        "% Trades Never Delq.",
-                        "Months Since Last Delq.",
-                        "Max Delq. Last 12M",
-                        "Max Delq. Ever",
-                        "Total Trades",
-                        "Trades Open Last 12M",
-                        "% Installment Trades",
-                        "Months Since Most Recent Inq",
-                        "Inq Last 6 Months",
-                        "Inq Last 6 Months exl. 7 days",
-                        "Revolving Burden",
-                        "Installment Burden",
-                        "Revolving Trades w/ Balance:",
-                        "Installment Trades w/ Balance",
-                        "Bank Trades w/ High Utilization Ratio",
-                        "% Trades w/ Balance"]
+                      "Months Since Oldest Trade Open",
+                      "Months Since Last Trade Open",
+                      "Average Months in File",
+                      "Satisfactory Trades",
+                      "Trades 60+ Ever",
+                      "Trades 90+ Ever",
+                      "% Trades Never Delq.",
+                      "Months Since Last Delq.",
+                      "Max Delq. Last 12M",
+                      "Max Delq. Ever",
+                      "Total Trades",
+                      "Trades Open Last 12M",
+                      "% Installment Trades",
+                      "Months Since Most Recent Inq",
+                      "Inq Last 6 Months",
+                      "Inq Last 6 Months exl. 7 days",
+                      "Revolving Burden",
+                      "Installment Burden",
+                      "Revolving Trades w/ Balance:",
+                      "Installment Trades w/ Balance",
+                      "Bank Trades w/ High Utilization Ratio",
+                      "% Trades w/ Balance"]
 
       var selected_fts = [];
 
@@ -250,7 +250,14 @@
 
       // Right panel mini graphs
       function alertContents2() {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.readyState === XMLHttpRequest.OPENED){
+          // console.log("OPENED");
+          document.getElementById("right-panel").style.display = "inline-block";
+          document.getElementById("right-panel").innerHTML = "";
+          add_loader(document.getElementById("right-panel"));
+        
+        }
+        else if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
             //Do stuff with the response
             document.getElementById("right-panel").innerHTML = "";
@@ -301,10 +308,18 @@
         document.getElementById("border-"+idx.toString()).style.stroke = "#A9A9A9";
       }
       
-
       // Middle panel graphs
       function alertContents3() {
-        if (httpRequest.readyState === XMLHttpRequest.DONE) {
+
+        if (httpRequest.readyState === XMLHttpRequest.OPENED){
+          // console.log("OPENED");
+          document.getElementById("middle-panel").style.display = "inline-block";
+          document.getElementById("middle-panel").innerHTML = "";
+          document.getElementById("right-panel").innerHTML = "";
+          add_loader(document.getElementById("middle-panel"));        
+        }
+
+        else if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
             //Do stuff with the response
 
@@ -315,13 +330,15 @@
             }
             else{
 
-              var middleData = [];
-              middleData = JSON.parse(resp_arr);
+              var middleData = JSON.parse(resp_arr);
+
+              blackout_feats(middleData);
+
+              var table2 = document.createElement("table");     
+              table2.id = "feature-table2";
 
               document.getElementById("middle-panel").innerHTML = "";
               document.getElementById("right-panel").innerHTML = "";
-              var table2 = document.createElement("table");     
-              table2.id = "feature-table2";
 
               document.getElementById("middle-panel").append(table2);
               document.getElementById("middle-panel").style.display = "inline-block";
@@ -348,6 +365,8 @@
                 if (document.getElementById("chg-button").style.backgroundColor == dark_shade) {
                   curr_alg = "False";
                 }
+
+
                 if (curr_alg == "False") {
                   draw_all_squares(middleData[j][0], 14, "#"+li_div.id);
                   for (k=0; k<document.getElementsByClassName("mini-square-0")[j].parentNode.childNodes.length; k++){
@@ -367,16 +386,56 @@
                   
                   
                 }
+
                 else {
                   draw_all_anchs(middleData[j][0], middleData[j][1], middleData[j][2], 30, "#"+li_div.id, j);
+
                   document.getElementById("middle-section-"+j.toString()).id_list_good = middleData[j][3];
                   document.getElementById("middle-section-"+j.toString()).id_list_bad = middleData[j][4];
 
-                  var tot_len = document.getElementsByClassName("mini-square-good-0")[j].parentNode.childNodes.length;
+                  var tot_len;
+                  var curr_good = j;
+                  var curr_bad = j;
+                  while ((typeof document.getElementsByClassName("mini-square-good-0")[curr_good] == 'undefined') && curr_good>0){
+                    curr_good -= 1;
+                  }
+                  
+                  while ((typeof document.getElementsByClassName("mini-square-bad-0")[curr_bad] == 'undefined') && curr_bad>0){
+                    curr_bad -= 1;
+                  }
+
+                  // console.log(curr_good);
+                  // console.log(curr_bad);
+
+                  var has_good = false;
+                  var has_bad = false;
+
+                  if (typeof document.getElementsByClassName("mini-square-good-0")[curr_good] != 'undefined'){
+                    if (document.getElementsByClassName("mini-square-good-0")[curr_good].parentNode.parentNode.parentNode.id.toString().substring(15) == j.toString()){
+                      tot_len = document.getElementsByClassName("mini-square-good-0")[curr_good].parentNode.childNodes.length;
+                      has_good = true;
+                    } 
+                  }
+                  if (typeof document.getElementsByClassName("mini-square-bad-0")[curr_bad] != 'undefined'){
+                    if (document.getElementsByClassName("mini-square-bad-0")[curr_bad].parentNode.parentNode.parentNode.id.toString().substring(15) == j.toString()){
+                      tot_len = document.getElementsByClassName("mini-square-bad-0")[curr_bad].parentNode.childNodes.length;
+                      has_bad = true;
+                    }
+                  }
+                  // console.log(tot_len);
+                
+
                   var good_len = 0;
                   var bad_len = 0;
+                  
                   for (k=0; k<tot_len; k++){
-                    var pcnt = document.getElementsByClassName("mini-square-good-0")[j].parentNode.childNodes[k].className.baseVal.toString();
+
+                    if (has_good == true){    
+                      var pcnt = document.getElementsByClassName("mini-square-good-0")[curr_good].parentNode.childNodes[k].className.baseVal.toString();
+                    }
+                    else if(has_bad == true){ 
+                      var pcnt = document.getElementsByClassName("mini-square-bad-0")[curr_bad].parentNode.childNodes[k].className.baseVal.toString();
+                    }
                     if (pcnt.indexOf("good") > -1){
                       good_len += 1;
                     }
@@ -385,11 +444,20 @@
                     }
                   }
 
+                  // console.log(tot_len);
+                  // console.log(good_len);
+                  // console.log(bad_len);
 
-                  if (typeof document.getElementsByClassName("mini-square-good-0")[j] != 'undefined'){
+                  // console.log(has_good);
+                  // console.log(has_bad);
+
+
+
+                  if (has_good == true){
                     for (k=0; k<good_len; k++){
                       var idxx = $(".mini-square-good-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
+                      // console.log("idx" + idxx.toString());
                       document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { 
                         makeRequest2(this, "anch");
                         drawBorderClickAnch(this);
@@ -404,7 +472,7 @@
                     }
                   }
 
-                  if (typeof document.getElementsByClassName("mini-square-bad-0")[j] != 'undefined'){
+                  if (has_bad == true){
                     for (k=0; k<bad_len; k++){
                       var idxx = $(".mini-square-bad-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
@@ -431,6 +499,10 @@
               alert('HttpRequest Error')
           }
         }
+      }
+
+      // Show features with no combinations
+      function blackout_feats(middleData){
       }
 
       // Style for middle panel squares
@@ -500,7 +572,6 @@
         //   bord.style.stroke = "black";
         //   document.getElementById("border-"+idx.toString()).id = "border-selected";
         // }
-
       }
       function hoverEnterAnch(elem){
         document.body.style.cursor = "pointer";
@@ -523,7 +594,6 @@
           document.getElementById("border-"+idx.toString()).style.stroke = "#A9A9A9";
         }
       }
-
 
       // Left panel global
       function alertGlobContents() {
@@ -615,14 +685,15 @@
       }
 
       // Add loading animation
-      function add_loader() {
-        document.getElementsByClassName("id-list")[0].innerHTML="";
+      function add_loader(elem) {
+        // console.log("LOADER");
+        elem.innerHTML="";
         var load_wrap = document.createElement("div");
         load_wrap.className = "loader_wrap";
         var loader = document.createElement("div");
         loader.className = "lds-dual-ring";
         load_wrap.append(loader);
-        document.getElementsByClassName("id-list")[0].append(load_wrap);
+        elem.append(load_wrap);
       }
 
       // Initialize feature list for global
@@ -706,7 +777,13 @@
       // Link from global to local
       function redirect_to_instance(elem) {
         var id_numb = elem.id.substring(11);
-        window.location.replace("http://nyuvis-web.poly.edu/projects/fico/individual?sample="+id_numb.toString());       
+        var location = window.location.href;
+        if (location.indexOf("nyuvis") > -1){
+          window.location.replace("http://nyuvis-web.poly.edu/projects/fico/individual?sample="+id_numb.toString());  
+        }
+        else{
+          window.location.replace("http://localhost:5005/individual?sample="+id_numb.toString());  
+        }     
       }
 
       // Reset button
