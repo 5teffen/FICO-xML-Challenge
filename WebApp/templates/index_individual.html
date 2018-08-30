@@ -8,6 +8,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link href="static/css/scratchstyle-light.css" rel="stylesheet" type="text/css">
+    <!-- D3.js and jQuery source -->
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <!-- <script type="text/javascript" src="static/js/d3.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -23,7 +24,7 @@
     <div class="main">
       <div class="left-sidebar">
         <header class="site-header">
-          <h1>FICO CHALLENGE</h1>
+          <h1><a href="intro">FICO CHALLENGE</a></h1>
         </header>
         <nav class="left-nav">
           <ul>
@@ -41,6 +42,12 @@
       </div>
       
       <div class="right-side" id="demo">
+
+
+        <img src="static/images/ind_instructions.png" id="ind-instruction">
+
+
+
         <div id = "header-container">
           <table class="right-header" align="center">
             <tr>
@@ -196,6 +203,13 @@
       function alertContents() {
 
         if (httpRequest.readyState === XMLHttpRequest.OPENED) {
+          var right = document.getElementById("demo");
+          console.log(right.childNodes[1]);
+          if (right.childNodes[1].id == "ind-instruction"){
+            right.removeChild(right.childNodes[1]);
+          }
+          document.getElementById("demo").style.textAlign = "center";
+          
           document.getElementsByClassName("d3-space")[0].innerHTML="";
           var load_wrap = document.createElement("div");
           load_wrap.className = "loader_wrap";
@@ -349,7 +363,7 @@
 
         setTimeout(function(){ callback1();}, 50);
 
-        setTimeout(function(){ callback2();}, 100);
+        setTimeout(function(){ callback2();}, 50);
 
         setTimeout(function(){ callback3();}, 50);
 
@@ -483,16 +497,21 @@
         ind_header.append(row);
         ind_header.style.display = "none";
         var right_side = document.getElementsByClassName("right-side")[0];
-        right_side.insertBefore(ind_header, right_side.childNodes[2]);
+        right_side.insertBefore(ind_header, right_side.childNodes[4]);
       }
 
       function from_global() {
         var url_str = window.location.href;
         var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));
-        if (isNaN(initial_sample)) {      
+        if (isNaN(initial_sample)) { 
         }
         else {
-          setTimeout(function(){makeRequest("global", initial_sample);}, 100);
+          var right = document.getElementById("demo");
+          console.log(right.childNodes[1]);
+          if (right.childNodes[1].id == "ind-instruction"){
+            right.removeChild(right.childNodes[1]);
+          }
+          setTimeout(function(){makeRequest("global", initial_sample);}, 50);
         }
       }
 
