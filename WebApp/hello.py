@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request, jsonify, json
+from flask import request, jsonify, json, redirect
 from flask import render_template
 import pandas as pd
 import numpy as np
@@ -80,6 +80,10 @@ sample_transf()
 app = Flask(__name__) # static_folder="C:/Users/Oscar/Documents/UGR 2018/Fico-Challenge-master/VisualApp1/static")
 
 @app.route('/')
+def hello():
+    return redirect("/intro")
+
+@app.route('/intro')
 def intro_site():
 	return render_template("index_intro.html")
 
