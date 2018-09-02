@@ -230,9 +230,23 @@ main {
   width: auto;
   margin-left: 250px;
   /* background-color: #252728; */
-  background-color: #20262e;
-  text-align: center;
+  background-color: white;
+  text-align: left;
 }
+
+#ind-instruction {
+  display: auto;
+  height: 100vh;
+  width: 900px;
+}
+
+#intro-instruction {
+  display: auto;
+  position: absolute;
+  height: 1800px;
+  width: 2200px;
+}
+
 
 /*--------------*/
 /* Right header */
@@ -487,9 +501,6 @@ table #model-display {
   cursor: pointer;
 }
 
-#demo {
-  background-color: white;
-}
 
 
 /*-----------------*/
@@ -552,7 +563,7 @@ table #model-display {
   width: auto;
   margin-left: 250px;
   /* background-color: #252728; */
-  background-color: #20262e;
+  background-color: white;
   text-align: center;
   overflow-x: hidden;
   overflow-y: hidden;
