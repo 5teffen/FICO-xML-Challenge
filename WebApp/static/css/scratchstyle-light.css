@@ -237,6 +237,7 @@ main {
 #ind-instruction {
   display: auto;
   height: 100vh;
+  max-height: 900px;
   width: 900px;
 }
 
