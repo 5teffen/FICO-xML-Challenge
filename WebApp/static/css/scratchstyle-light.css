@@ -247,6 +247,14 @@ main {
   width: 2200px;
 }
 
+#error-img {
+  display: inline;
+/*  position: absolute;*/
+  height: calc(100vh - 80px);
+  width: 900px;
+  /*float: left;*/
+}
+
 
 /*--------------*/
 /* Right header */
@@ -367,7 +375,7 @@ table #model-display {
   /*background-color: Gainsboro;*/
   width: 100%;
   height: 360px;
-  text-align:  center;
+  text-align: center;
 }
 
 /*-----------*/
@@ -568,6 +576,14 @@ table #model-display {
   overflow-x: hidden;
   overflow-y: hidden;
   text-align: center;
+}
+
+#glob-instruction {
+  display: auto;
+  height: 100vh;
+  max-height: 900px;
+  width: 950px;
+  float: left;
 }
 
 
