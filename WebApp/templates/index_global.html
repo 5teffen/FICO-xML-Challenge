@@ -48,10 +48,12 @@
       
       <div class="right-side-global" id="demo">
 
+        <img src="static/images/global_ins.png" id="glob-instruction" onclick="begin_glob()">
+
         <div id="left-panel">
           <div class="btn-group">
-            <button class="algo-button" id="key-button" onclick="buttonRequest(this)">Key Features</button>
-            <button class="algo-button" id="chg-button" onclick="buttonRequest(this)">Changes</button>
+            <!-- <button class="algo-button" id="key-button" onclick="buttonRequest(this)">Key Features</button> -->
+            <!-- <button class="algo-button" id="chg-button" onclick="buttonRequest(this)">Changes</button> -->
           </div>
         </div>
 
@@ -681,7 +683,7 @@
 
         document.getElementById("key-button").style.backgroundColor = dark_shade;
         document.getElementById("chg-button").style.backgroundColor = light_shade;
-        draw_summary(".id-list");
+        
       }
 
       // Add loading animation
@@ -829,13 +831,48 @@
         }
       }
 
+      // Start global screen after instructions
+      function begin_glob(){
+
+        var right = document.getElementById("demo");
+        console.log(right.childNodes[1]);
+        if (right.childNodes[1].id == "glob-instruction"){
+          right.removeChild(right.childNodes[1]);
+        }
+
+        var k_btn = document.createElement("button");
+        var c_btn = document.createElement("button");
+
+        k_btn.className = "algo-button";
+        k_btn.id = "key-button";
+        k_btn.onclick = function(){buttonRequest(this);};
+        k_btn.innerHTML = "Key Features";
+        k_btn.style.backgroundColor = dark_shade;
+
+        c_btn.className = "algo-button";
+        c_btn.id = "chg-button";
+        c_btn.onclick = function(){buttonRequest(this);};
+        c_btn.innerHTML = "Changes";
+        c_btn.style.backgroundColor = light_shade;
+
+        document.getElementsByClassName("btn-group")[0].append(k_btn);
+        document.getElementsByClassName("btn-group")[0].append(c_btn);
+
+        ft_list();
+        makeGlobRequest();
+      }
+
       // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(); }, 700)});
       fetch_csv();
-      prep_content();
+      draw_summary(".id-list");
 
-      ft_list();
 
-      makeGlobRequest();
+
+      // prep_content();
+
+      // ft_list();
+
+      // makeGlobRequest();
 
     </script>
 

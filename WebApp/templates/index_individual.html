@@ -267,6 +267,15 @@
             document.getElementsByClassName("cat-text")[0].innerHTML = category;
             document.getElementsByClassName("d3-space")[0].innerHTML = "";
 
+            if (trans_sample == '-9') {
+              document.getElementsByClassName("d3-space")[0].innerHTML = "";
+              var error = document.createElement("img");
+              error.src = "static/images/errors.png";
+              error.id = "error-img";
+              document.getElementsByClassName("d3-space")[0].append(error);
+              return;
+            }
+
             // Text explanation
             document.getElementById("txt-space-key").innerHTML = "";
             document.getElementById("txt-space-chg").innerHTML = "";
@@ -322,7 +331,7 @@
               var sim_h = document.createElement("p");
               sim_h.style.fontSize = "13px";
               sim_h.style.fontWeight = "bold";
-              sim_h.innerHTML = "Similar instances:";
+              sim_h.innerHTML = "Instances where changes have been applied:";
               document.getElementById("similar-samples").append(sim_h);
 
               console.log(similar_ids);
@@ -336,21 +345,17 @@
             
             }
 
-            if (trans_sample == '-9') {
-              document.getElementsByClassName("d3-space")[0].innerHTML = "SPECIAL CASE";
+          
+            if (document.getElementById("density-button").style.backgroundColor == dark_shade){
+              // console.log(densityData);
+
+              draw_graph(testData, densityData, result);
             }
             else {
-              if (document.getElementById("density-button").style.backgroundColor == dark_shade){
-                // console.log(densityData);
-                draw_graph(testData, densityData, result);
-              }
-              else {
-                draw_graph(testData, "no", result);
-              }
-
-              
-
+              draw_graph(testData, "no", result);
             }
+
+
           } else {
             alert('HttpRequest Error')
           }
@@ -507,7 +512,6 @@
         }
         else {
           var right = document.getElementById("demo");
-          console.log(right.childNodes[1]);
           if (right.childNodes[1].id == "ind-instruction"){
             right.removeChild(right.childNodes[1]);
           }
