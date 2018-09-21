@@ -237,15 +237,36 @@ main {
 #ind-instruction {
   display: auto;
   height: 100vh;
-  max-height: 900px;
+  float: center;
+  max-height: 850px;
   width: 900px;
 }
 
-#intro-instruction {
+#intro-background {
   display: auto;
   position: absolute;
   height: 1800px;
   width: 2200px;
+}
+
+#intro-instruction {
+  display: block;
+  position: relative;
+  /*text-align: center;*/
+  margin: auto;
+  padding-top: 40px;
+  height: 600px;
+  width: 700px;
+/*  height: 1800px;
+  width: 2200px;*/
+}
+
+#intro-arrow {
+  display: inline;
+  position: absolute;
+  height: 110px;
+  width: 125px;
+  padding-top: 45px;
 }
 
 #error-img {
@@ -254,6 +275,39 @@ main {
   height: calc(100vh - 80px);
   width: 900px;
   /*float: left;*/
+}
+
+#paper-gh-links{
+  margin-top: calc(100%-300px);
+}
+
+.intro-links{
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 200;
+  display: inline;
+}
+
+.logo{
+  display: block;
+  max-width:50px;
+  max-height:95px;
+  width: auto;
+  height: auto;
+  margin: auto;
+  margin-top: 170px;
+}
+
+#paper-logo{
+  margin-top: 0px;
+}
+
+.text{
+  display: block;
+  max-width:50px;
+  max-height:95px;
+  width: auto;
+  height: auto;
+  margin: auto;
 }
 
 
@@ -585,6 +639,10 @@ table #model-display {
   max-height: 900px;
   width: 950px;
   float: left;
+}
+
+#glob-instruction:hover{
+  cursor: pointer;  
 }
 
 
