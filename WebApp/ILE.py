@@ -18,7 +18,6 @@ def evaluate_data_set(data):
           
     return avg_list, std_list
 
-
 def perturb_special(min_val,max_val,avg,std,no_val):
     new_col = np.random.normal(avg, std, no_val)
     # Note: these functions have poor time complexity
@@ -27,7 +26,6 @@ def perturb_special(min_val,max_val,avg,std,no_val):
     new_col = new_col.round(0)
     return new_col
     
-
 def find_anchors(model, data_set, sample, no_val):
     # Account for the special categorical columns
     special_cols = [9,10]
@@ -103,7 +101,6 @@ def find_anchors(model, data_set, sample, no_val):
     print("!!! No anchors found !!!")
     return None
 
-
 def perturb_row_feature(model, row, row_idx, feat_idx, current_bins, X_bin_pos, mean_bins, mono_arr, improve):
     
     monot_arr = np.copy(mono_arr)                        
@@ -177,8 +174,7 @@ def perturb_row_feature(model, row, row_idx, feat_idx, current_bins, X_bin_pos, 
             p_row[feat_idx] = prev_value
         
         return (p_row, c_current_bins)
-    
-    
+      
 def percent_cond (improve, percent):
     if improve and percent <= 0.5:
         return True
@@ -186,7 +182,6 @@ def percent_cond (improve, percent):
         return True
     else:
         return False
-    
     
 def find_MSC (model, data, k_row, row_idx, X_bin_pos, mean_bins):
     
@@ -253,7 +248,6 @@ def find_MSC (model, data, k_row, row_idx, X_bin_pos, mean_bins):
         print("Decision can't be moved within thresholds:")
         return None,None
 
-
 def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
 
     # print('getting called')
@@ -264,7 +258,6 @@ def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
     anchors = find_anchors(model, data, k_row, 100)
 
     return change_vector, change_row, anchors, initial_percentage
-
 
 def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, percent,monot):
     data = []
@@ -367,7 +360,6 @@ def prepare_for_D3(sample, bins_centred, change_row, change_vector, anchors, per
         
     return data
 
-
 def scaling_data_density(data, bins_centred,monot):
     new_data = np.empty(data.shape)
     output_array = []
@@ -409,7 +401,6 @@ def scaling_data_density(data, bins_centred,monot):
 
     return output_array
 
-
 def sample_transf(X):
     trans_dict = {}
     my_count = 0
@@ -422,27 +413,32 @@ def sample_transf(X):
 
     return trans_dict
 
-
 def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, bins, percent):
+    # --- Runs only if changes occur --- 
+
+    """
+    Criteria:
+    - Decision is flipped
+    - Range: +/- 1.5 single bin
+    - Variations Allowed: 2
+
+    """
+
     pre_data = pd.read_csv(pre_data_file).values
     all_data = pd.read_csv(all_data_file,header=None).values
 
     similar_rows = []
 
     if (changed_row is None):
-        original = sample_vec
+        return []
 
     else:
         original = changed_row
 
 
-
-
     for sample_id in range(all_data.shape[0]):
 
-    # for sample_id in range(6,10):
         test_sample = all_data[sample_id][1:]
-        # new_index = int(transformer[str(sample)])
         
         fail_count = 0
         
@@ -450,14 +446,8 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
             test_val = test_sample[col]
             uncertainty = 1.5*(bins[col][2]-bins[col][1])
 
-
-            # print("Test_val", test_val)
-
             bottom_thresh = original[col]-uncertainty
             top_thresh = original[col]+uncertainty
-
-            # print("Bottom",bottom_thresh)
-            # print("Top",top_thresh)
 
             if (test_val > top_thresh or test_val < bottom_thresh):
                 fail_count += 1;
@@ -466,14 +456,7 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
             if np.round(percent,0) != np.round(pre_data[sample_id][1]):
                 similar_rows.append(sample_id)
 
-    print(similar_rows)
     return similar_rows
-
-
-
-
-    # new_sample_ind = int(transform[str(s)])
-
 
 def sort_by_val(main, density):
     ordered_main = []
