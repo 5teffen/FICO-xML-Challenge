@@ -8,3 +8,12 @@ The local explanation visualizes each individual sample by showing the comparati
 
 ### Global Explanation
 The global explanation acts as a way to aggregate the individual results across the whole data set. By either choosing to examine the key features or the necessary changes, the interactive hierarchy creates a comprehensive overview. Each click reveals an additional level of depth within the solution revealing more information.
+
+#### Available Online at
+http://nyuvis-web.poly.edu/projects/fico/individual 
+
+#### To run locally:
+Install python 3.6 or above
+Pip install pandas, flask, numpy, scipy, sklearn
+Open Webapp folder
+Run hello.py
