@@ -12,9 +12,9 @@ The global explanation acts as a way to aggregate the individual results across 
 <br/>
 
 #### Available Online at
-http://nyuvis-web.poly.edu/projects/fico/individual 
+http://nyuvis-web.poly.edu/projects/fico
 
-#### To run locally:
+#### To run locally
 * Install python 3.6 or above
 * Pip install pandas, flask, numpy, scipy, sklearn
 * Open Webapp folder
