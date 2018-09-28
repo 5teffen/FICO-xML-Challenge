@@ -30,7 +30,7 @@ def generate_text_explanation(per, sample, target, changes_vec , anchs_vec):
         text_string += "\n\n"
         text_string += changes_text_exp(sample, target, changes_lst, per)
 
-    print(text_string)
+    # print(text_string)
     return text_string
 
 
@@ -47,7 +47,7 @@ def anchs_text_exp(sample, col_lst, per):
     for col in col_lst:
 
 
-        print(col)
+        # print(col)
 
         if (col == 0):
             name = " External Risk Estimate "
@@ -227,7 +227,7 @@ def anchs_text_exp(sample, col_lst, per):
             else:
                 explanation += "\n - "+ "The client has too many inquiries in the Past 6 Months even when excluding the last 7 days"
         elif (col == 17):
-            print("enter")
+            # print("enter")
             name =  "Revolving Burden"
             # Monotonicity Increasing
             val = str(sample[17])

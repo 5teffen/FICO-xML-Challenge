@@ -419,10 +419,13 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
     """
     Criteria:
     - Decision is flipped
-    - Range: +/- 1.5 single bin
+    - Range: +/- 1.2 single bin
     - Variations Allowed: 2
 
     """
+
+
+    print("CHANGED ROW:", changed_row)
 
     pre_data = pd.read_csv(pre_data_file).values
     all_data = pd.read_csv(all_data_file,header=None).values
@@ -444,7 +447,7 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
         
         for col in range(original.shape[0]):  
             test_val = test_sample[col]
-            uncertainty = 1.5*(bins[col][2]-bins[col][1])
+            uncertainty = 1.2*(bins[col][2]-bins[col][1])
 
             bottom_thresh = original[col]-uncertainty
             top_thresh = original[col]+uncertainty
@@ -452,9 +455,10 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
             if (test_val > top_thresh or test_val < bottom_thresh):
                 fail_count += 1;
 
-        if (fail_count < 4):
+        if (fail_count <= 2):
             if np.round(percent,0) != np.round(pre_data[sample_id][1]):
-                similar_rows.append(sample_id)
+                print("SIMILAR ROW:", test_sample)
+                similar_rows.append(sample_id+1)
 
     return similar_rows
 
