@@ -235,8 +235,9 @@ main {
 }
 
 #ind-instruction {
-  display: auto;
-  height: 100vh;
+  display: none;
+  position: absolute;
+  /*height: 100vh;*/
   float: center;
   max-height: 850px;
   width: 900px;
@@ -635,9 +636,9 @@ table #model-display {
 
 #glob-instruction {
   display: auto;
-  height: 100vh;
+  height: 750px;
   max-height: 900px;
-  width: 950px;
+  width: 920px;
   float: left;
 }
 

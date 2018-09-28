@@ -509,13 +509,19 @@
       function from_global() {
         var url_str = window.location.href;
         var initial_sample = parseInt(url_str.substring(url_str.indexOf("sample")+7));
-        if (isNaN(initial_sample)) { 
+        console.log(initial_sample);
+        if (isNaN(initial_sample)) {
+          console.log("mnotlog"); 
+          document.getElementById("ind-instruction").style.display = "block";
         }
         else {
-          var right = document.getElementById("demo");
-          if (right.childNodes[1].id == "ind-instruction"){
-            right.removeChild(right.childNodes[1]);
-          }
+          // console.log("global");
+          // var right = document.getElementById("demo");
+          // console.log(right.childNodes[1].id);
+          // if (right.childNodes[1].id == "ind-instruction"){
+          //   document.getElementById("ind-instruction").style.display = "none";
+          //   right.removeChild(right.childNodes[1]);
+          // }
           setTimeout(function(){makeRequest("global", initial_sample);}, 50);
         }
       }
