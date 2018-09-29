@@ -12,10 +12,15 @@ The global explanation acts as a way to aggregate the individual results across 
 <br/>
 
 #### Available Online at
-http://nyuvis-web.poly.edu/projects/fico
+http://www.ml-explainer.com
 
 #### To run locally
 * Install python 3.6 or above
 * Pip install pandas, flask, numpy, scipy, sklearn
 * Open Webapp folder
 * Run hello.py
+
+#### Suggested Specifications
+* Open on Mac or PC
+* Latest version of Google Chrome
+* Screen size of at least 13 inches
