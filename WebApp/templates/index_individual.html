@@ -154,6 +154,8 @@
               var cells = rows[i].split(",");
               pre_array.push(cells);
             }
+            console.log("CSV");
+            prep_content(add_loader, id_list, add_images, create_buttons, from_global);
           }
         }
       }
@@ -365,11 +367,11 @@
 
       function prep_content(callback0, callback1, callback2, callback3, callback4) {
 
-        callback0();
+        // callback0();
 
         setTimeout(function(){ callback1();}, 50);
 
-        setTimeout(function(){ callback2();}, 50);
+        // setTimeout(function(){ callback2();}, 150);
 
         setTimeout(function(){ callback3();}, 50);
 
@@ -400,12 +402,47 @@
           li_div.style.float = "right";
           li_div.style.margin = "0px 25px 0px 0px";
           li_div.id = "link-div-" + i.toString();
+          
+
+          var sqr = document.createElement("img");
+          // console.log(pre_array[i]);
+          if (pre_array[i][2].trim() == "FN"){
+            sqr.src="static/images/square2-min.jpg";
+          }
+          else if (pre_array[i][2].trim() == "TN"){
+            sqr.src="static/images/square4-min.jpg";
+          }
+          else if (pre_array[i][2].trim() == "FP"){
+            sqr.src="static/images/square1-min.jpg";
+          }
+          else if (pre_array[i][2].trim() == "TP"){
+            sqr.src="static/images/square3-min.jpg";
+          } 
+          else if (pre_array[i][2].trim() == "NA"){
+            sqr.src="static/images/square5-min.jpg";
+          } 
+          sqr.height="15";
+          sqr.width="15";
+          sqr.style.borderRadius = "50%";
+          sqr.style.verticalAlign = "middle";
+          sqr.style.margin = "4px 0px 0px 0px";
+          sqr.style.float = "left";
+          sqr.className = "mini-category-img";
+          var link_string = pre_array[i][3] + "\xa0 \xa0"  + pre_array[i][4];
+          li_div.innerHTML = link_string;
+          li_div.append(sqr);
+
           para.append(li_div);
           list_cont.append(para);
         }
         console.log("LIST");
-        document.getElementsByClassName("id-list")[0].innerHTML="";
-        document.getElementsByClassName("id-list")[0].append(list_cont);
+        
+        // add_images();
+        setTimeout(function(){ 
+          document.getElementsByClassName("id-list")[0].innerHTML="";
+          document.getElementsByClassName("id-list")[0].append(list_cont);}, 150);
+
+
       }
 
       function add_images() {
@@ -526,9 +563,16 @@
         }
       }
 
-      $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
+      // window.addEventListener('load', function(){
 
+      //   $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
+  
+      // });
 
+      // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
+
+      add_loader();
+      fetch_csv();
 
     </script>
 
