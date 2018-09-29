@@ -178,8 +178,12 @@
           else{
             var id_list = elem.parentNode.parentNode.parentNode.id_list_bad;
           }
+
           console.log(id_list);
         }
+
+        id_list = id_list.slice(0,100);
+        console.log(id_list);
 
         httpRequest.onreadystatechange = alertContents2;
         httpRequest.open('GET', 'glob_feat?id_list='+id_list);
@@ -206,7 +210,7 @@
         else {
           for (i=0; i<features.length; i++) {
             req_arr.push(ft_names.indexOf(features[i].innerHTML));
-            features[i].style.fontSize = "13px";
+            features[i].style.fontSize = "15px";
             features[i].style.fontWeight = "bold"; 
           }
         }
@@ -787,7 +791,7 @@
           window.location.replace("http://oscargomezq.pythonanywhere.com/individual?sample="+id_numb.toString());  
         }
         else if (location.indexOf("explainer") > -1){
-          window.location.replace("http://ml-explainer.com/fico/individual?sample="+id_numb.toString());  
+          window.location.replace("http://www.ml-explainer.com/individual?sample="+id_numb.toString());  
         }
         else{
           window.location.replace("http://localhost:5005/individual?sample="+id_numb.toString());  
