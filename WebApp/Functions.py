@@ -40,17 +40,17 @@ def model_overview(pre_proc_file):
 			changes_count += 1
 
 
-	print("-- Model Summary --")
+	# print("-- Model Summary --")
 
-	print("Total # of samples:", total_count)
-	print()
-	print("True Positive:",tp_count)
-	print("False Positive:",fp_count)
-	print("True Negative:",tn_count)
-	print("False Negative:",fn_count)
-	print()
-	print("Key Features:",key_count)
-	print("Changes",changes_count)
+	# print("Total # of samples:", total_count)
+	# print()
+	# print("True Positive:",tp_count)
+	# print("False Positive:",fp_count)
+	# print("True Negative:",tn_count)
+	# print("False Negative:",fn_count)
+	# print()
+	# print("Key Features:",key_count)
+	# print("Changes",changes_count)
 
 def separate_bins_feature(feat_column,special_case = False):
 	no_bins = 10
@@ -227,7 +227,7 @@ def my_combinations(target,data,limit):
 def combination_finder(pre_proc_file,cols_lst,anchs):
 	# --- Finds all the combinations with the desired columns --- 
 
-	print(cols_lst)
+	# print(cols_lst)
 	pre_data = pd.read_csv(pre_proc_file).values
 	all_combinations = {}
 
@@ -395,8 +395,8 @@ def changes_generator(pre_proc_file,desired_cols):
 		all_dicts.append(single_dicts)
 
 	global_samples = list(global_samples)
-	print("--- Global ---")
-	print(global_samples)
+	# print("--- Global ---")
+	# print(global_samples)
 	return [all_dicts, global_samples]
 	# return all_dicts
 
@@ -595,30 +595,3 @@ def prep_for_D3_global(pre_proc_file,all_data_file,samples,bins_centred,position
 	return final_data
 
 
-
-# model_overview("pre_data1.csv")
-
-# vals = pd.read_csv("static/data/final_data_file.csv",header=None).values
-# X = vals[:,1:]
-# y = vals[:,0]
-
-# # X_no_9 = prepare_for_analysis("final_data_file.csv")[:,1:]
-
-# # no_samples, no_features = X.shape
-
-# names, good_squares, bad_squares, good_samp, bad_samp = anchor_generator("static/data/pre_data.csv","static/data/final_data_file.csv",[3,21])
-
-# print(good_squares)
-# print(names)
-
-# combinations = combination_finder("pre_data1.csv",[4,17,21],False)
-# all_results = changes_generator("static/data/pre_data.csv",[3, 7, 8])
-
-
-# count_total = occurance_counter("pre_data1.csv")
-
-# trans_dict = sample_transf(X)
-
-# bins_centred, X_pos_array, init_vals = divide_data_bins(X_no_9,[9,10])
-
-# testing = prep_for_D3_global("pre_data1.csv","final_data_file.csv",changes, bins_centred, X_pos_array,trans_dict)

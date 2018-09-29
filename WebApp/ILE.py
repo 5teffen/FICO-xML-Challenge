@@ -52,12 +52,12 @@ def find_anchors(model, data_set, sample, no_val):
     # Setting random seed
     np.random.seed(150)
 
-    # print(avg_list, std_list, no_val)
+
     
     while (iterations > 0):
         # Retains best result and the corresponding index
         max_ind = (0,0)
-        # print("iteration")
+
         # Assign column that is being tested
         for test_col in range(features):
             new_data = np.empty([features, no_val])
@@ -71,19 +71,14 @@ def find_anchors(model, data_set, sample, no_val):
                         new_data[ind] = perturb_special(0,7,avg_list[ind],std_list[ind],no_val)
                     else:
                         new_data[ind] = np.random.normal(avg_list[ind], std_list[ind], no_val)
-                        # print(new_data[ind])
-                        # print((avg_list[ind], std_list[ind], no_val))
+
             
             new_data = new_data.transpose()
-            # print(np.random.normal(),'a')
-            # print(new_data)
+
 
             # Run Model 
             pred = model.run_model_data(new_data)
             acc = (np.mean(pred == decision))
-
-            # print(pred)
-            # print(acc)
             
             if (acc > max_ind[0]):
                 max_ind = (acc,test_col)
@@ -249,8 +244,6 @@ def find_MSC (model, data, k_row, row_idx, X_bin_pos, mean_bins):
         return None,None
 
 def instance_explanation(model, data, k_row, row_idx, X_bin_pos, mean_bins):
-
-    # print('getting called')
     
     initial_percentage = model.run_model(k_row)
 
@@ -424,9 +417,6 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
 
     """
 
-
-    print("CHANGED ROW:", changed_row)
-
     pre_data = pd.read_csv(pre_data_file).values
     all_data = pd.read_csv(all_data_file,header=None).values
 
@@ -457,7 +447,6 @@ def detect_similarities(pre_data_file, all_data_file, sample_vec, changed_row, b
 
         if (fail_count <= 2):
             if np.round(percent,0) != np.round(pre_data[sample_id][1]):
-                print("SIMILAR ROW:", test_sample)
                 similar_rows.append(sample_id+1)
 
     return similar_rows
@@ -474,32 +463,3 @@ def sort_by_val(main, density):
 
     return ordered_main, ordered_density
 
-
-# vals = prepare_for_analysis("final_data_file.csv")
-
-# X_orig = pd.read_csv("final_data_file.csv",header=None).values[:,1:]
-
-# X = vals[:,1:]
-# y = vals[:,0]
-
-# no_samples, no_features = X.shape
-
-# svm_model = SVM_model(None,"final_data_file.csv")
-# svm_model.train_model(0.001)
-# svm_model.test_model()
-
-# sample = 10 # NOTE THIS VALUE
-
-# bins_centred, X_pos_array, init_vals = divide_data_bins(X,[9,10])
-# change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[sample], sample, X_pos_array, bins_centred)
-
-# data_array = prepare_for_D3(X[sample], bins_centred, change_row, change_vector, anchors, percent,False)
-# dens_array = scaling_data_density(X, bins_centred,False)
-
-# new_data, new_dens = sort_by_val(data_array,dens_array)
-
-
-# transformer = sample_transf(X_orig)
-# # for i_sample in range(200,220):
-# #     change_vector, change_row, anchors, percent = instance_explanation(svm_model, X, X[i_sample], sample, X_pos_array, bins_centred)
-# #     similar_ids = detect_similarities("pre_data1.csv","final_data_file.csv", X[i_sample] ,change_row, bins_centred, percent)
