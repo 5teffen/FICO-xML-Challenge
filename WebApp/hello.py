@@ -189,7 +189,7 @@ def handle_request_mini_graphs():
 
 	if request.method == 'GET':
 
-		id_list = request.args.get('id_list').split(',')
+		id_list = request.args.get('id_list').split(',')[:-1]
 
 		# Cap number of minigraphs on right panel
 		sample_cap = min(len(id_list), 30)
