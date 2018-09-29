@@ -16,7 +16,6 @@ np.random.seed(12345)
 
 def display_data (sample):
 	sample -= 1
-	print(X[sample])
 	if X[sample][0] == -9:
 		category = "NA"
 		return sample, 0, 0, category, -1
@@ -127,13 +126,10 @@ def handle_request():
 				dict_array = []
 				if monot:
 					dict_array = dict_array_monot
-					print("monot")
 				else:
 					dict_array = dict_array_orig
-					print("orig")
 
 				if sort:
-					print('sort')
 					data_array, dict_array = sort_by_val(data_array, dict_array)
 
 				for dct in data_array:
@@ -218,32 +214,20 @@ def handle_request_ft():
 		# False = changes, True = keyfts
 		algorithm = (request.args.get('algorithm') == "True")
 
-		# print(algorithm)
-
 		if ft_list[0] == -1 or ft_list == ['']:
 			return ""
 		else:
 			ft_list = [int(x) for x in ft_list]
 			ft_list.sort()
 
-		# print(ft_list)
-		# FUNCTION TO GENERATE LIST OF COMBINATION AND RANK THEM
-
 		combinations = combination_finder("static/data/pred_data_x.csv",ft_list,algorithm)
-
-		print(combinations)
 
 		ret_arr = []
 		if not algorithm:
-			print("changes")
 			for combi in combinations[:min(15,len(combinations))]:
 				ret_arr.append(changes_generator("static/data/pred_data_x.csv", combi))
 		else:
-			print("keyfts")
 			for combi in combinations[:min(15,len(combinations))]:
-				print(combi)
-				# names, good_squares, bad_squares, good_samples, bad_samples = anchor_generator("static/data/pred_data_x.csv","static/data/final_data_file.csv", combi)
-				# ret_arr.append([names, good_squares, bad_squares, good_samples, bad_samples])
 				ret_arr.append(anchor_generator("static/data/pred_data_x.csv","static/data/final_data_file.csv", combi))
 
 
@@ -260,4 +244,4 @@ if __name__ == '__main__':
 
 	np.random.seed(12345)
 
-	app.run(port=5005, host="0.0.0.0", debug=True)
+	app.run(port=5005, host="0.0.0.0", debug=False)
