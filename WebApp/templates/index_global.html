@@ -783,6 +783,12 @@
         if (location.indexOf("nyuvis") > -1){
           window.location.replace("http://nyuvis-web.poly.edu/projects/fico/individual?sample="+id_numb.toString());  
         }
+        else if (location.indexOf("python") > -1){
+          window.location.replace("http://oscargomezq.pythonanywhere.com/individual?sample="+id_numb.toString());  
+        }
+        else if (location.indexOf("explainer") > -1){
+          window.location.replace("http://ml-explainer.com/fico/individual?sample="+id_numb.toString());  
+        }
         else{
           window.location.replace("http://localhost:5005/individual?sample="+id_numb.toString());  
         }     
