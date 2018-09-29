@@ -4,14 +4,14 @@ import numpy as np
 
 def generate_text_explanation(per, sample, target, changes_vec , anchs_vec):
     # -- Assumes -9s are accounted for --
-    text_string = "The model prediction for this client is "
+    text_string = "The model predicts that this client is "
 
     if (per > 0.5):
         text_string += "good"
     else:
         text_string += "bad"
 
-    text_string += " with a prediction score of " + str(round(per,3)*100) + "%\n\n"
+    text_string += " with a score of " + str(int(per*100)) + "%\n\n"
 
     changes_lst = []
     anchs_lst = []
@@ -30,7 +30,7 @@ def generate_text_explanation(per, sample, target, changes_vec , anchs_vec):
         text_string += "\n\n"
         text_string += changes_text_exp(sample, target, changes_lst, per)
 
-    # print(text_string)
+    print(text_string)
     return text_string
 
 
@@ -47,7 +47,7 @@ def anchs_text_exp(sample, col_lst, per):
     for col in col_lst:
 
 
-        # print(col)
+        print(col)
 
         if (col == 0):
             name = " External Risk Estimate "
@@ -227,7 +227,7 @@ def anchs_text_exp(sample, col_lst, per):
             else:
                 explanation += "\n - "+ "The client has too many inquiries in the Past 6 Months even when excluding the last 7 days"
         elif (col == 17):
-            # print("enter")
+            print("enter")
             name =  "Revolving Burden"
             # Monotonicity Increasing
             val = str(sample[17])
@@ -511,9 +511,9 @@ def changes_text_exp(sample, target, col_lst, per):
             val = str(sample[21])
             tar = str(target[21])
             if (per>0.5):
-                explanation += "\n - "+ "The small number Bank Trades that have a High Utilization Ratio should be maintained and kept below " + tar + '.'
+                explanation += "\n - "+ "The small number of Bank Trades that have a High Utilization Ratio should be maintained below " + tar + '.'
             else:
-                explanation += "\n - "+ "The high number Bank Trades that have a High Utilization Ratio has to be decreased below the " + tar + ' mark.'
+                explanation += "\n - "+ "The high number of Bank Trades that have a High Utilization Ratio has to be decreased below the " + tar + ' mark.'
         elif (col == 22):
             name = "% Trades with balance"
             # Monotonicity Unknown
