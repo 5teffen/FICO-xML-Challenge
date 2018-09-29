@@ -14,7 +14,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script> -->
     <!-- SVG scripts -->
-    <!-- SVG scripts -->
     <script type="text/javascript" src="static/js/main_graph.js"></script>
     <script type="text/javascript" src="static/js/percentage_bar.js"></script>
     <script type="text/javascript" src="static/js/squares.js"></script>
@@ -52,7 +51,7 @@
           <table class="right-header" align="center">
             <tr>
                 <td id="id-display">
-                  <!-- ID: 100 -->
+  
                 </td>
                 <td id="category-display">
                   <div id="container">
@@ -60,10 +59,10 @@
                     <img id="category-img">
                   </div>
                 </td>
-                <!-- <td id="category-text">TP</td> -->
+            
                 <td id="space"></td>
                 <td id="model-display">
-                  <!-- Model Prediction: 61% -->
+           
                 </td>
             </tr>
           </table>
@@ -85,9 +84,7 @@
 
     <script>
 
-      // var dark_shade = "#727f87"; rgb(126, 140, 149)
       var dark_shade = "rgb(177, 196, 209)";
-      // var light_shade = "#b1c4d1";
       var light_shade = "white";
 
     
@@ -230,13 +227,7 @@
             if (document.getElementsByClassName("ind-header")[0].style.display == "none"){
               document.getElementsByClassName("ind-header")[0].style.display = "table";
             }
-            // else {
-            //   console.log("enter");
-            //   var r_side = document.getElementsByClassName("right-side")[0];
-            //   r_side.removeChild(r_side.childNodes[2]);
-            //   create_buttons();
-            //   document.getElementsByClassName("ind-header")[0].style.display = "table";
-            // }
+      
                       
             var resp_arr = httpRequest.responseText.split('~');
             var testData = [];
@@ -248,7 +239,6 @@
               densityData.push(JSON.parse(resp_arr[i+23]));
             }
 
-            // console.log(densityData);
             var resp = JSON.parse(resp_arr[46]);
             
             var index = resp['sample'].toString();
@@ -312,19 +302,19 @@
 
                 if (line.length > 1 && change_good == -1 && change_bad == -1){
                   document.getElementById("txt-space-key").append(p_exp);
-                  // document.getElementById("txt-space").append(br);
+                  
                 }
                 else if (line.length > 1 && keys == -1){
                   document.getElementById("txt-space-chg").append(p_exp);
-                  // document.getElementById("txt-space").append(br);
+                 
                 }
                 else if (line.length > 1 && j<Math.max(change_good, change_bad)){
                   document.getElementById("txt-space-key").append(p_exp);
-                  // document.getElementById("txt-space").append(br);
+               
                 }
                 else if (line.length > 1 && j>=Math.max(change_good, change_bad)){
                   document.getElementById("txt-space-chg").append(p_exp);
-                  // document.getElementById("txt-space").append(br);
+                
                 }
                 start = end+1;
               }
@@ -350,7 +340,7 @@
 
           
             if (document.getElementById("density-button").style.backgroundColor == dark_shade){
-              // console.log(densityData);
+             
 
               draw_graph(testData, densityData, result);
             }
@@ -367,11 +357,7 @@
 
       function prep_content(callback0, callback1, callback2, callback3, callback4) {
 
-        // callback0();
-
         setTimeout(function(){ callback1();}, 50);
-
-        // setTimeout(function(){ callback2();}, 150);
 
         setTimeout(function(){ callback3();}, 50);
 
@@ -405,7 +391,7 @@
           
 
           var sqr = document.createElement("img");
-          // console.log(pre_array[i]);
+       
           if (pre_array[i][2].trim() == "FN"){
             sqr.src="static/images/square2-min.jpg";
           }
@@ -437,7 +423,6 @@
         }
         console.log("LIST");
         
-        // add_images();
         setTimeout(function(){ 
           document.getElementsByClassName("id-list")[0].innerHTML="";
           document.getElementsByClassName("id-list")[0].append(list_cont);}, 150);
@@ -552,24 +537,10 @@
           document.getElementById("ind-instruction").style.display = "block";
         }
         else {
-          // console.log("global");
-          // var right = document.getElementById("demo");
-          // console.log(right.childNodes[1].id);
-          // if (right.childNodes[1].id == "ind-instruction"){
-          //   document.getElementById("ind-instruction").style.display = "none";
-          //   right.removeChild(right.childNodes[1]);
-          // }
           setTimeout(function(){makeRequest("global", initial_sample);}, 50);
         }
       }
 
-      // window.addEventListener('load', function(){
-
-      //   $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
-  
-      // });
-
-      // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(add_loader, id_list, add_images, create_buttons, from_global); }, 400)});
 
       add_loader();
       fetch_csv();
