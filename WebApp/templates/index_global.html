@@ -62,41 +62,7 @@
 
         <div id="right-panel">
         </div>
-          <!-- <table id="feature-table2">
-            <tr>
-              <td id="middle-col">
-
-                  <ul id="combination-list">
-                  </ul>
-              </td>
-            </tr>
-          </table>
-
-        </div>
-
-        <div id="right-panel">
-
-          <table id="feature-table3">
-            <tr>
-              <td id="right-part">
-                <div id="right-part-div">        
-                </div>
-              </td>
-            </tr>
-          </table>
-
-        </div>
-
-      </div>
-    </div>
- -->
-
-
-
-
-
-
-
+          
 
 
     <script>
@@ -127,9 +93,7 @@
 
       var selected_fts = [];
 
-      // var dark_shade = "#727f87"; rgb(126, 140, 149)
       var dark_shade = "rgb(177, 196, 209)";
-      // var light_shade = "#b1c4d1";
       var light_shade = "white";
 
       var txtFile;
@@ -168,7 +132,6 @@
 
         if (source=="chg"){
           var id_list = elem.id_list;
-          console.log(id_list);
         }
 
         else {
@@ -179,11 +142,9 @@
             var id_list = elem.parentNode.parentNode.parentNode.id_list_bad;
           }
 
-          console.log(id_list);
         }
 
         id_list = id_list.slice(0,100);
-        console.log(id_list);
 
         httpRequest.onreadystatechange = alertContents2;
         httpRequest.open('GET', 'glob_feat?id_list='+id_list);
@@ -215,7 +176,6 @@
           }
         }
 
-        console.log(req_arr);
         
         httpRequest.onreadystatechange = alertContents3;
         httpRequest.open('GET', 'first_panel?features=['+req_arr+']&algorithm='+algo);
@@ -257,7 +217,6 @@
       // Right panel mini graphs
       function alertContents2() {
         if (httpRequest.readyState === XMLHttpRequest.OPENED){
-          // console.log("OPENED");
           document.getElementById("right-panel").style.display = "inline-block";
           document.getElementById("right-panel").innerHTML = "";
           add_loader(document.getElementById("right-panel"));
@@ -318,7 +277,6 @@
       function alertContents3() {
 
         if (httpRequest.readyState === XMLHttpRequest.OPENED){
-          // console.log("OPENED");
           document.getElementById("middle-panel").style.display = "inline-block";
           document.getElementById("middle-panel").innerHTML = "";
           document.getElementById("right-panel").innerHTML = "";
@@ -355,11 +313,8 @@
                 var li = document.createElement("td");
                 var li_div = document.createElement("div");
 
-                // li.innerHTML = j.toString();
                 li.id = "middle-link-" + j.toString();
-          
-                li_div.id = "middle-graph-" + j.toString();
-                // li_div.innerHTML = "MID GRAPH";                
+                li_div.id = "middle-graph-" + j.toString();              
 
                 li.append(li_div);
                 tr.append(li);
@@ -410,9 +365,6 @@
                     curr_bad -= 1;
                   }
 
-                  // console.log(curr_good);
-                  // console.log(curr_bad);
-
                   var has_good = false;
                   var has_bad = false;
 
@@ -428,7 +380,6 @@
                       has_bad = true;
                     }
                   }
-                  // console.log(tot_len);
                 
 
                   var good_len = 0;
@@ -450,20 +401,13 @@
                     }
                   }
 
-                  // console.log(tot_len);
-                  // console.log(good_len);
-                  // console.log(bad_len);
-
-                  // console.log(has_good);
-                  // console.log(has_bad);
-
 
 
                   if (has_good == true){
                     for (k=0; k<good_len; k++){
                       var idxx = $(".mini-square-good-" + k.toString()).length;
                       idxx = Math.max(0,idxx-1);
-                      // console.log("idx" + idxx.toString());
+
                       document.getElementsByClassName("mini-square-good-"+k.toString())[idxx].onclick = function () { 
                         makeRequest2(this, "anch");
                         drawBorderClickAnch(this);
@@ -507,9 +451,6 @@
         }
       }
 
-      // Show features with no combinations
-      function blackout_feats(middleData){
-      }
 
       // Style for middle panel squares
       // Changes
@@ -562,22 +503,6 @@
         border.style.stroke = "black";
         border.style.strokeWidth = "1.5px";
         border.id = "selected-border";
-
-        // var idx = elem.childNodes[0].childNodes[0].className.baseVal.toString().substring(12);
-        // console.log(idx);
-
-        // if (document.getElementById("mini-graph-"+idx.toString()) != null){
-        //   console.log("here");
-        //   // if (document.getElementById("border-selected") != null){
-        //   //   document.getElementById("border-selected").style.stroke = "black";
-        //   //   var restore_id = document.getElementById("border-selected").parentNode.id.toString().substring(11);
-        //   //   document.getElementById("border-selected").id = "border-" + restore_id;
-        //   // }
-        //   var bord = document.getElementById("border-"+idx.toString());
-        //   console.log(bord);
-        //   bord.style.stroke = "black";
-        //   document.getElementById("border-"+idx.toString()).id = "border-selected";
-        // }
       }
       function hoverEnterAnch(elem){
         document.body.style.cursor = "pointer";
@@ -606,7 +531,7 @@
         if (httpRequest.readyState === XMLHttpRequest.DONE) {
           if (httpRequest.status === 200) {
             //Do stuff with the response
-            // var resp = JSON.parse(httpRequest.responseText);
+            
             var resp_arr = httpRequest.responseText;
             var totalData = JSON.parse(resp_arr);
             var monot_arr = [1,1,1,1,1,-1,-1,1,1,1,1,0,-1,0,1,-1,-1,-1,-1,0,0,-1,0];
@@ -648,16 +573,6 @@
               }
             } 
 
-            // var css = '.ft-div:hover {font-size: 13px;font-weight: bold;} .ft-div {color: red;}';
-            // var style = document.createElement('style');
-            // if (style.styleSheet) {
-            //     style.styleSheet.cssText = css;
-            // } else {
-            //     style.appendChild(document.createTextNode(css));
-            // }
-
-            // document.getElementsByTagName('head')[0].appendChild(style);
-
 
           }
           else {
@@ -692,7 +607,6 @@
 
       // Add loading animation
       function add_loader(elem) {
-        // console.log("LOADER");
         elem.innerHTML="";
         var load_wrap = document.createElement("div");
         load_wrap.className = "loader_wrap";
@@ -758,10 +672,9 @@
 
           var link = document.createElement("a");
 
-          // link.innerHTML = ft_names[i];
           link.style.maxWidth = "125px"; 
           link.id = "feat-" + i.toString();
-          // link.href = "#middle-panel";
+
 
           ft_div.append(link);
           td.append(monot);
@@ -845,7 +758,6 @@
       function begin_glob(){
 
         var right = document.getElementById("demo");
-        console.log(right.childNodes[1]);
         if (right.childNodes[1].id == "glob-instruction"){
           right.removeChild(right.childNodes[1]);
         }
@@ -872,17 +784,9 @@
         makeGlobRequest();
       }
 
-      // $.when( fetch_csv() ).then(function(){setTimeout(function(){prep_content(); }, 700)});
       fetch_csv();
       draw_summary(".id-list");
 
-
-
-      // prep_content();
-
-      // ft_list();
-
-      // makeGlobRequest();
 
     </script>
 
