@@ -19,6 +19,7 @@ http://www.ml-explainer.com
 * Pip install pandas, flask, numpy, scipy, sklearn
 * Open Webapp folder
 * Run hello.py
+* Open in localhost:5005
 
 #### Suggested Specifications
 * Open on Mac or PC
