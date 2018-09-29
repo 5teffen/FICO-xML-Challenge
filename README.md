@@ -23,4 +23,4 @@ http://www.ml-explainer.com
 #### Suggested Specifications
 * Open on Mac or PC
 * Latest version of Google Chrome
-* Screen size of at least 12 inches
+* Screen size of at least 13 inches
