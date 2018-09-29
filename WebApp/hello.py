@@ -54,6 +54,7 @@ def sample_transf ():
 
 # ------- Initialize model ------- #
 
+
 vals = pd.read_csv("static/data/final_data_file.csv", header=None).values
 X = vals[:,1:]
 y = vals[:,0]
