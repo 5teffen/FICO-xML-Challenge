@@ -25,3 +25,5 @@ http://www.ml-explainer.com
 * Open on Mac or PC
 * Latest version of Google Chrome
 * Screen size of at least 13 inches
+
+Contact us at sh3628@nyu.edu or oag229@nyu.edu for any questions regarding the tool
