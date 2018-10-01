@@ -11,7 +11,7 @@ def generate_text_explanation(per, sample, target, changes_vec , anchs_vec):
     else:
         text_string += "bad"
 
-    text_string += " with a score of " + str(int(per*100)) + "%\n\n"
+    text_string += " with a score of " + "###" + "%\n\n"
 
     changes_lst = []
     anchs_lst = []
